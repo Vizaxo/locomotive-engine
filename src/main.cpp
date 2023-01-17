@@ -2,6 +2,7 @@
 
 #include "D3DContext.h"
 
+
 using namespace DirectX;
 
 const LONG g_WindowWidth = 1280;
@@ -13,7 +14,7 @@ const bool g_EnableVSync = true;
 
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
-int Run(bool vSync);
+int Run(D3DContext d3dContext);
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
 	WNDCLASSEXA wndClass = { 0 };
@@ -85,25 +86,12 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 		return -1;
 	}
 
-	if (InitDirectX(hInstance, g_WindowHandle, g_EnableVSync) != 0) {
-		MessageBox(nullptr, TEXT("Failed to create DirectXDevice"), TEXT("Error"), MB_OK);
-		return -1;
-	}
+	D3DContext d3dContext = D3DContext(hInstance, g_WindowHandle, g_EnableVSync);
 
-	if (!LoadContent(g_WindowHandle)) {
-		MessageBox(nullptr, TEXT("Failed to load content"), TEXT("Error"), 0);
-		return -1;
-	}
-
-	int ret = Run(g_EnableVSync);
-
-	UnloadContent();
-	Cleanup();
-
-	return ret;
+	return Run(d3dContext);
 }
 
-int Run(bool vSync) {
+int Run(D3DContext d3dContext) {
 	MSG msg = { 0 };
 
 	static DWORD previousTime = timeGetTime();
@@ -121,8 +109,8 @@ int Run(bool vSync) {
 
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
-			Update(deltaTime);
-			Render(vSync);
+			d3dContext.Update(deltaTime);
+			d3dContext.Render();
 		}
 	}
 

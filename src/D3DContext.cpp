@@ -1,5 +1,6 @@
-#include "D3DContext.h"
 #include "DirectXTemplatePCH.h"
+
+#include "D3DContext.h"
 
 #include "..\include\VertexShader.h"
 #include "..\include\PixelShader.h"
@@ -25,6 +26,13 @@ ID3D11Buffer* g_d3dIndexBuffer = nullptr;
 
 ID3D11VertexShader* g_d3dVertexShader = nullptr;
 ID3D11PixelShader* g_d3dPixelShader = nullptr;
+
+bool vsync;
+
+int InitDirectX(HINSTANCE hInstance, HWND windowHandle);
+bool LoadContent(HWND windowHandle);
+void UnloadContent();
+void Cleanup();
 
 enum ConstantBuffer {
 	CB_Application,
@@ -64,7 +72,24 @@ WORD g_Indices[36] = {
 	4,0,3,4,3,7,
 };
 
-int InitDirectX(HINSTANCE hInstance, HWND windowHandle, bool vSync) {
+D3DContext::D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync) {
+	if (InitDirectX(hInstance, windowHandle) != 0) {
+		MessageBox(nullptr, TEXT("Failed to create DirectXDevice"), TEXT("Error"), MB_OK);
+	}
+
+	if (!LoadContent(windowHandle)) {
+		MessageBox(nullptr, TEXT("Failed to load content"), TEXT("Error"), 0);
+	}
+
+	vsync = vSync;
+}
+
+D3DContext::~D3DContext() {
+	UnloadContent();
+	Cleanup();
+}
+
+int InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 	assert(windowHandle != 0);
 
 	RECT clientRect;
@@ -276,7 +301,7 @@ bool LoadContent(HWND windowHandle) {
 	return true;
 }
 
-void Update(float deltaTime) {
+void D3DContext::Update(float deltaTime) {
 	assert(g_d3dDevice);
 	assert(g_d3dDeviceContext);
 
@@ -295,16 +320,16 @@ void Update(float deltaTime) {
 	g_d3dDeviceContext->UpdateSubresource(g_d3dConstantBuffers[CB_Object], 0, nullptr, &g_WorldMatrix, 0, 0);
 }
 
-void Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil) {
+void D3DContext::Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil) {
 	g_d3dDeviceContext->ClearRenderTargetView(g_d3dRenderTargetView, clearColor);
 	g_d3dDeviceContext->ClearDepthStencilView(g_d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, clearDepth, clearStencil);
 }
 
-void Present(bool vSync) {
-	g_d3dSwapChain->Present(vSync ? 1 : 0, 0);
+void D3DContext::Present() {
+	g_d3dSwapChain->Present(vsync ? 1 : 0, 0);
 }
 
-void Render(bool vSync) {
+void D3DContext::Render() {
 	assert(g_d3dDevice);
 	assert(g_d3dDeviceContext);
 
@@ -331,7 +356,7 @@ void Render(bool vSync) {
 
 	g_d3dDeviceContext->DrawIndexed(_countof(g_Indices), 0, 0);
 
-	Present(vSync);
+	Present();
 }
 
 void UnloadContent() {
