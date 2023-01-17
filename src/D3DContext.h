@@ -46,8 +46,17 @@ private:
 	ID3D11PixelShader* d3dPixelShader = nullptr;
 
 	bool vsync;
+	HWND windowHandle;
+	HINSTANCE hInstance;
+	float clientWidth;
+	float clientHeight;
 
 	int InitDirectX(HINSTANCE hInstance, HWND windowHandle);
+	int CreateDeviceAndSwapchain();
+	int CreateRenderTargetView();
+	int CreateDepthStencilView();
+	int CreateDepthStencilState();
+	int CreateRasterizerState();
 	bool LoadContent(HWND windowHandle);
 	void UnloadContent();
 	void Cleanup();

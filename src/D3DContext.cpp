@@ -1,6 +1,7 @@
 #include "DirectXTemplatePCH.h"
 
 #include "D3DContext.h"
+#include <tuple>
 
 #include "..\include\VertexShader.h"
 #include "..\include\PixelShader.h"
@@ -28,7 +29,13 @@ WORD Indices[36] = {
 	4,0,3,4,3,7,
 };
 
-D3DContext::D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync) {
+D3DContext::D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync) : hInstance(hInstance), windowHandle(windowHandle), vsync(vSync) {
+	RECT clientRect;
+	GetClientRect(windowHandle, &clientRect);
+
+	clientWidth = static_cast<float>(clientRect.right - clientRect.left);
+	clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
+
 	if (InitDirectX(hInstance, windowHandle) != 0) {
 		MessageBox(nullptr, TEXT("Failed to create DirectXDevice"), TEXT("Error"), MB_OK);
 	}
@@ -36,8 +43,6 @@ D3DContext::D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync) {
 	if (!LoadContent(windowHandle)) {
 		MessageBox(nullptr, TEXT("Failed to load content"), TEXT("Error"), 0);
 	}
-
-	vsync = vSync;
 }
 
 D3DContext::~D3DContext() {
@@ -45,14 +50,8 @@ D3DContext::~D3DContext() {
 	Cleanup();
 }
 
-int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
+int D3DContext::CreateDeviceAndSwapchain() {
 	assert(windowHandle != 0);
-
-	RECT clientRect;
-	GetClientRect(windowHandle, &clientRect);
-
-	float clientWidth = static_cast<float>(clientRect.right - clientRect.left);
-	float clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
@@ -92,18 +91,26 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 
 	if (hr == E_INVALIDARG)
 		hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE,
-			nullptr, createDeviceFlags, &featureLevels[1], _countof(featureLevels)-1,
+			nullptr, createDeviceFlags, &featureLevels[1], _countof(featureLevels) - 1,
 			D3D11_SDK_VERSION, &swapChainDesc, &d3dSwapChain, &d3dDevice, &featureLevel,
 			&d3dDeviceContext);
 
 	if (FAILED(hr))
 		return -1;
 
+	return 0;
+}
+
+int D3DContext::CreateRenderTargetView() {
 	ID3D11Texture2D* backBuffer;
 	HRASSERT(d3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer));
 	HRASSERT(d3dDevice->CreateRenderTargetView(backBuffer, nullptr, &d3dRenderTargetView));
 	SafeRelease(backBuffer);
 
+	return 0;
+}
+
+int D3DContext::CreateDepthStencilView() {
     D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
     ZeroMemory( &depthStencilBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
@@ -121,6 +128,10 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 	HRASSERT(d3dDevice->CreateTexture2D( &depthStencilBufferDesc, nullptr, &d3dDepthStencilBuffer ));
 	HRASSERT(d3dDevice->CreateDepthStencilView(d3dDepthStencilBuffer, nullptr, &d3dDepthStencilView));
 
+	return 0;
+}
+
+int D3DContext::CreateDepthStencilState() {
 	D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
 	ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 
@@ -131,22 +142,36 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 
 	HRASSERT(d3dDevice->CreateDepthStencilState(&depthStencilStateDesc, &d3dDepthStencilState));
 
-    D3D11_RASTERIZER_DESC rasterizerDesc;
-    ZeroMemory( &rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC) );
+	return 0;
+}
 
-    rasterizerDesc.AntialiasedLineEnable = FALSE;
-    rasterizerDesc.CullMode = D3D11_CULL_BACK;
-    rasterizerDesc.DepthBias = 0;
-    rasterizerDesc.DepthBiasClamp = 0.0f;
-    rasterizerDesc.DepthClipEnable = TRUE;
-    rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-    rasterizerDesc.FrontCounterClockwise = FALSE;
-    rasterizerDesc.MultisampleEnable = FALSE;
-    rasterizerDesc.ScissorEnable = FALSE;
-    rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+int D3DContext::CreateRasterizerState() {
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-    // Create the rasterizer state object.
+	rasterizerDesc.AntialiasedLineEnable = FALSE;
+	rasterizerDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerDesc.DepthBias = 0;
+	rasterizerDesc.DepthBiasClamp = 0.0f;
+	rasterizerDesc.DepthClipEnable = TRUE;
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.FrontCounterClockwise = FALSE;
+	rasterizerDesc.MultisampleEnable = FALSE;
+	rasterizerDesc.ScissorEnable = FALSE;
+	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+
+	// Create the rasterizer state object.
 	HRASSERT(d3dDevice->CreateRasterizerState(&rasterizerDesc, &d3dRasterizerState));
+
+	return 0;
+}
+
+int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
+	assert(CreateDeviceAndSwapchain() >= 0);
+	assert(CreateRenderTargetView() >= 0);
+	assert(CreateDepthStencilView() >= 0);
+	assert(CreateDepthStencilState() >= 0);
+	assert(CreateRasterizerState() >= 0);
 
 	Viewport.Width = static_cast<float>(clientWidth);
 	Viewport.Height = static_cast<float>(clientHeight);
