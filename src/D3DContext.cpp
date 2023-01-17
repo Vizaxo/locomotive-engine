@@ -100,18 +100,12 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 		return -1;
 
 	ID3D11Texture2D* backBuffer;
-	hr = d3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
-	if (FAILED(hr))
-		return -1;
-
-	hr = d3dDevice->CreateRenderTargetView(backBuffer, nullptr, &d3dRenderTargetView);
-	if (FAILED(hr))
-		return -1;
-
+	HRASSERT(d3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer));
+	HRASSERT(d3dDevice->CreateRenderTargetView(backBuffer, nullptr, &d3dRenderTargetView));
 	SafeRelease(backBuffer);
 
     D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
-    ZeroMemory( &depthStencilBufferDesc, sizeof(D3D11_TEXTURE2D_DESC) );
+    ZeroMemory( &depthStencilBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
     depthStencilBufferDesc.ArraySize = 1;
     depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -124,13 +118,8 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
     depthStencilBufferDesc.SampleDesc.Quality = 0;
     depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-    hr = d3dDevice->CreateTexture2D( &depthStencilBufferDesc, nullptr, &d3dDepthStencilBuffer );
-	if (FAILED(hr))
-		return -1;
-
-	hr = d3dDevice->CreateDepthStencilView(d3dDepthStencilBuffer, nullptr, &d3dDepthStencilView);
-	if (FAILED(hr))
-		return -1;
+	HRASSERT(d3dDevice->CreateTexture2D( &depthStencilBufferDesc, nullptr, &d3dDepthStencilBuffer ));
+	HRASSERT(d3dDevice->CreateDepthStencilView(d3dDepthStencilBuffer, nullptr, &d3dDepthStencilView));
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
 	ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
@@ -140,9 +129,7 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 	depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	depthStencilStateDesc.StencilEnable = false;
 
-	hr = d3dDevice->CreateDepthStencilState(&depthStencilStateDesc, &d3dDepthStencilState);
-	if (FAILED(hr))
-		return -1;
+	HRASSERT(d3dDevice->CreateDepthStencilState(&depthStencilStateDesc, &d3dDepthStencilState));
 
     D3D11_RASTERIZER_DESC rasterizerDesc;
     ZeroMemory( &rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC) );
@@ -159,9 +146,7 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
     rasterizerDesc.SlopeScaledDepthBias = 0.0f;
 
     // Create the rasterizer state object.
-    hr = d3dDevice->CreateRasterizerState( &rasterizerDesc, &d3dRasterizerState );
-	if (FAILED(hr))
-		return -1;
+	HRASSERT(d3dDevice->CreateRasterizerState(&rasterizerDesc, &d3dRasterizerState));
 
 	Viewport.Width = static_cast<float>(clientWidth);
 	Viewport.Height = static_cast<float>(clientHeight);
@@ -188,10 +173,7 @@ bool D3DContext::LoadContent(HWND windowHandle) {
 	ZeroMemory(&resourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	resourceData.pSysMem = Vertices;
 
-	HRESULT hr = d3dDevice->CreateBuffer(&vertexBufferDesc, &resourceData, &d3dVertexBuffer);
-	if (FAILED(hr))
-		return false;
-
+	HRASSERT(d3dDevice->CreateBuffer(&vertexBufferDesc, &resourceData, &d3dVertexBuffer));
 
 	D3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -202,10 +184,7 @@ bool D3DContext::LoadContent(HWND windowHandle) {
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	resourceData.pSysMem = Indices;
 
-	hr = d3dDevice->CreateBuffer(&indexBufferDesc, &resourceData, &d3dIndexBuffer);
-	if (FAILED(hr))
-		return false;
-
+	HRASSERT(d3dDevice->CreateBuffer(&indexBufferDesc, &resourceData, &d3dIndexBuffer));
 
 	D3D11_BUFFER_DESC constantBufferDesc;
 	ZeroMemory(&constantBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -215,34 +194,18 @@ bool D3DContext::LoadContent(HWND windowHandle) {
 	constantBufferDesc.CPUAccessFlags = 0;
 	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-	hr = d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Application]);
-	if (FAILED(hr))
-		return false;
-
-	hr = d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Frame]);
-	if (FAILED(hr))
-		return false;
-
-	hr = d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Object]);
-	if (FAILED(hr))
-		return false;
-
-	hr = d3dDevice->CreateVertexShader(g_vs, sizeof(g_vs), nullptr, &d3dVertexShader);
-	if (FAILED(hr))
-		return false;
-
-	hr = d3dDevice->CreatePixelShader(g_ps, sizeof(g_ps), nullptr, &d3dPixelShader);
-	if (FAILED(hr))
-		return false;
+	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Application]));
+	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Frame]));
+	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Object]));
+	HRASSERT(d3dDevice->CreateVertexShader(g_vs, sizeof(g_vs), nullptr, &d3dVertexShader));
+	HRASSERT(d3dDevice->CreatePixelShader(g_ps, sizeof(g_ps), nullptr, &d3dPixelShader));
 
 	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
-	hr = d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_vs, sizeof(g_vs), &d3dInputLayout);
-	if (FAILED(hr))
-		return false;
+	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_vs, sizeof(g_vs), &d3dInputLayout));
 
 	RECT clientRect;
 	GetClientRect(windowHandle, &clientRect);

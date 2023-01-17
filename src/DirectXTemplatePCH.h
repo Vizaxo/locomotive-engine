@@ -25,3 +25,10 @@ inline void SafeRelease(T& ptr) {
 		ptr = nullptr;
 	}
 }
+
+#define HRASSERT(x) do {\
+	HRESULT hr = x;\
+	if (FAILED(hr)) {\
+		return false;\
+	}\
+	} while(false)
