@@ -14,7 +14,7 @@ const bool g_EnableVSync = true;
 
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
-int Run(D3DContext d3dContext);
+int Run(D3DContext* d3dContext);
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
 	WNDCLASSEXA wndClass = { 0 };
@@ -88,10 +88,10 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 
 	D3DContext d3dContext = D3DContext(hInstance, g_WindowHandle, g_EnableVSync);
 
-	return Run(d3dContext);
+	return Run(&d3dContext);
 }
 
-int Run(D3DContext d3dContext) {
+int Run(D3DContext* d3dContext) {
 	MSG msg = { 0 };
 
 	static DWORD previousTime = timeGetTime();
@@ -109,8 +109,8 @@ int Run(D3DContext d3dContext) {
 
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
-			d3dContext.Update(deltaTime);
-			d3dContext.Render();
+			d3dContext->Update(deltaTime);
+			d3dContext->Render();
 		}
 	}
 
