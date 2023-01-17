@@ -21,9 +21,15 @@
     <ClCompile Include="src\DirectXTemplatePCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\D3DContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DirectXTemplatePCH.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\D3DContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
