@@ -1,0 +1,8 @@
+TODO
+
+Short-term:
+- Encapsulate Windows code in a class
+- Allow multiple shaders to be used
+- Texturing
+- Normal maps
+- Loading objects
