@@ -1,6 +1,8 @@
 #include "DirectXTemplatePCH.h"
 
 #include "D3DContext.h"
+#include "Scene.h"
+#include "Object.h"
 
 
 using namespace DirectX;
@@ -12,9 +14,29 @@ const LPCSTR g_WindowName = ("D3D11 Renderer");
 HWND g_WindowHandle = 0;
 const bool g_EnableVSync = true;
 
+VertexPosColor Vertices[8] = {
+	{XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},
+	{XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
+	{XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
+	{XMFLOAT3(1.0f,  -1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f)},
+	{XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
+	{XMFLOAT3(-1.0f, 1.0f,  1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f)},
+	{XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
+	{XMFLOAT3(1.0f,  -1.0f,  1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f)},
+};
+
+WORD Indices[36] = {
+	0,1,2,0,2,3,
+	4,6,5,4,7,6,
+	4,5,1,4,1,0,
+	3,2,6,3,6,7,
+	1,5,6,1,6,2,
+	4,0,3,4,3,7,
+};
+
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
-int Run(D3DContext* d3dContext);
+int Run(D3DContext* d3dContext, Scene* scene);
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
 	WNDCLASSEXA wndClass = { 0 };
@@ -88,10 +110,20 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 
 	D3DContext d3dContext = D3DContext(hInstance, g_WindowHandle, g_EnableVSync);
 
-	return Run(&d3dContext);
+	Scene scene = Scene();
+	scene.objects.push_back(Object(&d3dContext, XMMatrixIdentity(), (UINT)8, Vertices, (UINT)36, Indices, d3dContext.d3dPixelShader, d3dContext.d3dVertexShader));
+	scene.objects.push_back(Object(&d3dContext, XMMatrixTranslation(4, 0, 2), (UINT)8, Vertices, (UINT)36, Indices, d3dContext.d3dPixelShader, d3dContext.d3dVertexShader));
+	scene.objects.push_back(Object(&d3dContext, XMMatrixTranslation(-2, 1, 2), (UINT)8, Vertices, (UINT)36, Indices, d3dContext.d3dPixelShader, d3dContext.d3dVertexShader));
+	scene.objects.push_back(Object(&d3dContext, XMMatrixTranslation(-4, 1, -2), (UINT)8, Vertices, (UINT)36, Indices, d3dContext.d3dPixelShader, d3dContext.d3dVertexShader));
+	scene.objects.push_back(Object(&d3dContext, XMMatrixTranslation(-2, -3, 3), (UINT)8, Vertices, (UINT)36, Indices, d3dContext.d3dPixelShader, d3dContext.d3dVertexShader));
+	scene.objects.push_back(Object(&d3dContext, XMMatrixTranslation(0, 1, 3), (UINT)8, Vertices, (UINT)36, Indices, d3dContext.d3dPixelShader, d3dContext.d3dVertexShader));
+	scene.objects.push_back(Object(&d3dContext, XMMatrixTranslation(3, -2, 2), (UINT)8, Vertices, (UINT)36, Indices, d3dContext.d3dPixelShader, d3dContext.d3dVertexShader));
+
+	return Run(&d3dContext, &scene);
 }
 
-int Run(D3DContext* d3dContext) {
+
+int Run(D3DContext* d3dContext, Scene* scene) {
 	MSG msg = { 0 };
 
 	static DWORD previousTime = timeGetTime();
@@ -110,7 +142,7 @@ int Run(D3DContext* d3dContext) {
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
 			d3dContext->Update(deltaTime);
-			d3dContext->Render();
+			scene->RenderScene(d3dContext, deltaTime);
 		}
 	}
 

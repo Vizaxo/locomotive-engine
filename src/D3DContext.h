@@ -2,7 +2,6 @@
 
 #include "DirectXTemplatePCH.h"
 
-
 struct VertexPosColor {
 	DirectX::XMFLOAT3 Position;
 	DirectX::XMFLOAT3 Color;
@@ -23,11 +22,12 @@ public:
 	void Update(float deltaTime);
 	void Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil);
 	void Present();
-	void Render();
+	void Render(float deltaTime);
 
-private:
+
 	ID3D11Device* d3dDevice = nullptr;
 	ID3D11DeviceContext* d3dDeviceContext = nullptr;
+
 	IDXGISwapChain* d3dSwapChain = nullptr;
 
 	ID3D11RenderTargetView* d3dRenderTargetView = nullptr;
@@ -45,6 +45,9 @@ private:
 	ID3D11VertexShader* d3dVertexShader = nullptr;
 	ID3D11PixelShader* d3dPixelShader = nullptr;
 
+	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
+
+private:
 	bool vsync;
 	HWND windowHandle;
 	HINSTANCE hInstance;
@@ -60,8 +63,6 @@ private:
 	bool LoadContent(HWND windowHandle);
 	void UnloadContent();
 	void Cleanup();
-
-	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
 
 	DirectX::XMMATRIX WorldMatrix;
 	DirectX::XMMATRIX ViewMatrix;

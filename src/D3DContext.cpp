@@ -9,26 +9,6 @@
 
 using namespace DirectX;
 
-VertexPosColor Vertices[8] = {
-	{XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-	{XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
-	{XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
-	{XMFLOAT3(1.0f,  -1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f)},
-	{XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
-	{XMFLOAT3(-1.0f, 1.0f,  1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f)},
-	{XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
-	{XMFLOAT3(1.0f,  -1.0f,  1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f)},
-};
-
-WORD Indices[36] = {
-	0,1,2,0,2,3,
-	4,6,5,4,7,6,
-	4,5,1,4,1,0,
-	3,2,6,3,6,7,
-	1,5,6,1,6,2,
-	4,0,3,4,3,7,
-};
-
 D3DContext::D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync) : hInstance(hInstance), windowHandle(windowHandle), vsync(vSync) {
 	RECT clientRect;
 	GetClientRect(windowHandle, &clientRect);
@@ -184,6 +164,7 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 }
 
 bool D3DContext::LoadContent(HWND windowHandle) {
+	/*
 	assert(d3dDevice);
 
 	D3D11_BUFFER_DESC vertexBufferDesc;
@@ -210,6 +191,7 @@ bool D3DContext::LoadContent(HWND windowHandle) {
 	resourceData.pSysMem = Indices;
 
 	HRASSERT(d3dDevice->CreateBuffer(&indexBufferDesc, &resourceData, &d3dIndexBuffer));
+	*/
 
 	D3D11_BUFFER_DESC constantBufferDesc;
 	ZeroMemory(&constantBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -232,14 +214,7 @@ bool D3DContext::LoadContent(HWND windowHandle) {
 
 	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_vs, sizeof(g_vs), &d3dInputLayout));
 
-	RECT clientRect;
-	GetClientRect(windowHandle, &clientRect);
-
-	float clientWidth = static_cast<float>(clientRect.right - clientRect.left);
-	float clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
-
 	ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), clientWidth / clientHeight, 0.1f, 100.0f);
-
 	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Application], 0, nullptr, &ProjectionMatrix, 0, 0);
 
 	return true;
@@ -254,14 +229,6 @@ void D3DContext::Update(float deltaTime) {
 	XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
 	ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
 	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Frame], 0, nullptr, &ViewMatrix, 0, 0);
-
-	static float angle = 0.0f;
-	angle += 90.f * deltaTime;
-
-	XMVECTOR rotationAxis = XMVectorSet(0, 1, 0, 0);
-
-	WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(angle));
-	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Object], 0, nullptr, &WorldMatrix, 0, 0);
 }
 
 void D3DContext::Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil) {
@@ -271,36 +238,6 @@ void D3DContext::Clear(const float clearColor[4], float clearDepth, uint8_t clea
 
 void D3DContext::Present() {
 	d3dSwapChain->Present(vsync ? 1 : 0, 0);
-}
-
-void D3DContext::Render() {
-	assert(d3dDevice);
-	assert(d3dDeviceContext);
-
-	Clear(Colors::CornflowerBlue, 1.0f, 0);
-
-	const UINT vertexStride = sizeof(VertexPosColor);
-	const UINT offset = 0;
-
-	d3dDeviceContext->IASetVertexBuffers(0, 1, &d3dVertexBuffer, &vertexStride, &offset);
-	d3dDeviceContext->IASetInputLayout(d3dInputLayout);
-	d3dDeviceContext->IASetIndexBuffer(d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	d3dDeviceContext->VSSetShader(d3dVertexShader, nullptr, 0);
-	d3dDeviceContext->VSSetConstantBuffers(0, 3, d3dConstantBuffers);
-
-	d3dDeviceContext->RSSetState(d3dRasterizerState);
-	d3dDeviceContext->RSSetViewports(1, &Viewport);
-	
-	d3dDeviceContext->PSSetShader(d3dPixelShader, nullptr, 0);
-
-	d3dDeviceContext->OMSetRenderTargets(1, &d3dRenderTargetView, d3dDepthStencilView);
-	d3dDeviceContext->OMSetDepthStencilState(d3dDepthStencilState, 1);
-
-	d3dDeviceContext->DrawIndexed(_countof(Indices), 0, 0);
-
-	Present();
 }
 
 void D3DContext::UnloadContent() {
