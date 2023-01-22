@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "Object.h"
 #include "D3DContext.h"
-#include <vector>
 
 void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
@@ -11,8 +10,6 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 
 	const UINT vertexStride = sizeof(VertexPosColor);
 	const UINT offset = 0;
-
-	d3dDeviceContext->IASetInputLayout(d3dContext->d3dInputLayout);
 
 	d3dDeviceContext->VSSetConstantBuffers(0, 3, d3dContext->d3dConstantBuffers);
 

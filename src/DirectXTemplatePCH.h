@@ -28,7 +28,5 @@ inline void SafeRelease(T& ptr) {
 
 #define HRASSERT(x) do {\
 	HRESULT hr = x;\
-	if (FAILED(hr)) {\
-		return -1;\
-	}\
+	assert(!FAILED(hr));\
 	} while(false)

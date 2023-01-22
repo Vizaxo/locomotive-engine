@@ -3,9 +3,6 @@
 #include "D3DContext.h"
 #include <tuple>
 
-#include "..\include\VertexShader.h"
-#include "..\include\PixelShader.h"
-
 
 using namespace DirectX;
 
@@ -204,15 +201,6 @@ bool D3DContext::LoadContent(HWND windowHandle) {
 	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Application]));
 	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Frame]));
 	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Object]));
-	HRASSERT(d3dDevice->CreateVertexShader(g_vs, sizeof(g_vs), nullptr, &d3dVertexShader));
-	HRASSERT(d3dDevice->CreatePixelShader(g_ps, sizeof(g_ps), nullptr, &d3dPixelShader));
-
-	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] = {
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color), D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_vs, sizeof(g_vs), &d3dInputLayout));
 
 	ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), clientWidth / clientHeight, 0.1f, 100.0f);
 	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Application], 0, nullptr, &ProjectionMatrix, 0, 0);
@@ -246,9 +234,6 @@ void D3DContext::UnloadContent() {
 	SafeRelease(d3dConstantBuffers[CB_Object]);
 	SafeRelease(d3dIndexBuffer);
 	SafeRelease(d3dVertexBuffer);
-	SafeRelease(d3dInputLayout);
-	SafeRelease(d3dVertexShader);
-	SafeRelease(d3dPixelShader);
 }
 
 void D3DContext::Cleanup() {

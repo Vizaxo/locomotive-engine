@@ -38,12 +38,8 @@ public:
 	ID3D11RasterizerState* d3dRasterizerState = nullptr;
 	D3D11_VIEWPORT Viewport = { 0 };
 
-	ID3D11InputLayout* d3dInputLayout = nullptr;
 	ID3D11Buffer* d3dVertexBuffer = nullptr;
 	ID3D11Buffer* d3dIndexBuffer = nullptr;
-
-	ID3D11VertexShader* d3dVertexShader = nullptr;
-	ID3D11PixelShader* d3dPixelShader = nullptr;
 
 	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
 

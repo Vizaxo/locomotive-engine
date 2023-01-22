@@ -6,8 +6,10 @@
 
 using namespace DirectX;
 
-Object::Object(D3DContext* d3dContext, DirectX::XMMATRIX modelMatrix, UINT numVertices, VertexPosColor* vertices, UINT numIndices, WORD* indices, ID3D11PixelShader* ps, ID3D11VertexShader* vs)
-	: modelMatrix(modelMatrix), pixelShader(ps), vertexShader(vs), numIndices(numIndices) {
+Object::Object(D3DContext* d3dContext, DirectX::XMMATRIX modelMatrix, 
+	UINT numVertices, VertexPosColor* vertices, UINT numIndices, WORD* indices,
+	ID3D11VertexShader* vs, ID3D11InputLayout* inputLayout, Material* material)
+	: modelMatrix(modelMatrix), material(material), vertexShader(vs), d3dInputLayout(inputLayout), numIndices(numIndices) {
 	CreateVertexBuffer(d3dContext, numVertices, vertices);
 	CreateIndexBuffer(d3dContext, numIndices, indices);
 
@@ -61,7 +63,8 @@ void Object::RenderObject(D3DContext* d3dContext, float deltaTime) {
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	d3dDeviceContext->VSSetShader(vertexShader, nullptr, 0);
-	d3dDeviceContext->PSSetShader(pixelShader, nullptr, 0);
+	d3dDeviceContext->PSSetShader(material->pixelShader, nullptr, 0);
+	d3dDeviceContext->IASetInputLayout(d3dInputLayout);
 
 	angle += 90.f * deltaTime;
 
