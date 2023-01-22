@@ -2,7 +2,7 @@
 
 #include "Texture2D.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../include/stb_image.h":
+#include "stb_image.h":
 
 Texture2D::Texture2D(D3DContext* d3dContext, char* path) {
 	int width, height, n;

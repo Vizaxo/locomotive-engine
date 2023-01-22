@@ -5,10 +5,10 @@
 #include "Material.h"
 #include "Texture2D.h"
 
-#include "..\include\BaseColourVertexShader.h"
-#include "..\include\BaseColourPixelShader.h"
-#include "..\include\TexturedPixelShader.h"
-#include "..\include\TexturedVertexShader.h"
+#include "BaseColourVertexShader.h"
+#include "BaseColourPixelShader.h"
+#include "TexturedPixelShader.h"
+#include "TexturedVertexShader.h"
 
 using namespace DirectX;
 
