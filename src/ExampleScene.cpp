@@ -3,9 +3,12 @@
 #include "ExampleScene.h"
 #include "Object.h"
 #include "Material.h"
+#include "Texture2D.h"
 
-#include "..\include\VertexShader.h"
-#include "..\include\PixelShader.h"
+#include "..\include\BaseColourVertexShader.h"
+#include "..\include\BaseColourPixelShader.h"
+#include "..\include\TexturedPixelShader.h"
+#include "..\include\TexturedVertexShader.h"
 
 using namespace DirectX;
 
@@ -18,6 +21,17 @@ VertexPosColor cubeVertices[8] = {
 	{XMFLOAT3(-1.0f, 1.0f,  1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f)},
 	{XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
 	{XMFLOAT3(1.0f,  -1.0f,  1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f)},
+};
+
+VertexPosUV texturedCube[8] = {
+	{XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f, 0.0f)},
+	{XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f)},
+	{XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT2(0.0f, 1.0f)},
+	{XMFLOAT3(1.0f,  -1.0f, -1.0f), XMFLOAT2(1.0f, 1.0f)},
+	{XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT2(0.0f, 1.0f)},
+	{XMFLOAT3(-1.0f, 1.0f,  1.0f), XMFLOAT2(1.0f, 1.0f)},
+	{XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT2(0.0f, 0.0f)},
+	{XMFLOAT3(1.0f,  -1.0f,  1.0f), XMFLOAT2(1.0f, 0.0f)},
 };
 
 WORD cubeIndices[36] = {
@@ -38,9 +52,18 @@ VertexPosColor triangleVertices[3] = {
 WORD triangleIndices[6] = { 0,1,2,2,1,0 };
 
 static Material* baseColourMaterial = nullptr;
+static Material* texturedMaterial = nullptr;
+static Texture2D* gravelTexture = nullptr;
 static ID3D11PixelShader* baseColourPixelShader = nullptr;
-static ID3D11VertexShader* vertexShader = nullptr;
-static ID3D11InputLayout* d3dInputLayout = nullptr;
+static ID3D11PixelShader* texturedPixelShader = nullptr;
+static ID3D11VertexShader* baseColourVertexShader = nullptr;
+static ID3D11VertexShader* texturedVertexShader = nullptr;
+static ID3D11InputLayout* baseColourInputLayout = nullptr;
+static ID3D11InputLayout* texturedInputLayout = nullptr;
+
+static IObject* colouredCubeObj = nullptr;
+static IObject* colouredTriangleObj = nullptr;
+static IObject* texturedCubeObj = nullptr;
 
 Scene buildExampleScene(D3DContext* d3dContext) {
 	Scene scene = Scene();
@@ -51,27 +74,45 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_vs, sizeof(g_vs), &d3dInputLayout));
-
-	HRASSERT(d3dDevice->CreateVertexShader(g_vs, sizeof(g_vs), nullptr, &vertexShader));
+	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader), &baseColourInputLayout));
+	HRASSERT(d3dDevice->CreateVertexShader(g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader), nullptr, &baseColourVertexShader));
 	HRASSERT(d3dDevice->CreatePixelShader(g_ps, sizeof(g_ps), nullptr, &baseColourPixelShader));
 
-	baseColourMaterial = new Material(baseColourPixelShader);
+	D3D11_INPUT_ELEMENT_DESC texturedVertexLayoutDesc[] = {
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosUV,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(VertexPosUV,UV), D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	HRASSERT(d3dDevice->CreateInputLayout(texturedVertexLayoutDesc, _countof(texturedVertexLayoutDesc), g_TexturedVertexShader, sizeof(g_TexturedVertexShader), &texturedInputLayout));
+	HRASSERT(d3dDevice->CreatePixelShader(g_texturedPixelShader, sizeof(g_texturedPixelShader), nullptr, &texturedPixelShader));
+	HRASSERT(d3dDevice->CreateVertexShader(g_TexturedVertexShader, sizeof(g_TexturedVertexShader), nullptr, &texturedVertexShader));
 
-	scene.objects.push_back(Object(d3dContext, XMMatrixIdentity(), (UINT)8, cubeVertices, (UINT)36, cubeIndices, vertexShader, d3dInputLayout, baseColourMaterial));
-	scene.objects.push_back(Object(d3dContext, XMMatrixTranslation(4, 0, 2), (UINT)8, cubeVertices, (UINT)36, cubeIndices, vertexShader, d3dInputLayout, baseColourMaterial));
-	scene.objects.push_back(Object(d3dContext, XMMatrixTranslation(-2, 1, 2), (UINT)8, cubeVertices, (UINT)36, cubeIndices, vertexShader, d3dInputLayout, baseColourMaterial));
-	scene.objects.push_back(Object(d3dContext, XMMatrixTranslation(-4, 1, -2), (UINT)8, cubeVertices, (UINT)36, cubeIndices, vertexShader, d3dInputLayout, baseColourMaterial));
-	scene.objects.push_back(Object(d3dContext, XMMatrixTranslation(-2, -3, 3), (UINT)8, cubeVertices, (UINT)36, cubeIndices, vertexShader, d3dInputLayout, baseColourMaterial));
-	scene.objects.push_back(Object(d3dContext, XMMatrixTranslation(0, 1, 3), (UINT)8, cubeVertices, (UINT)36, cubeIndices, vertexShader, d3dInputLayout, baseColourMaterial));
-	scene.objects.push_back(Object(d3dContext, XMMatrixTranslation(2, -2, 1), _countof(triangleVertices), triangleVertices, _countof(triangleIndices), triangleIndices, vertexShader, d3dInputLayout, baseColourMaterial));
+	gravelTexture = new Texture2D(d3dContext, (char*)"resources\\textures\\Gravel_001_BaseColor.jpg");
+	
+	baseColourMaterial = (new Material(baseColourPixelShader));
+	texturedMaterial = (new Material(texturedPixelShader))->setTexture(d3dContext, gravelTexture);
+
+	colouredCubeObj = new Object(d3dContext, XMMatrixTranslation(-2, 0, 0), (UINT)8, cubeVertices, (UINT)36, cubeIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
+	colouredTriangleObj = new Object(d3dContext, XMMatrixTranslation(2, -2, 1), _countof(triangleVertices), triangleVertices, _countof(triangleIndices), triangleIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
+	texturedCubeObj = new Object<VertexPosUV>(d3dContext, XMMatrixTranslation(4, 0, 2), (UINT)8, texturedCube, (UINT)36, cubeIndices, texturedVertexShader, texturedInputLayout, texturedMaterial);
+
+	scene.objects.push_back(colouredCubeObj);
+	scene.objects.push_back(colouredTriangleObj);
+	scene.objects.push_back(texturedCubeObj);
 
 	return scene;
 }
 
 void cleanupExampleScene() {
 	SafeRelease(baseColourPixelShader);
-	SafeRelease(vertexShader);
-	SafeRelease(d3dInputLayout);
+	SafeRelease(baseColourVertexShader);
+	SafeRelease(baseColourInputLayout);
+	SafeRelease(texturedPixelShader);
+	SafeRelease(texturedVertexShader);
+	SafeRelease(texturedInputLayout);
 	delete baseColourMaterial;
+	delete texturedMaterial;
+	delete gravelTexture;
+	delete colouredCubeObj;
+	delete colouredTriangleObj;
+	delete texturedCubeObj;
 }

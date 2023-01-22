@@ -64,8 +64,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\VertexShader.hlsl" />
-    <FxCompile Include="src\PixelShader.hlsl" />
+    <FxCompile Include="src\shaders\VertexShader.hlsl" />
+    <FxCompile Include="src\shaders\BaseColourPixelShader.hlsl" />
+    <FxCompile Include="src\shaders\TexturedVertexShader.hlsl" />
+    <FxCompile Include="src\shaders\TexturedPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

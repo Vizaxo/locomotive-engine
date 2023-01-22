@@ -6,7 +6,7 @@
 
 class Scene {
 public:
-	std::vector<Object> objects;
+	std::vector<IObject*> objects;
 
 	void RenderScene(D3DContext* d3dContext, float deltaTime);
 };

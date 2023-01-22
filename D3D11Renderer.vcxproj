@@ -156,23 +156,33 @@
     <ClInclude Include="src\Texture2D.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\PixelShader.hlsl">
+    <FxCompile Include="src\shaders\BaseColourPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_ps</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/PixelShader.h</HeaderFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/BaseColourPixelShader.h</HeaderFileOutput>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_ps</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">include/PixelShader.h</HeaderFileOutput>
     </FxCompile>
-    <FxCompile Include="src\VertexShader.hlsl">
+    <FxCompile Include="src\shaders\TexturedPixelShader.hlsl">
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_texturedPixelShader</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/TexturedPixelShader.h</HeaderFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\shaders\TexturedVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_TexturedVertexShader</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/TexturedVertexShader.h</HeaderFileOutput>
+    </FxCompile>
+    <FxCompile Include="src\shaders\VertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_vs</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/VertexShader.h</HeaderFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_BaseColourVertexShader</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/BaseColourVertexShader.h</HeaderFileOutput>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_vs</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">include/VertexShader.h</HeaderFileOutput>
     </FxCompile>

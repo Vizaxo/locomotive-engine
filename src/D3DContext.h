@@ -2,11 +2,6 @@
 
 #include "DirectXTemplatePCH.h"
 
-struct VertexPosColor {
-	DirectX::XMFLOAT3 Position;
-	DirectX::XMFLOAT3 Color;
-};
-
 enum ConstantBuffer {
 	CB_Application,
 	CB_Frame,

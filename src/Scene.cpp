@@ -8,9 +8,6 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 	d3dContext->Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
 
-	const UINT vertexStride = sizeof(VertexPosColor);
-	const UINT offset = 0;
-
 	d3dDeviceContext->VSSetConstantBuffers(0, 3, d3dContext->d3dConstantBuffers);
 
 	d3dDeviceContext->RSSetState(d3dContext->d3dRasterizerState);
@@ -19,8 +16,8 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 	d3dDeviceContext->OMSetRenderTargets(1, &d3dContext->d3dRenderTargetView, d3dContext->d3dDepthStencilView);
 	d3dDeviceContext->OMSetDepthStencilState(d3dContext->d3dDepthStencilState, 1);
 
-	for (Object& obj : objects) {
-		obj.RenderObject(d3dContext, deltaTime);
+	for (IObject* obj : objects) {
+		obj->RenderObject(d3dContext, deltaTime);
 	}
 
 	d3dContext->Present();
