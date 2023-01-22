@@ -5,6 +5,9 @@
 #include "Object.h"
 #include "ExampleScene.h"
 
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 
 using namespace DirectX;
 
@@ -54,10 +57,15 @@ int InitApplication(HINSTANCE hInstance, int cmdShow) {
 
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	, WPARAM wParam, LPARAM lParam) {
 	PAINTSTRUCT paintStruct;
 	HDC hDC;
+
+    if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wParam, lParam))
+        return true;
 
 	switch (message) {
 	case WM_PAINT:
@@ -70,6 +78,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	default:
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
+
+	return 0;
+}
+
+int InitImgui(D3DContext* d3dContext, HWND hwnd) {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplDX11_Init(d3dContext->d3dDevice, d3dContext->d3dDeviceContext);
 
 	return 0;
 }
@@ -89,13 +115,24 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 		return -1;
 	}
 
+
 	D3DContext d3dContext = D3DContext(hInstance, g_WindowHandle, g_EnableVSync);
+
+	if (InitImgui(&d3dContext, g_WindowHandle) != 0) {
+	
+		MessageBox(nullptr, TEXT("Failed to initialise Imgui"), TEXT("Error"), MB_OK);
+		return -1;
+	}
 
 	Scene scene = buildExampleScene(&d3dContext);
 
 	int ret = Run(&d3dContext, &scene);
 
 	cleanupExampleScene();
+
+    ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
 
 	return ret;
 }
