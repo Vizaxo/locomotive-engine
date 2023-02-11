@@ -14,14 +14,20 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 	ImGui::NewFrame();
 
 	{
-		static float f = 0.5f;
+		static float x = 0.0f;
+		static float y = 0.0f;
+		static float z = 0.0f;
 		static int counter = 0;
 
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		DirectX::XMVECTOR& obj0Pos = objects[0]->GetPos();
+		ImGui::SliderFloat("x", &x, -2.0f, 2.0f);
+		ImGui::SliderFloat("y", &y, -2.0f, 2.0f);
+		ImGui::SliderFloat("z", &z, -2.0f, 2.0f);
+		obj0Pos = DirectX::XMVectorSet(x, y, z, 0);
 
 		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 			counter++;
@@ -31,8 +37,6 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
-
-	ImGui::Render();
 
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 	d3dContext->Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
@@ -49,6 +53,7 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 		obj->RenderObject(d3dContext, deltaTime);
 	}
 
+	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	d3dContext->Present();

@@ -91,9 +91,9 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 	baseColourMaterial = (new Material(baseColourPixelShader));
 	texturedMaterial = (new Material(texturedPixelShader))->setTexture(d3dContext, gravelTexture);
 
-	colouredCubeObj = new Object(d3dContext, XMMatrixTranslation(-2, 0, 0), (UINT)8, cubeVertices, (UINT)36, cubeIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
-	colouredTriangleObj = new Object(d3dContext, XMMatrixTranslation(2, -2, 1), _countof(triangleVertices), triangleVertices, _countof(triangleIndices), triangleIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
-	texturedCubeObj = new Object<VertexPosUV>(d3dContext, XMMatrixTranslation(4, 0, 2), (UINT)8, texturedCube, (UINT)36, cubeIndices, texturedVertexShader, texturedInputLayout, texturedMaterial);
+	colouredCubeObj = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), (UINT)8, cubeVertices, (UINT)36, cubeIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
+	colouredTriangleObj = new Object(d3dContext, XMVectorSet(2, -2, 1, 0), _countof(triangleVertices), triangleVertices, _countof(triangleIndices), triangleIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
+	texturedCubeObj = new Object<VertexPosUV>(d3dContext, XMVectorSet(4, 0, 2, 0), (UINT)8, texturedCube, (UINT)36, cubeIndices, texturedVertexShader, texturedInputLayout, texturedMaterial);
 
 	scene.objects.push_back(colouredCubeObj);
 	scene.objects.push_back(colouredTriangleObj);
