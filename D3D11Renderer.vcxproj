@@ -148,6 +148,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\ExampleScene.cpp" />
+    <ClCompile Include="src\ImGuiUtils.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Object.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="src\D3DContext.h" />
     <ClInclude Include="src\DirectXTemplatePCH.h" />
     <ClInclude Include="src\ExampleScene.h" />
+    <ClInclude Include="src\ImGuiUtils.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\Scene.h" />

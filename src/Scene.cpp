@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "Object.h"
 #include "D3DContext.h"
+#include "ImGuiUtils.h"
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
@@ -14,26 +15,15 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 	ImGui::NewFrame();
 
 	{
-		static float x = 0.0f;
-		static float y = 0.0f;
-		static float z = 0.0f;
-		static int counter = 0;
+		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
+		MkSliderV3("Coloured cube", objects[0]->GetPos(), -2.0f, 2.0f);
+		MkSliderV3("Coloured triangle", objects[1]->GetPos(), -2.0f, 2.0f);
+		MkSliderV3("Textured cube", objects[2]->GetPos(), -2.0f, 2.0f);
+		ImGui::End();
+	}
 
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-
-		DirectX::XMVECTOR& obj0Pos = objects[0]->GetPos();
-		ImGui::SliderFloat("x", &x, -2.0f, 2.0f);
-		ImGui::SliderFloat("y", &y, -2.0f, 2.0f);
-		ImGui::SliderFloat("z", &z, -2.0f, 2.0f);
-		obj0Pos = DirectX::XMVectorSet(x, y, z, 0);
-
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
-
+	{
+		ImGui::Begin("Stats");
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
