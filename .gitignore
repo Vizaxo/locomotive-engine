@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 include/generated
 include/stb_image
+
+imgui.ini
