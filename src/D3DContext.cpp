@@ -79,10 +79,25 @@ int D3DContext::CreateDeviceAndSwapchain() {
 }
 
 int D3DContext::CreateRenderTargetView() {
+	RECT clientRect;
+	GetClientRect(windowHandle, &clientRect);
+
+	clientWidth = static_cast<float>(clientRect.right - clientRect.left);
+	clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
+
 	ID3D11Texture2D* backBuffer;
 	HRASSERT(d3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer));
-	HRASSERT(d3dDevice->CreateRenderTargetView(backBuffer, nullptr, &d3dRenderTargetView));
+	HRASSERT(d3dDevice->CreateRenderTargetView(backBuffer, nullptr, &BackBufferRTV));
 	SafeRelease(backBuffer);
+
+	D3D11_TEXTURE2D_DESC texture2DDesc = {
+		clientWidth, clientHeight, 1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, {1, 0},
+		D3D11_USAGE_DEFAULT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 0, 0
+	};
+	for (int i = 0; i < GBUFFER_COUNT; i++) {
+		HRASSERT(d3dDevice->CreateTexture2D(&texture2DDesc, nullptr, &GBufferTextures[i]));
+		HRASSERT(d3dDevice->CreateRenderTargetView(GBufferTextures[i], nullptr, &GBuffer[i]));
+	}
 
 	return 0;
 }
@@ -220,7 +235,7 @@ void D3DContext::Update(float deltaTime) {
 }
 
 void D3DContext::Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil) {
-	d3dDeviceContext->ClearRenderTargetView(d3dRenderTargetView, clearColor);
+	d3dDeviceContext->ClearRenderTargetView(BackBufferRTV, clearColor);
 	d3dDeviceContext->ClearDepthStencilView(d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, clearDepth, clearStencil);
 }
 
@@ -238,7 +253,9 @@ void D3DContext::UnloadContent() {
 
 void D3DContext::Cleanup() {
 	SafeRelease( d3dDepthStencilView );
-	SafeRelease( d3dRenderTargetView );
+	SafeRelease( BackBufferRTV );
+	for (int i = 0; i < GBUFFER_COUNT; i++)
+		SafeRelease(GBuffer[i]);
 	SafeRelease( d3dDepthStencilBuffer );
 	SafeRelease( d3dDepthStencilState );
 	SafeRelease( d3dRasterizerState );

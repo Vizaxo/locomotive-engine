@@ -9,6 +9,12 @@ enum ConstantBuffer {
 	NumConstantBuffers
 };
 
+enum GBufferID {
+	DIFFUSE = 0,
+	NORMAL = 1,
+	ZBUFFER = 2,
+	GBUFFER_COUNT = 3,
+};
 
 class D3DContext {
 public:
@@ -25,7 +31,10 @@ public:
 
 	IDXGISwapChain* d3dSwapChain = nullptr;
 
-	ID3D11RenderTargetView* d3dRenderTargetView = nullptr;
+	ID3D11RenderTargetView* BackBufferRTV = nullptr;
+	ID3D11Texture2D* GBufferTextures[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
+	ID3D11RenderTargetView* GBuffer[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
+
 	ID3D11DepthStencilView* d3dDepthStencilView = nullptr;
 	ID3D11Texture2D* d3dDepthStencilBuffer = nullptr;
 

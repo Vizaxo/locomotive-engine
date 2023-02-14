@@ -60,6 +60,9 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ImGuiUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DirectXTemplatePCH.h">
@@ -107,12 +110,17 @@
     <ClInclude Include="include\imgui\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ImGuiUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\BaseColourVertexShader.hlsl" />
     <FxCompile Include="src\shaders\BaseColourPixelShader.hlsl" />
     <FxCompile Include="src\shaders\TexturedVertexShader.hlsl" />
     <FxCompile Include="src\shaders\TexturedPixelShader.hlsl" />
+    <FxCompile Include="src\shaders\GBufferComposite.hlsl" />
+    <FxCompile Include="src\shaders\ScreenShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
