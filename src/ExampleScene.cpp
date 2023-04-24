@@ -99,16 +99,33 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 	texturedCubeObj = new Object<VertexPosUV>(d3dContext, XMVectorSet(4, 0, 2, 0), (UINT)8, texturedCube, (UINT)36, cubeIndices, texturedVertexShader, texturedInputLayout, texturedMaterial);
 
 	auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_res3.ply");
+	//auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_vrip.ply");
 	if (std::string* msg = std::get_if<std::string>(&res); msg) {
 		assert(false);
 	} else if (auto* dragon = std::get_if<Model>(&res); dragon) {
 		std::vector<VertexPosColor> colouredVerts;
 		XMFLOAT3 v;
+
+		// Scale up verts
 		for (long i = 0; i < dragon->verts.size(); i++) {
 			XMStoreFloat3(&v, DirectX::XMVectorScale(XMLoadFloat3(&dragon->verts[i]), 10.0f));
-			colouredVerts.push_back({v , DirectX::XMFLOAT3((float)(i % 10) / 10, (float)(i % 100) / 100, (float)(i % 1000) / 1000) });
+			colouredVerts.push_back({ v , {} });
 		}
-		stanfordDragonObj = new Object<VertexPosColor>(d3dContext, XMVectorSet(0, 0, 0, 0), colouredVerts.size(), colouredVerts.data(), dragon->indices.size(), dragon->indices.data(), baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
+
+		// Calculate normals
+		for (int i = 0; i < dragon->indices.size(); i+=3) {
+			VertexPosColor& v1 = colouredVerts[dragon->indices[i]];
+			VertexPosColor& v2 = colouredVerts[dragon->indices[i+1]];
+			VertexPosColor& v3 = colouredVerts[dragon->indices[i+2]];
+			DirectX::XMVECTOR faceNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(XMLoadFloat3(&v2.Position), XMLoadFloat3(&v1.Position))
+				, DirectX::XMVectorSubtract(XMLoadFloat3(&v3.Position), XMLoadFloat3(&v1.Position))));
+			DirectX::XMFLOAT3 faceNormalV3;
+			XMStoreFloat3(&faceNormalV3, faceNormal);
+			v1.Color = faceNormalV3;
+			v2.Color = faceNormalV3;
+			v3.Color = faceNormalV3;
+		}
+		stanfordDragonObj = new Object<VertexPosColor>(d3dContext, DirectX::XMVectorSet(0, 0, 0, 0), colouredVerts.size(), colouredVerts.data(), dragon->indices.size(), dragon->indices.data(), baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
 		scene.objects.push_back(stanfordDragonObj);
 	}
 
