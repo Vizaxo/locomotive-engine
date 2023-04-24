@@ -151,6 +151,7 @@
     <ClCompile Include="src\ImGuiUtils.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\ModelLoader.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\ExampleScene.h" />
     <ClInclude Include="src\ImGuiUtils.h" />
     <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\ModelLoader.h" />
     <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Texture2D.h" />
