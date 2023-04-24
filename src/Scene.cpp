@@ -78,7 +78,7 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
-		MkSliderV3("Coloured cube", objects[0]->GetPos(), -2.0f, 2.0f);
+		MkSliderV3("Coloured cube", objects[0]->GetPos(), -10.0f, 10.0f);
 		MkSliderV3("Coloured triangle", objects[1]->GetPos(), -2.0f, 2.0f);
 		MkSliderV3("Textured cube", objects[2]->GetPos(), -2.0f, 2.0f);
 		ImGui::End();

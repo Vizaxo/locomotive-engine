@@ -27,10 +27,10 @@ public:
 	DirectX::XMVECTOR pos;
 
 	Object(D3DContext* d3dContext, DirectX::XMVECTOR pos, 
-		UINT numVertices, T* vertices, UINT numIndices, WORD* indices, 
+		UINT numVertices, T* vertices, UINT numIndices, int* indices, 
 		ID3D11VertexShader* vs, ID3D11InputLayout* inputLayout, Material* material);
 	int CreateVertexBuffer(D3DContext* d3dContext, UINT numVertices, T* vertices);
-	int CreateIndexBuffer(D3DContext* d3dContext, UINT numIndices, WORD* indices);
+	int CreateIndexBuffer(D3DContext* d3dContext, UINT numIndices, int* indices);
 	DirectX::XMMATRIX GetModelMatrix();
 	virtual DirectX::XMVECTOR& GetPos();
 	void RenderObject(D3DContext* d3dContext, float deltaTime);
@@ -43,7 +43,7 @@ public:
 
 template <typename T>
 Object<T>::Object(D3DContext* d3dContext, DirectX::XMVECTOR pos, 
-	UINT numVertices, T* vertices, UINT numIndices, WORD* indices,
+	UINT numVertices, T* vertices, UINT numIndices, int* indices,
 	ID3D11VertexShader* vs, ID3D11InputLayout* inputLayout, Material* material)
 	: pos(pos), material(material), vertexShader(vs), d3dInputLayout(inputLayout), numIndices(numIndices) {
 	CreateVertexBuffer(d3dContext, numVertices, vertices);
@@ -72,12 +72,12 @@ int Object<T>::CreateVertexBuffer(D3DContext* d3dContext, UINT numVertices, T* v
 }
 
 template <typename T>
-int Object<T>::CreateIndexBuffer(D3DContext* d3dContext, UINT numIndices, WORD* indices) {
+int Object<T>::CreateIndexBuffer(D3DContext* d3dContext, UINT numIndices, int* indices) {
 	D3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
 
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.ByteWidth = sizeof(WORD) * numIndices;
+	indexBufferDesc.ByteWidth = sizeof(int) * numIndices;
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
@@ -108,7 +108,7 @@ void Object<T>::RenderObject(D3DContext* d3dContext, float deltaTime) {
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 
 	d3dDeviceContext->IASetVertexBuffers(0, 1, &d3dVertexBuffer, &vertexStride, &offset);
-	d3dDeviceContext->IASetIndexBuffer(d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	d3dDeviceContext->IASetIndexBuffer(d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	d3dDeviceContext->VSSetShader(vertexShader, nullptr, 0);
