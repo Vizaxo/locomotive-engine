@@ -17,4 +17,6 @@ public:
 	ID3D11Buffer* GBufferCompositeVertexBuffer = nullptr;
 	ID3D11ShaderResourceView* GBufferDiffuseSRV = nullptr;
 	ID3D11SamplerState* GBufferDiffuseSamplerState = nullptr;
+
+	ID3D11Buffer* cbWindowSize = nullptr;
 };

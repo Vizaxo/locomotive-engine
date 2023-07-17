@@ -47,12 +47,12 @@ public:
 
 	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
 
+	float clientWidth;
+	float clientHeight;
 private:
 	bool vsync;
 	HWND windowHandle;
 	HINSTANCE hInstance;
-	float clientWidth;
-	float clientHeight;
 
 	int InitDirectX(HINSTANCE hInstance, HWND windowHandle);
 	int CreateDeviceAndSwapchain();

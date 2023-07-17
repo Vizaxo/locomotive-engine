@@ -15,8 +15,8 @@ using namespace DirectX;
 
 XMFLOAT3 triangleVertices[3] = {
 	XMFLOAT3(-1.0, -1.0, 0.0),
-	XMFLOAT3(0.0, 1.0, 0.0),
-	XMFLOAT3(1.0, -1.0, 0.0),
+	XMFLOAT3(-1.0, 3.0, 0.0),
+	XMFLOAT3(3.0, -1.0, 0.0),
 };
 
 void Scene::Initialise(D3DContext* d3dContext) {
@@ -68,6 +68,9 @@ void Scene::Initialise(D3DContext* d3dContext) {
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &GBufferDiffuseSamplerState));
+
+	const D3D11_BUFFER_DESC cbWindowWidthDesc = { max(2 * sizeof(float), 16), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
+	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbWindowWidthDesc, nullptr, &cbWindowSize));
 }
 
 void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
@@ -124,6 +127,9 @@ void Scene::RenderScene(D3DContext* d3dContext, float deltaTime) {
 	//Set textures
 	d3dDeviceContext->PSSetShaderResources(0, 1, &GBufferDiffuseSRV);
 	d3dDeviceContext->PSSetSamplers(0, 1, &GBufferDiffuseSamplerState);
+	float windowSizeData[2] = {d3dContext->clientWidth, d3dContext->clientHeight};
+	d3dDeviceContext->UpdateSubresource(cbWindowSize, 0, nullptr, &windowSizeData, 0, 0);
+	d3dDeviceContext->PSSetConstantBuffers(0, 1, &cbWindowSize);
 
 
 	d3dDeviceContext->Draw(3, 0);
