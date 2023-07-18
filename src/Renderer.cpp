@@ -42,6 +42,15 @@ void Renderer::Initialise(D3DContext* d3dContext) {
 
 	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&vertexBufferDesc, &resourceData, &GBufferCompositeVertexBuffer));
 
+	// Create GBuffer
+	D3D11_TEXTURE2D_DESC texture2DDesc = {
+		d3dContext->clientWidth, d3dContext->clientHeight, 1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, {1, 0},
+		D3D11_USAGE_DEFAULT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 0, 0
+	};
+	for (int i = 0; i < GBUFFER_COUNT; i++) {
+		HRASSERT(d3dDevice->CreateTexture2D(&texture2DDesc, nullptr, &GBufferTextures[i]));
+		HRASSERT(d3dDevice->CreateRenderTargetView(GBufferTextures[i], nullptr, &GBuffer[i]));
+	}
 
 	//Diffuse
 	//SRV
@@ -50,7 +59,7 @@ void Renderer::Initialise(D3DContext* d3dContext) {
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	D3D11_TEX2D_SRV tex2DSRV = { 0, (UINT)-1};
 	srvDesc.Texture2D = tex2DSRV;
-	HRASSERT(d3dContext->d3dDevice->CreateShaderResourceView(d3dContext->GBufferTextures[DIFFUSE], &srvDesc, &GBufferDiffuseSRV));
+	HRASSERT(d3dContext->d3dDevice->CreateShaderResourceView(GBufferTextures[DIFFUSE], &srvDesc, &GBufferDiffuseSRV));
 
 	//Sampler state
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -121,10 +130,10 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->RSSetState(d3dContext->d3dRasterizerState);
 	d3dDeviceContext->RSSetViewports(1, &d3dContext->Viewport);
 
-	d3dDeviceContext->OMSetRenderTargets(GBUFFER_COUNT, d3dContext->GBuffer, d3dContext->d3dDepthStencilView);
+	d3dDeviceContext->OMSetRenderTargets(GBUFFER_COUNT, GBuffer, d3dContext->d3dDepthStencilView);
 	d3dDeviceContext->OMSetDepthStencilState(d3dContext->d3dDepthStencilState, 1);
 
-	d3dDeviceContext->ClearRenderTargetView(d3dContext->GBuffer[0], DirectX::Colors::CornflowerBlue);
+	d3dDeviceContext->ClearRenderTargetView(GBuffer[0], DirectX::Colors::CornflowerBlue);
 	d3dDeviceContext->ClearDepthStencilView(d3dContext->d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
 	// Render to GBuffer
@@ -198,4 +207,7 @@ Renderer::~Renderer() {
 	SafeRelease(d3dConstantBuffers[CB_Application]);
 	SafeRelease(d3dConstantBuffers[CB_Frame]);
 	SafeRelease(d3dConstantBuffers[CB_Object]);
+
+	for (int i = 0; i < GBUFFER_COUNT; i++)
+		SafeRelease(GBuffer[i]);
 }

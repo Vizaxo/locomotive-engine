@@ -22,9 +22,6 @@ public:
 	IDXGISwapChain* d3dSwapChain = nullptr;
 
 	ID3D11RenderTargetView* BackBufferRTV = nullptr;
-	ID3D11Texture2D* GBufferTextures[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
-	ID3D11RenderTargetView* GBuffer[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
-
 	ID3D11DepthStencilView* d3dDepthStencilView = nullptr;
 	ID3D11Texture2D* d3dDepthStencilBuffer = nullptr;
 

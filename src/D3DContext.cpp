@@ -85,15 +85,6 @@ int D3DContext::CreateRenderTargetView() {
 	HRASSERT(d3dDevice->CreateRenderTargetView(backBuffer, nullptr, &BackBufferRTV));
 	SafeRelease(backBuffer);
 
-	D3D11_TEXTURE2D_DESC texture2DDesc = {
-		clientWidth, clientHeight, 1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, {1, 0},
-		D3D11_USAGE_DEFAULT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 0, 0
-	};
-	for (int i = 0; i < GBUFFER_COUNT; i++) {
-		HRASSERT(d3dDevice->CreateTexture2D(&texture2DDesc, nullptr, &GBufferTextures[i]));
-		HRASSERT(d3dDevice->CreateRenderTargetView(GBufferTextures[i], nullptr, &GBuffer[i]));
-	}
-
 	return 0;
 }
 
@@ -182,8 +173,6 @@ void D3DContext::Present() {
 void D3DContext::Cleanup() {
 	SafeRelease( d3dDepthStencilView );
 	SafeRelease( BackBufferRTV );
-	for (int i = 0; i < GBUFFER_COUNT; i++)
-		SafeRelease(GBuffer[i]);
 	SafeRelease( d3dDepthStencilBuffer );
 	SafeRelease( d3dDepthStencilState );
 	SafeRelease( d3dRasterizerState );

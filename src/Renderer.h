@@ -26,6 +26,9 @@ public:
 	ID3D11ShaderResourceView* GBufferDiffuseSRV = nullptr;
 	ID3D11SamplerState* GBufferDiffuseSamplerState = nullptr;
 
+	ID3D11Texture2D* GBufferTextures[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
+	ID3D11RenderTargetView* GBuffer[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
+
 	ID3D11Buffer* cbWindowSize = nullptr;
 
 	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
