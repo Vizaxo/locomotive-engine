@@ -21,12 +21,12 @@ Renderer::Renderer(D3DContext* d3dContext)
 	: screenShader(d3dContext, g_ScreenShader, sizeof(g_ScreenShader))
 	, GBufferCompositeShader(d3dContext, g_GBufferComposite, sizeof(g_GBufferComposite))
 {
-	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> vertexLayoutDesc = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
-	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_ScreenShader, sizeof(g_ScreenShader), &GBufferCompositeInputLayout));
+	GBufferCompositeInputLayout = screenShader.CreateInputLayout(d3dContext, vertexLayoutDesc);
 
 	// Setup vertex buffer
 	D3D11_BUFFER_DESC vertexBufferDesc;

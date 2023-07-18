@@ -47,5 +47,5 @@ void Mesh::CreateIndexBuffer(D3DContext* d3dContext) {
 }
 
 void Mesh::CreateInputLayout(D3DContext* d3dContext) {
-	HRASSERT(d3dContext->d3dDevice->CreateInputLayout(meshData.inputDesc.data(), meshData.inputDesc.size(), vertexShader.bytecode, vertexShader.bytecodeSize, &inputLayout));
+	inputLayout = vertexShader.CreateInputLayout(d3dContext, meshData.inputDesc);
 }
