@@ -2,8 +2,18 @@
 
 #include "Mesh.h"
 
+#include <set>
+
 MeshData::MeshData(std::vector<VertexBuffer> vertexBuffers, std::vector<int> inIndices)
 	: vertexBuffers(vertexBuffers), indices(inIndices)
+{}
+
+MeshData::MeshData(MeshData& other)
+	: vertexBuffers(other.vertexBuffers), indices(other.indices)
+{}
+
+MeshData::MeshData(MeshData&& other)
+	: vertexBuffers(std::move(other.vertexBuffers)), indices(std::move(other.indices))
 {}
 
 Mesh::Mesh(D3DContext* d3dContext, MeshData& meshData, VertexShader& vs)
@@ -36,10 +46,15 @@ void Mesh::CreateIndexBuffer(D3DContext* d3dContext) {
 }
 
 void Mesh::CreateInputLayout(D3DContext* d3dContext) {
+	std::set<uint32_t> seenSlots = {};
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc;
-	for (VertexBuffer& vertexBuffer : meshData.vertexBuffers)
-		for (D3D11_INPUT_ELEMENT_DESC& desc : vertexBuffer.inputDesc)
+	for (VertexBuffer& vertexBuffer : meshData.vertexBuffers) {
+		assert(("Multiple vertex buffers bound to the same slot", seenSlots.find(vertexBuffer.inputDesc[0].InputSlot) == seenSlots.end()));
+		seenSlots.insert(vertexBuffer.inputDesc[0].InputSlot);
+		for (D3D11_INPUT_ELEMENT_DESC& desc : vertexBuffer.inputDesc) {
 			inputDesc.push_back(desc);
+		}
+	}
 
 	inputLayout = vertexShader.CreateInputLayout(d3dContext, inputDesc);
 }

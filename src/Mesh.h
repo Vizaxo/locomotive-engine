@@ -11,6 +11,8 @@
 class MeshData {
 public:
 	MeshData(std::vector<VertexBuffer> vertexBuffers, std::vector<int> inIndices);
+	MeshData(MeshData& other);
+	MeshData(MeshData&& other);
 	std::vector<VertexBuffer> vertexBuffers;
 	std::vector<int> indices;
 };
