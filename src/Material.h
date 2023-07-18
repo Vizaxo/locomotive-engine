@@ -14,5 +14,5 @@ public:
 	PixelShader& pixelShader;
 	Texture2D* texture = nullptr;
 	ID3D11ShaderResourceView* shaderResourceView = nullptr;
-	ID3D11SamplerState* samplerState;
+	ID3D11SamplerState* samplerState = nullptr;
 };
