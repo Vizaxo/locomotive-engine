@@ -1,16 +1,17 @@
 #pragma once
 
 #include "DirectXTemplatePCH.h"
-#include "Texture2D.h"
 #include <vector>
+
+#include "Texture2D.h"
+#include "Shader.h"
 
 class Material {
 public:
-	Material(ID3D11PixelShader* pixelShader);
-	~Material();
+	Material(PixelShader& pixelShader);
 	Material* setTexture(D3DContext* d3dContext, Texture2D* texture);
 
-	ID3D11PixelShader* pixelShader = nullptr;
+	PixelShader& pixelShader;
 	Texture2D* texture = nullptr;
 	ID3D11ShaderResourceView* shaderResourceView = nullptr;
 	ID3D11SamplerState* samplerState;

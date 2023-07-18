@@ -56,14 +56,12 @@ int triangleIndices[6] = { 0,1,2,2,1,0 };
 static Material* baseColourMaterial = nullptr;
 static Material* texturedMaterial = nullptr;
 static Texture2D* gravelTexture = nullptr;
-static ID3D11PixelShader* baseColourPixelShader = nullptr;
-static ID3D11PixelShader* texturedPixelShader = nullptr;
-static ID3D11VertexShader* baseColourVertexShader = nullptr;
-static ID3D11VertexShader* texturedVertexShader = nullptr;
+static PixelShader* baseColourPixelShader = nullptr;
+static PixelShader* texturedPixelShader = nullptr;
 static ID3D11InputLayout* baseColourInputLayout = nullptr;
 static ID3D11InputLayout* texturedInputLayout = nullptr;
-static VertexShader* baseColourVSData = nullptr;
-static VertexShader* texturedVSData = nullptr;
+static VertexShader* baseColourVertexShader = nullptr;
+static VertexShader* texturedVertexShader = nullptr;
 
 static MeshData* colouredCubeMeshData = nullptr;
 static Mesh* colouredCubeMesh = nullptr;
@@ -90,38 +88,36 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	HRASSERT(d3dDevice->CreateVertexShader(g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader), nullptr, &baseColourVertexShader));
-	baseColourVSData = new VertexShader((const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader), baseColourVertexShader);
-	HRASSERT(d3dDevice->CreatePixelShader(g_ps, sizeof(g_ps), nullptr, &baseColourPixelShader));
+	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
+	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> texturedInputDesc = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosUV,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(VertexPosUV,UV), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	HRASSERT(d3dDevice->CreateVertexShader(g_TexturedVertexShader, sizeof(g_TexturedVertexShader), nullptr, &texturedVertexShader));
-	texturedVSData = new VertexShader((const void*)g_TexturedVertexShader, sizeof(g_TexturedVertexShader), texturedVertexShader);
-	HRASSERT(d3dDevice->CreatePixelShader(g_texturedPixelShader, sizeof(g_texturedPixelShader), nullptr, &texturedPixelShader));
+	texturedVertexShader = new VertexShader(d3dContext, (const void*)g_TexturedVertexShader, sizeof(g_TexturedVertexShader));
+	texturedPixelShader = new PixelShader(d3dContext, g_texturedPixelShader, sizeof(g_texturedPixelShader));
 
 	gravelTexture = new Texture2D(d3dContext, (char*)"resources\\textures\\Gravel_001_BaseColor.jpg");
 
-	baseColourMaterial = (new Material(baseColourPixelShader));
-	texturedMaterial = (new Material(texturedPixelShader))->setTexture(d3dContext, gravelTexture);
+	baseColourMaterial = new Material(*baseColourPixelShader);
+	texturedMaterial = (new Material(*texturedPixelShader))->setTexture(d3dContext, gravelTexture);
 
 	std::vector<uint8_t> colouredCubeVerts = std::vector((uint8_t*)cubeVertices, (uint8_t*)cubeVertices + sizeof(cubeVertices));
 	colouredCubeMeshData = new MeshData(colouredCubeVerts, std::vector(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(int)), baseColourInputDesc, sizeof(VertexPosColor));
-	colouredCubeMesh = new Mesh(d3dContext, *colouredCubeMeshData, *baseColourVSData);
+	colouredCubeMesh = new Mesh(d3dContext, *colouredCubeMeshData, *baseColourVertexShader);
 	colouredCubeObj = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *colouredCubeMesh, baseColourMaterial);
 	scene.objects.push_back(colouredCubeObj);
 
 	std::vector<uint8_t> colouredTriangleVerts = std::vector((uint8_t*)triangleVertices, (uint8_t*)triangleVertices + sizeof(triangleVertices));
 	colouredTriangleMeshData = new MeshData(colouredTriangleVerts, std::vector(triangleIndices, triangleIndices + sizeof(triangleIndices) / sizeof(int)), baseColourInputDesc, sizeof(VertexPosColor));
-	colouredTriangleMesh = new Mesh(d3dContext, *colouredTriangleMeshData, *baseColourVSData);
+	colouredTriangleMesh = new Mesh(d3dContext, *colouredTriangleMeshData, *baseColourVertexShader);
 	colouredTriangleObj = new Object(d3dContext, XMVectorSet(2, 0, 0, 0), 0.0f,  *colouredTriangleMesh, baseColourMaterial);
 	scene.objects.push_back(colouredTriangleObj);
 
 	std::vector<uint8_t> texturedCubeVerts = std::vector((uint8_t*)texturedCube, (uint8_t*)texturedCube + sizeof(texturedCube));
 	texturedCubeMeshData = new MeshData(texturedCubeVerts, std::vector(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(int)), texturedInputDesc, sizeof(VertexPosUV));
-	texturedCubeMesh = new Mesh(d3dContext, *texturedCubeMeshData, *texturedVSData);
+	texturedCubeMesh = new Mesh(d3dContext, *texturedCubeMeshData, *texturedVertexShader);
 	texturedCubeObj = new Object(d3dContext, XMVectorSet(3, -1, 0, 0), 0.0f,  *texturedCubeMesh, texturedMaterial);
 	scene.objects.push_back(texturedCubeObj);
 
@@ -154,7 +150,7 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 		}
 
 		dragonMeshData = new MeshData(std::vector((uint8_t*)colouredVerts.data(), (uint8_t*)colouredVerts.data() + colouredVerts.size()*sizeof(VertexPosColor)), std::vector(dragon->indices.data(), dragon->indices.data() + dragon->indices.size()), baseColourInputDesc, sizeof(VertexPosColor));
-		dragonMesh = new Mesh(d3dContext, *dragonMeshData, *baseColourVSData);
+		dragonMesh = new Mesh(d3dContext, *dragonMeshData, *baseColourVertexShader);
 		stanfordDragonObj = new Object(d3dContext, XMVectorSet(0, 1, 0, 0), 0.0f, *dragonMesh, baseColourMaterial);
 
 		scene.objects.push_back(stanfordDragonObj);
@@ -164,11 +160,7 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 }
 
 void cleanupExampleScene() {
-	SafeRelease(baseColourPixelShader);
-	SafeRelease(baseColourVertexShader);
 	SafeRelease(baseColourInputLayout);
-	SafeRelease(texturedPixelShader);
-	SafeRelease(texturedVertexShader);
 	SafeRelease(texturedInputLayout);
 	delete baseColourMaterial;
 	delete texturedMaterial;

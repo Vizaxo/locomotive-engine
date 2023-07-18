@@ -3,10 +3,9 @@
 #include "Texture2D.h"
 #include <vector>
 
-Material::Material(ID3D11PixelShader* pixelShader) 
-	: pixelShader(pixelShader) { }
-
-Material::~Material() { }
+Material::Material(PixelShader& pixelShader)
+	: pixelShader(pixelShader)
+{}
 
 Material* Material::setTexture(D3DContext* d3dContext, Texture2D* texture) {
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;

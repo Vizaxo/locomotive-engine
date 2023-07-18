@@ -189,8 +189,8 @@ void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj
 	d3dDeviceContext->IASetIndexBuffer(obj.mesh.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	d3dDeviceContext->VSSetShader(obj.mesh.vertexShader.vs, nullptr, 0);
-	d3dDeviceContext->PSSetShader(obj.material->pixelShader, nullptr, 0);
+	d3dDeviceContext->VSSetShader(obj.mesh.vertexShader.vertexShader, nullptr, 0);
+	d3dDeviceContext->PSSetShader(obj.material->pixelShader.pixelShader, nullptr, 0);
 	d3dDeviceContext->IASetInputLayout(obj.mesh.inputLayout);
 
 	if (obj.material->shaderResourceView) {
