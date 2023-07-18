@@ -125,8 +125,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 		return -1;
 	}
 
-	Renderer renderer = {};
-	renderer.Initialise(&d3dContext);
+	Renderer renderer(&d3dContext);
 	Scene scene = buildExampleScene(&d3dContext);
 
 	int ret = Run(&d3dContext, renderer, scene);

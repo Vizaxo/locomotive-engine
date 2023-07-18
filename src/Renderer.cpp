@@ -17,15 +17,16 @@ XMFLOAT3 triangleVertices[3] = {
 	XMFLOAT3(3.0, -1.0, 0.0),
 };
 
-void Renderer::Initialise(D3DContext* d3dContext) {
+Renderer::Renderer(D3DContext* d3dContext)
+	: screenShader(d3dContext, g_ScreenShader, sizeof(g_ScreenShader))
+	, GBufferCompositeShader(d3dContext, g_GBufferComposite, sizeof(g_GBufferComposite))
+{
 	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_ScreenShader, sizeof(g_ScreenShader), &GBufferCompositeInputLayout));
-	HRASSERT(d3dDevice->CreateVertexShader(g_ScreenShader, sizeof(g_ScreenShader), nullptr, &ScreenShader));
-	HRASSERT(d3dDevice->CreatePixelShader(g_GBufferComposite, sizeof(g_GBufferComposite), nullptr, &GBufferCompositeShader));
 
 	// Setup vertex buffer
 	D3D11_BUFFER_DESC vertexBufferDesc;
@@ -150,8 +151,8 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->IASetVertexBuffers(0, 1, &GBufferCompositeVertexBuffer, &stride, &offset);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	d3dDeviceContext->VSSetShader(ScreenShader, nullptr, 0);
-	d3dDeviceContext->PSSetShader(GBufferCompositeShader, nullptr, 0);
+	d3dDeviceContext->VSSetShader(screenShader.vertexShader, nullptr, 0);
+	d3dDeviceContext->PSSetShader(GBufferCompositeShader.pixelShader, nullptr, 0);
 	d3dDeviceContext->IASetInputLayout(GBufferCompositeInputLayout);
 
 	d3dDeviceContext->OMSetRenderTargets(1, &d3dContext->BackBufferRTV, d3dContext->d3dDepthStencilView);

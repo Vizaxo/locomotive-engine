@@ -15,13 +15,13 @@ enum ConstantBuffer {
 
 class Renderer {
 public:
-	void RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime);
-	void Initialise(D3DContext* d3dContext);
-	void RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj);
+	Renderer(D3DContext* d3dContext);
 	~Renderer();
+	void RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime);
+	void RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj);
 
-	ID3D11VertexShader* ScreenShader = nullptr;
-	ID3D11PixelShader* GBufferCompositeShader = nullptr;
+	VertexShader screenShader;
+	PixelShader GBufferCompositeShader;
 	ID3D11InputLayout* GBufferCompositeInputLayout = nullptr;
 	ID3D11Buffer* GBufferCompositeVertexBuffer = nullptr;
 	ID3D11ShaderResourceView* GBufferDiffuseSRV = nullptr;
@@ -34,7 +34,7 @@ public:
 
 	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
 
-	DirectX::XMMATRIX WorldMatrix;
-	DirectX::XMMATRIX ViewMatrix;
-	DirectX::XMMATRIX ProjectionMatrix;
+	DirectX::XMMATRIX WorldMatrix      = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX ViewMatrix       = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX ProjectionMatrix = DirectX::XMMatrixIdentity();
 };

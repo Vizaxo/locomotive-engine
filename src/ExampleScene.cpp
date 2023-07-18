@@ -36,7 +36,7 @@ VertexPosUV texturedCube[8] = {
 	{XMFLOAT3(1.0f,  -1.0f,  1.0f), XMFLOAT2(1.0f, 0.0f)},
 };
 
-int cubeIndices[36] = {
+std::vector<int> cubeIndices = {
 	0,1,2,0,2,3,
 	4,6,5,4,7,6,
 	4,5,1,4,1,0,
@@ -51,7 +51,7 @@ VertexPosColor triangleVertices[3] = {
 	{XMFLOAT3(0.5f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
 };
 
-int triangleIndices[6] = { 0,1,2,2,1,0 };
+std::vector<int> triangleIndices = { 0,1,2,2,1,0 };
 
 static Material* baseColourMaterial = nullptr;
 static Material* texturedMaterial = nullptr;
@@ -104,19 +104,19 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 	texturedMaterial = (new Material(*texturedPixelShader))->setTexture(d3dContext, gravelTexture);
 
 	std::vector<uint8_t> colouredCubeVerts = std::vector((uint8_t*)cubeVertices, (uint8_t*)cubeVertices + sizeof(cubeVertices));
-	colouredCubeMeshData = new MeshData(colouredCubeVerts, std::vector(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(int)), baseColourInputDesc, sizeof(VertexPosColor));
+	colouredCubeMeshData = new MeshData(colouredCubeVerts, cubeIndices, baseColourInputDesc, sizeof(VertexPosColor));
 	colouredCubeMesh = new Mesh(d3dContext, *colouredCubeMeshData, *baseColourVertexShader);
 	colouredCubeObj = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *colouredCubeMesh, baseColourMaterial);
 	scene.objects.push_back(colouredCubeObj);
 
 	std::vector<uint8_t> colouredTriangleVerts = std::vector((uint8_t*)triangleVertices, (uint8_t*)triangleVertices + sizeof(triangleVertices));
-	colouredTriangleMeshData = new MeshData(colouredTriangleVerts, std::vector(triangleIndices, triangleIndices + sizeof(triangleIndices) / sizeof(int)), baseColourInputDesc, sizeof(VertexPosColor));
+	colouredTriangleMeshData = new MeshData(colouredTriangleVerts, triangleIndices, baseColourInputDesc, sizeof(VertexPosColor));
 	colouredTriangleMesh = new Mesh(d3dContext, *colouredTriangleMeshData, *baseColourVertexShader);
 	colouredTriangleObj = new Object(d3dContext, XMVectorSet(2, 0, 0, 0), 0.0f,  *colouredTriangleMesh, baseColourMaterial);
 	scene.objects.push_back(colouredTriangleObj);
 
 	std::vector<uint8_t> texturedCubeVerts = std::vector((uint8_t*)texturedCube, (uint8_t*)texturedCube + sizeof(texturedCube));
-	texturedCubeMeshData = new MeshData(texturedCubeVerts, std::vector(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(int)), texturedInputDesc, sizeof(VertexPosUV));
+	texturedCubeMeshData = new MeshData(texturedCubeVerts, cubeIndices, texturedInputDesc, sizeof(VertexPosUV));
 	texturedCubeMesh = new Mesh(d3dContext, *texturedCubeMeshData, *texturedVertexShader);
 	texturedCubeObj = new Object(d3dContext, XMVectorSet(3, -1, 0, 0), 0.0f,  *texturedCubeMesh, texturedMaterial);
 	scene.objects.push_back(texturedCubeObj);
