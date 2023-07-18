@@ -14,8 +14,8 @@ using namespace DirectX;
 
 const LONG g_WindowWidth = 1280;
 const LONG g_WindowHeight = 720;
-const LPCSTR g_WindowClassName = ("DirectXWindowClass");
-const LPCSTR g_WindowName = ("D3D11 Renderer");
+const LPCWSTR g_WindowClassName = (L"DirectXWindowClass");
+const LPCWSTR g_WindowName = (L"D3D11 Renderer");
 HWND g_WindowHandle = 0;
 const bool g_EnableVSync = true;
 
@@ -24,7 +24,7 @@ int Run(D3DContext* d3dContext, Renderer& renderer, Scene& scene);
 
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
-	WNDCLASSEXA wndClass = { 0 };
+	WNDCLASSEXW wndClass = { 0 };
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 	wndClass.lpfnWndProc = &WndProc;
@@ -34,13 +34,13 @@ int InitApplication(HINSTANCE hInstance, int cmdShow) {
 	wndClass.lpszMenuName = nullptr;
 	wndClass.lpszClassName = g_WindowClassName;
 
-	if (!RegisterClassExA(&wndClass))
+	if (!RegisterClassExW(&wndClass))
 		return -1;
 
 	RECT windowRect = { 0, 0, g_WindowWidth, g_WindowHeight };
 	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
 
-	g_WindowHandle = CreateWindowA(g_WindowClassName, g_WindowName,
+	g_WindowHandle = CreateWindowW(g_WindowClassName, g_WindowName,
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 		windowRect.right - windowRect.left,
 		windowRect.bottom - windowRect.top,
