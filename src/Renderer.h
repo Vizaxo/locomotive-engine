@@ -17,6 +17,7 @@ class Renderer {
 public:
 	void RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime);
 	void Initialise(D3DContext* d3dContext);
+	void RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj);
 	~Renderer();
 
 	ID3D11VertexShader* ScreenShader = nullptr;
@@ -37,5 +38,3 @@ public:
 	DirectX::XMMATRIX ViewMatrix;
 	DirectX::XMMATRIX ProjectionMatrix;
 };
-
-void RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime, UINT vertexStride, IObject& obj);

@@ -1,10 +1,18 @@
 #include "DirectXTemplatePCH.h"
 
 #include "Object.h"
+#include "Mesh.h"
 
 #include "D3DContext.h"
 
-IObject::IObject(UINT numIndices, ID3D11InputLayout* inputLayout, ID3D11VertexShader* vs, Material* material, DirectX::XMVECTOR pos, float angle)
-	: numIndices(numIndices), d3dInputLayout(inputLayout), vertexShader(vs), material(material), pos(pos), angle(angle)
+Object::Object(D3DContext* d3dContext, DirectX::XMVECTOR pos, float angle, Mesh& mesh, Material* material)
+	: pos(pos), angle(angle), mesh(mesh), material(material)
 {}
 
+DirectX::XMMATRIX Object::GetModelMatrix() {
+	return DirectX::XMMatrixTranslationFromVector(pos);
+}
+
+DirectX::XMVECTOR& Object::GetPos() {
+	return pos;
+}

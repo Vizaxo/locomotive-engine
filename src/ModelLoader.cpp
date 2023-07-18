@@ -5,7 +5,7 @@
 #include <vector>
 #include <tuple>
 
-#define ERR(t) {DebugBreak(); return std::variant<Model, std::string>(std::string(t));}
+#define ERR(t) {DebugBreak(); return std::variant<MeshData, std::string>(std::string(t));}
 
 bool ModelLoader::Consume(std::string& a, const char* b) {
 	int i = 0;
@@ -50,7 +50,7 @@ void ParseLine(std::ifstream& file, std::string& line) {
 	}
 }
 
-std::variant<Model, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
+std::variant<MeshData, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
 	std::ifstream file(filepath, std::ios_base::in);
 	std::string line;
 	std::vector<std::string> properties;
@@ -128,9 +128,10 @@ std::variant<Model, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
 		indices.push_back(atoi(c.c_str()));
 	}
 	
-	return Model(std::move(verts), std::move(indices));
-}
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layoutDesc = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
-Model::Model(std::vector<DirectX::XMFLOAT3>&& inVerts, std::vector<int>&& inIndices)
-	: verts(std::move(inVerts)), indices(std::move(inIndices))
-{}
+	return MeshData(std::vector((uint8_t*)verts.data(), (uint8_t*)verts.data()+verts.size()*sizeof(DirectX::XMFLOAT3)), 
+		std::move(indices), 
+		layoutDesc,
+		sizeof(DirectX::XMFLOAT3));
+}

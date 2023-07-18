@@ -5,6 +5,7 @@
 #include "Material.h"
 #include "Texture2D.h"
 #include "ModelLoader.h"
+#include "Mesh.h"
 
 #include "BaseColourVertexShader.h"
 #include "BaseColourPixelShader.h"
@@ -61,54 +62,81 @@ static ID3D11VertexShader* baseColourVertexShader = nullptr;
 static ID3D11VertexShader* texturedVertexShader = nullptr;
 static ID3D11InputLayout* baseColourInputLayout = nullptr;
 static ID3D11InputLayout* texturedInputLayout = nullptr;
+static VertexShader* baseColourVSData = nullptr;
+static VertexShader* texturedVSData = nullptr;
 
-static IObject* colouredCubeObj = nullptr;
-static IObject* stanfordDragonObj = nullptr;
-static IObject* colouredTriangleObj = nullptr;
-static IObject* texturedCubeObj = nullptr;
+static MeshData* colouredCubeMeshData = nullptr;
+static Mesh* colouredCubeMesh = nullptr;
+static Object* colouredCubeObj = nullptr;
+
+static MeshData* dragonMeshData = nullptr;
+static Mesh* dragonMesh = nullptr;
+static Object* stanfordDragonObj = nullptr;
+
+static MeshData* colouredTriangleMeshData = nullptr;
+static Mesh* colouredTriangleMesh = nullptr;
+static Object* colouredTriangleObj = nullptr;
+
+static MeshData* texturedCubeMeshData = nullptr;
+static Mesh* texturedCubeMesh = nullptr;
+static Object* texturedCubeObj = nullptr;
 
 Scene buildExampleScene(D3DContext* d3dContext) {
 	Scene scene = Scene();
 
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 
-	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> baseColourInputDesc = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	HRASSERT(d3dDevice->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader), &baseColourInputLayout));
 	HRASSERT(d3dDevice->CreateVertexShader(g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader), nullptr, &baseColourVertexShader));
+	baseColourVSData = new VertexShader((const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader), baseColourVertexShader);
 	HRASSERT(d3dDevice->CreatePixelShader(g_ps, sizeof(g_ps), nullptr, &baseColourPixelShader));
 
-	D3D11_INPUT_ELEMENT_DESC texturedVertexLayoutDesc[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> texturedInputDesc = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosUV,Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(VertexPosUV,UV), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	HRASSERT(d3dDevice->CreateInputLayout(texturedVertexLayoutDesc, _countof(texturedVertexLayoutDesc), g_TexturedVertexShader, sizeof(g_TexturedVertexShader), &texturedInputLayout));
-	HRASSERT(d3dDevice->CreatePixelShader(g_texturedPixelShader, sizeof(g_texturedPixelShader), nullptr, &texturedPixelShader));
 	HRASSERT(d3dDevice->CreateVertexShader(g_TexturedVertexShader, sizeof(g_TexturedVertexShader), nullptr, &texturedVertexShader));
+	texturedVSData = new VertexShader((const void*)g_TexturedVertexShader, sizeof(g_TexturedVertexShader), texturedVertexShader);
+	HRASSERT(d3dDevice->CreatePixelShader(g_texturedPixelShader, sizeof(g_texturedPixelShader), nullptr, &texturedPixelShader));
 
 	gravelTexture = new Texture2D(d3dContext, (char*)"resources\\textures\\Gravel_001_BaseColor.jpg");
 
 	baseColourMaterial = (new Material(baseColourPixelShader));
 	texturedMaterial = (new Material(texturedPixelShader))->setTexture(d3dContext, gravelTexture);
 
-	colouredCubeObj = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), (UINT)8, cubeVertices, (UINT)36, cubeIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
-	colouredTriangleObj = new Object(d3dContext, XMVectorSet(2, -2, 1, 0), _countof(triangleVertices), triangleVertices, _countof(triangleIndices), triangleIndices, baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
-	texturedCubeObj = new Object<VertexPosUV>(d3dContext, XMVectorSet(4, 0, 2, 0), (UINT)8, texturedCube, (UINT)36, cubeIndices, texturedVertexShader, texturedInputLayout, texturedMaterial);
+	std::vector<uint8_t> colouredCubeVerts = std::vector((uint8_t*)cubeVertices, (uint8_t*)cubeVertices + sizeof(cubeVertices));
+	colouredCubeMeshData = new MeshData(colouredCubeVerts, std::vector(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(int)), baseColourInputDesc, sizeof(VertexPosColor));
+	colouredCubeMesh = new Mesh(d3dContext, *colouredCubeMeshData, *baseColourVSData);
+	colouredCubeObj = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *colouredCubeMesh, baseColourMaterial);
+	scene.objects.push_back(colouredCubeObj);
+
+	std::vector<uint8_t> colouredTriangleVerts = std::vector((uint8_t*)triangleVertices, (uint8_t*)triangleVertices + sizeof(triangleVertices));
+	colouredTriangleMeshData = new MeshData(colouredTriangleVerts, std::vector(triangleIndices, triangleIndices + sizeof(triangleIndices) / sizeof(int)), baseColourInputDesc, sizeof(VertexPosColor));
+	colouredTriangleMesh = new Mesh(d3dContext, *colouredTriangleMeshData, *baseColourVSData);
+	colouredTriangleObj = new Object(d3dContext, XMVectorSet(2, 0, 0, 0), 0.0f,  *colouredTriangleMesh, baseColourMaterial);
+	scene.objects.push_back(colouredTriangleObj);
+
+	std::vector<uint8_t> texturedCubeVerts = std::vector((uint8_t*)texturedCube, (uint8_t*)texturedCube + sizeof(texturedCube));
+	texturedCubeMeshData = new MeshData(texturedCubeVerts, std::vector(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(int)), texturedInputDesc, sizeof(VertexPosUV));
+	texturedCubeMesh = new Mesh(d3dContext, *texturedCubeMeshData, *texturedVSData);
+	texturedCubeObj = new Object(d3dContext, XMVectorSet(3, -1, 0, 0), 0.0f,  *texturedCubeMesh, texturedMaterial);
+	scene.objects.push_back(texturedCubeObj);
 
 	auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_res3.ply");
 	//auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_vrip.ply");
 	if (std::string* msg = std::get_if<std::string>(&res); msg) {
 		assert(false);
-	} else if (auto* dragon = std::get_if<Model>(&res); dragon) {
+	} else if (auto* dragon = std::get_if<MeshData>(&res); dragon) {
 		std::vector<VertexPosColor> colouredVerts;
-		XMFLOAT3 v;
 
 		// Scale up verts
-		for (long i = 0; i < dragon->verts.size(); i++) {
-			XMStoreFloat3(&v, DirectX::XMVectorScale(XMLoadFloat3(&dragon->verts[i]), 10.0f));
-			colouredVerts.push_back({ v , {} });
+		for (long i = 0; i < dragon->verts.size(); i+=sizeof(DirectX::XMFLOAT3)) {
+			DirectX::XMFLOAT3* v = (DirectX::XMFLOAT3*)&dragon->verts[i];
+			XMStoreFloat3(v, DirectX::XMVectorScale(XMLoadFloat3(v), 10.0f));
+			colouredVerts.push_back({ *v , {} });
 		}
 
 		// Calculate normals
@@ -124,13 +152,13 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 			v2.Color = faceNormalV3;
 			v3.Color = faceNormalV3;
 		}
-		stanfordDragonObj = new Object<VertexPosColor>(d3dContext, DirectX::XMVectorSet(0, 0, 0, 0), colouredVerts.size(), colouredVerts.data(), dragon->indices.size(), dragon->indices.data(), baseColourVertexShader, baseColourInputLayout, baseColourMaterial);
+
+		dragonMeshData = new MeshData(std::vector((uint8_t*)colouredVerts.data(), (uint8_t*)colouredVerts.data() + colouredVerts.size()*sizeof(VertexPosColor)), std::vector(dragon->indices.data(), dragon->indices.data() + dragon->indices.size()), baseColourInputDesc, sizeof(VertexPosColor));
+		dragonMesh = new Mesh(d3dContext, *dragonMeshData, *baseColourVSData);
+		stanfordDragonObj = new Object(d3dContext, XMVectorSet(0, 1, 0, 0), 0.0f, *dragonMesh, baseColourMaterial);
+
 		scene.objects.push_back(stanfordDragonObj);
 	}
-
-	scene.objects.push_back(colouredCubeObj);
-	scene.objects.push_back(colouredTriangleObj);
-	scene.objects.push_back(texturedCubeObj);
 
 	return scene;
 }
@@ -146,6 +174,7 @@ void cleanupExampleScene() {
 	delete texturedMaterial;
 	delete gravelTexture;
 	delete colouredCubeObj;
+	delete colouredCubeMesh;
 	delete colouredTriangleObj;
 	delete texturedCubeObj;
 }

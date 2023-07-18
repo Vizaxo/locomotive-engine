@@ -5,5 +5,5 @@
 
 class Scene {
 public:
-	std::vector<IObject*> objects;
+	std::vector<Object*> objects;
 };

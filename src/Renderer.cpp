@@ -110,9 +110,12 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
-		MkSliderV3("Coloured cube", scene.objects[0]->GetPos(), -10.0f, 10.0f);
-		MkSliderV3("Coloured triangle", scene.objects[1]->GetPos(), -2.0f, 2.0f);
-		MkSliderV3("Textured cube", scene.objects[2]->GetPos(), -2.0f, 2.0f);
+		if (scene.objects.size() >= 1)
+			MkSliderV3("Coloured cube", scene.objects[0]->GetPos(), -10.0f, 10.0f);
+		if (scene.objects.size() >= 2)
+			MkSliderV3("Coloured triangle", scene.objects[1]->GetPos(), -2.0f, 2.0f);
+		if (scene.objects.size() >= 3)
+			MkSliderV3("Textured cube", scene.objects[2]->GetPos(), -2.0f, 2.0f);
 		ImGui::End();
 	}
 
@@ -137,8 +140,8 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->ClearDepthStencilView(d3dContext->d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
 	// Render to GBuffer
-	for (IObject* obj : scene.objects) {
-		obj->RenderObject(d3dContext, *this, deltaTime);
+	for (Object* obj : scene.objects) {
+		RenderObject(d3dContext, deltaTime, *obj);
 	}
 
 
@@ -175,18 +178,20 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dContext->Present();
 }
 
-void RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime, UINT vertexStride, IObject& obj) {
+void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj) {
 	const UINT offset = 0;
+	Mesh& mesh = obj.mesh;
 	
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 
-	d3dDeviceContext->IASetVertexBuffers(0, 1, &obj.d3dVertexBuffer, &vertexStride, &offset);
-	d3dDeviceContext->IASetIndexBuffer(obj.d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	const UINT stride = obj.mesh.meshData.vertexStride;
+	d3dDeviceContext->IASetVertexBuffers(0, 1, &obj.mesh.vertexBuffer, &stride, &offset);
+	d3dDeviceContext->IASetIndexBuffer(obj.mesh.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	d3dDeviceContext->VSSetShader(obj.vertexShader, nullptr, 0);
+	d3dDeviceContext->VSSetShader(obj.mesh.vertexShader.vs, nullptr, 0);
 	d3dDeviceContext->PSSetShader(obj.material->pixelShader, nullptr, 0);
-	d3dDeviceContext->IASetInputLayout(obj.d3dInputLayout);
+	d3dDeviceContext->IASetInputLayout(obj.mesh.inputLayout);
 
 	if (obj.material->shaderResourceView) {
 		d3dDeviceContext->PSSetShaderResources(0, 1, &obj.material->shaderResourceView);
@@ -198,9 +203,9 @@ void RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime, U
 	DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX modelMatrix = obj.GetModelMatrix();
 	DirectX::XMMATRIX modelMatrixRotated = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(obj.angle)), modelMatrix);
-	d3dDeviceContext->UpdateSubresource(renderer.d3dConstantBuffers[CB_Object], 0, nullptr, &modelMatrixRotated, 0, 0);
+	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Object], 0, nullptr, &modelMatrixRotated, 0, 0);
 
-	d3dDeviceContext->DrawIndexed(obj.numIndices, 0, 0);
+	d3dDeviceContext->DrawIndexed(obj.mesh.meshData.indices.size(), 0, 0);
 }
 
 Renderer::~Renderer() {
