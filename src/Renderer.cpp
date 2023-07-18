@@ -182,11 +182,12 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj) {
 	const UINT offset = 0;
 	Mesh& mesh = obj.mesh;
-	
+
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 
-	const UINT stride = obj.mesh.meshData.vertexStride;
-	d3dDeviceContext->IASetVertexBuffers(0, 1, &obj.mesh.vertexBuffer, &stride, &offset);
+	for (VertexBuffer& vertexBuffer : obj.mesh.meshData.vertexBuffers)
+		vertexBuffer.Bind(d3dContext);
+
 	d3dDeviceContext->IASetIndexBuffer(obj.mesh.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

@@ -104,23 +104,27 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 	texturedMaterial = (new Material(*texturedPixelShader))->setTexture(d3dContext, gravelTexture);
 
 	std::vector<uint8_t> colouredCubeVerts = std::vector((uint8_t*)cubeVertices, (uint8_t*)cubeVertices + sizeof(cubeVertices));
-	colouredCubeMeshData = new MeshData(colouredCubeVerts, cubeIndices, baseColourInputDesc, sizeof(VertexPosColor));
+	VertexBuffer ccVertBuffer(colouredCubeVerts, baseColourInputDesc, sizeof(VertexPosColor), 0);
+	colouredCubeMeshData = new MeshData({ ccVertBuffer }, cubeIndices);
 	colouredCubeMesh = new Mesh(d3dContext, *colouredCubeMeshData, *baseColourVertexShader);
 	colouredCubeObj = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *colouredCubeMesh, baseColourMaterial);
 	scene.objects.push_back(colouredCubeObj);
 
 	std::vector<uint8_t> colouredTriangleVerts = std::vector((uint8_t*)triangleVertices, (uint8_t*)triangleVertices + sizeof(triangleVertices));
-	colouredTriangleMeshData = new MeshData(colouredTriangleVerts, triangleIndices, baseColourInputDesc, sizeof(VertexPosColor));
+	VertexBuffer ctVertBuffer(colouredTriangleVerts, baseColourInputDesc, sizeof(VertexPosColor), 0);
+	colouredTriangleMeshData = new MeshData({ ctVertBuffer }, triangleIndices);
 	colouredTriangleMesh = new Mesh(d3dContext, *colouredTriangleMeshData, *baseColourVertexShader);
 	colouredTriangleObj = new Object(d3dContext, XMVectorSet(2, 0, 0, 0), 0.0f,  *colouredTriangleMesh, baseColourMaterial);
 	scene.objects.push_back(colouredTriangleObj);
 
 	std::vector<uint8_t> texturedCubeVerts = std::vector((uint8_t*)texturedCube, (uint8_t*)texturedCube + sizeof(texturedCube));
-	texturedCubeMeshData = new MeshData(texturedCubeVerts, cubeIndices, texturedInputDesc, sizeof(VertexPosUV));
+	VertexBuffer tcVertBuffer(texturedCubeVerts, texturedInputDesc, sizeof(VertexPosUV), 0);
+	texturedCubeMeshData = new MeshData({ tcVertBuffer }, cubeIndices);
 	texturedCubeMesh = new Mesh(d3dContext, *texturedCubeMeshData, *texturedVertexShader);
 	texturedCubeObj = new Object(d3dContext, XMVectorSet(3, -1, 0, 0), 0.0f,  *texturedCubeMesh, texturedMaterial);
 	scene.objects.push_back(texturedCubeObj);
 
+	/*
 	auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_res3.ply");
 	//auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_vrip.ply");
 	if (std::string* msg = std::get_if<std::string>(&res); msg) {
@@ -155,6 +159,7 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 
 		scene.objects.push_back(stanfordDragonObj);
 	}
+	*/
 
 	return scene;
 }

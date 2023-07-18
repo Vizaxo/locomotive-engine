@@ -127,11 +127,13 @@ std::variant<MeshData, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
 		indices.push_back(atoi(b.c_str()));
 		indices.push_back(atoi(c.c_str()));
 	}
-	
-	std::vector<D3D11_INPUT_ELEMENT_DESC> layoutDesc = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
-	return MeshData(std::vector((uint8_t*)verts.data(), (uint8_t*)verts.data()+verts.size()*sizeof(DirectX::XMFLOAT3)),
-		std::move(indices),
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layoutDesc = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
+
+	VertexBuffer vertexBuffer = VertexBuffer(std::vector((uint8_t*)verts.data(), (uint8_t*)verts.data() + verts.size() * sizeof(DirectX::XMFLOAT3)),
 		layoutDesc,
-		sizeof(DirectX::XMFLOAT3));
+		sizeof(DirectX::XMFLOAT3),
+		0);
+
+	return MeshData({ std::move(vertexBuffer) }, std::move(indices));
 }
