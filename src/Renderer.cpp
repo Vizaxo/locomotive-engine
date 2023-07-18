@@ -141,3 +141,31 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 
 	d3dContext->Present();
 }
+
+void RenderObject(D3DContext* d3dContext, float deltaTime, UINT vertexStride, IObject& obj) {
+	const UINT offset = 0;
+	
+	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
+
+	d3dDeviceContext->IASetVertexBuffers(0, 1, &obj.d3dVertexBuffer, &vertexStride, &offset);
+	d3dDeviceContext->IASetIndexBuffer(obj.d3dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	d3dDeviceContext->VSSetShader(obj.vertexShader, nullptr, 0);
+	d3dDeviceContext->PSSetShader(obj.material->pixelShader, nullptr, 0);
+	d3dDeviceContext->IASetInputLayout(obj.d3dInputLayout);
+
+	if (obj.material->shaderResourceView) {
+		d3dDeviceContext->PSSetShaderResources(0, 1, &obj.material->shaderResourceView);
+		d3dDeviceContext->PSSetSamplers(0, 1, &obj.material->samplerState);
+	}
+
+	obj.angle += 90.f * deltaTime;
+
+	DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
+	DirectX::XMMATRIX modelMatrix = obj.GetModelMatrix();
+	DirectX::XMMATRIX modelMatrixRotated = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(obj.angle)), modelMatrix);
+	d3dDeviceContext->UpdateSubresource(d3dContext->d3dConstantBuffers[CB_Object], 0, nullptr, &modelMatrixRotated, 0, 0);
+
+	d3dDeviceContext->DrawIndexed(obj.numIndices, 0, 0);
+}

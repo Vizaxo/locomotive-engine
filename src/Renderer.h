@@ -9,7 +9,6 @@
 class Renderer {
 public:
 	void RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime);
-	template <typename T> void RenderObject(D3DContext* d3dContext, float deltaTime, Object<T> object);
 	void Initialise(D3DContext* d3dContext);
 
 private:
@@ -22,3 +21,5 @@ private:
 
 	ID3D11Buffer* cbWindowSize = nullptr;
 };
+
+void RenderObject(D3DContext* d3dContext, float deltaTime, UINT vertexStride, IObject& obj);
