@@ -67,6 +67,24 @@ void Renderer::Initialise(D3DContext* d3dContext) {
 
 	const D3D11_BUFFER_DESC cbWindowWidthDesc = { max(2 * sizeof(float), 16), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
 	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbWindowWidthDesc, nullptr, &cbWindowSize));
+
+	// Constant buffers
+
+	D3D11_BUFFER_DESC constantBufferDesc;
+	ZeroMemory(&constantBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constantBufferDesc.ByteWidth = sizeof(XMMATRIX);
+	constantBufferDesc.CPUAccessFlags = 0;
+	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Application]));
+	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Frame]));
+	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Object]));
+
+	ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), d3dContext->clientWidth / d3dContext->clientHeight, 0.1f, 100.0f);
+	d3dContext->d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Application], 0, nullptr, &ProjectionMatrix, 0, 0);
+
 }
 
 void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime) {
@@ -74,6 +92,12 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);
+	XMVECTOR focusPoint = XMVectorSet(0, 0, 0, 1);
+	XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
+	ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
+	d3dContext->d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Frame], 0, nullptr, &ViewMatrix, 0, 0);
 
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
@@ -92,7 +116,7 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 	d3dContext->Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
 
-	d3dDeviceContext->VSSetConstantBuffers(0, 3, d3dContext->d3dConstantBuffers);
+	d3dDeviceContext->VSSetConstantBuffers(0, 3, d3dConstantBuffers);
 
 	d3dDeviceContext->RSSetState(d3dContext->d3dRasterizerState);
 	d3dDeviceContext->RSSetViewports(1, &d3dContext->Viewport);
@@ -105,7 +129,7 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 
 	// Render to GBuffer
 	for (IObject* obj : scene.objects) {
-		obj->RenderObject(d3dContext, deltaTime);
+		obj->RenderObject(d3dContext, *this, deltaTime);
 	}
 
 
@@ -142,7 +166,7 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dContext->Present();
 }
 
-void RenderObject(D3DContext* d3dContext, float deltaTime, UINT vertexStride, IObject& obj) {
+void RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime, UINT vertexStride, IObject& obj) {
 	const UINT offset = 0;
 	
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
@@ -165,7 +189,13 @@ void RenderObject(D3DContext* d3dContext, float deltaTime, UINT vertexStride, IO
 	DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX modelMatrix = obj.GetModelMatrix();
 	DirectX::XMMATRIX modelMatrixRotated = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(obj.angle)), modelMatrix);
-	d3dDeviceContext->UpdateSubresource(d3dContext->d3dConstantBuffers[CB_Object], 0, nullptr, &modelMatrixRotated, 0, 0);
+	d3dDeviceContext->UpdateSubresource(renderer.d3dConstantBuffers[CB_Object], 0, nullptr, &modelMatrixRotated, 0, 0);
 
 	d3dDeviceContext->DrawIndexed(obj.numIndices, 0, 0);
+}
+
+Renderer::~Renderer() {
+	SafeRelease(d3dConstantBuffers[CB_Application]);
+	SafeRelease(d3dConstantBuffers[CB_Frame]);
+	SafeRelease(d3dConstantBuffers[CB_Object]);
 }

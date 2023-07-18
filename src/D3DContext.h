@@ -2,13 +2,6 @@
 
 #include "DirectXTemplatePCH.h"
 
-enum ConstantBuffer {
-	CB_Application,
-	CB_Frame,
-	CB_Object,
-	NumConstantBuffers
-};
-
 enum GBufferID {
 	DIFFUSE = 0,
 	NORMAL = 1,
@@ -20,11 +13,8 @@ class D3DContext {
 public:
 	D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync);
 	~D3DContext();
-	void Update(float deltaTime);
 	void Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil);
 	void Present();
-	void Render(float deltaTime);
-
 
 	ID3D11Device* d3dDevice = nullptr;
 	ID3D11DeviceContext* d3dDeviceContext = nullptr;
@@ -42,11 +32,6 @@ public:
 	ID3D11RasterizerState* d3dRasterizerState = nullptr;
 	D3D11_VIEWPORT Viewport = { 0 };
 
-	ID3D11Buffer* d3dVertexBuffer = nullptr;
-	ID3D11Buffer* d3dIndexBuffer = nullptr;
-
-	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
-
 	float clientWidth;
 	float clientHeight;
 private:
@@ -60,13 +45,7 @@ private:
 	int CreateDepthStencilView();
 	int CreateDepthStencilState();
 	int CreateRasterizerState();
-	bool LoadContent(HWND windowHandle);
-	void UnloadContent();
 	void Cleanup();
-
-	DirectX::XMMATRIX WorldMatrix;
-	DirectX::XMMATRIX ViewMatrix;
-	DirectX::XMMATRIX ProjectionMatrix;
 
 };
 

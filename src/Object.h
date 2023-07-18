@@ -5,9 +5,11 @@
 #include "D3DContext.h"
 #include "Material.h"
 
+class Renderer;
+
 class IObject {
 public:
-	virtual void RenderObject(D3DContext* d3dContext, float deltaTime) = 0;
+	virtual void RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime) = 0;
 	virtual DirectX::XMVECTOR& GetPos() = 0;
 	virtual DirectX::XMMATRIX GetModelMatrix() = 0;
 	IObject(UINT numIndices, ID3D11InputLayout* inputLayout, ID3D11VertexShader* vs, Material* material, DirectX::XMVECTOR pos, float angle);
@@ -33,7 +35,7 @@ public:
 	int CreateIndexBuffer(D3DContext* d3dContext, UINT numIndices, int* indices);
 	DirectX::XMMATRIX GetModelMatrix();
 	virtual DirectX::XMVECTOR& GetPos();
-	void RenderObject(D3DContext* d3dContext, float deltaTime);
+	void RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime);
 };
 
 
@@ -104,10 +106,10 @@ DirectX::XMVECTOR& Object<T>::GetPos() {
 	return pos;
 }
 
-void RenderObject(D3DContext* d3dContext, float deltaTime, UINT vertexStride, IObject& obj);
+void RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime, UINT vertexStride, IObject& obj);
 
 template <typename T>
-void Object<T>::RenderObject(D3DContext* d3dContext, float deltaTime) {
+void Object<T>::RenderObject(D3DContext* d3dContext, Renderer& renderer, float deltaTime) {
 	const UINT vertexStride = sizeof(T);
-	::RenderObject(d3dContext, deltaTime, vertexStride, *this);
+	::RenderObject(d3dContext, renderer, deltaTime, vertexStride, *this);
 }

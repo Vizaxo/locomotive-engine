@@ -16,14 +16,9 @@ D3DContext::D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync) : hIn
 	if (InitDirectX(hInstance, windowHandle) != 0) {
 		MessageBox(nullptr, TEXT("Failed to create DirectXDevice"), TEXT("Error"), MB_OK);
 	}
-
-	if (!LoadContent(windowHandle)) {
-		MessageBox(nullptr, TEXT("Failed to load content"), TEXT("Error"), 0);
-	}
 }
 
 D3DContext::~D3DContext() {
-	UnloadContent();
 	Cleanup();
 }
 
@@ -175,65 +170,6 @@ int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
 	return 0;
 }
 
-bool D3DContext::LoadContent(HWND windowHandle) {
-	/*
-	assert(d3dDevice);
-
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.ByteWidth = sizeof(VertexPosColor) * _countof(Vertices);
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	D3D11_SUBRESOURCE_DATA resourceData;
-	ZeroMemory(&resourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	resourceData.pSysMem = Vertices;
-
-	HRASSERT(d3dDevice->CreateBuffer(&vertexBufferDesc, &resourceData, &d3dVertexBuffer));
-
-	D3D11_BUFFER_DESC indexBufferDesc;
-	ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.ByteWidth = sizeof(WORD) * _countof(Indices);
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	resourceData.pSysMem = Indices;
-
-	HRASSERT(d3dDevice->CreateBuffer(&indexBufferDesc, &resourceData, &d3dIndexBuffer));
-	*/
-
-	D3D11_BUFFER_DESC constantBufferDesc;
-	ZeroMemory(&constantBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	constantBufferDesc.ByteWidth = sizeof(XMMATRIX);
-	constantBufferDesc.CPUAccessFlags = 0;
-	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Application]));
-	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Frame]));
-	HRASSERT(d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, &d3dConstantBuffers[CB_Object]));
-
-	ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), clientWidth / clientHeight, 0.1f, 100.0f);
-	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Application], 0, nullptr, &ProjectionMatrix, 0, 0);
-
-	return true;
-}
-
-void D3DContext::Update(float deltaTime) {
-	assert(d3dDevice);
-	assert(d3dDeviceContext);
-
-	XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);
-	XMVECTOR focusPoint = XMVectorSet(0, 0, 0, 1);
-	XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
-	ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
-	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Frame], 0, nullptr, &ViewMatrix, 0, 0);
-}
-
 void D3DContext::Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil) {
 	d3dDeviceContext->ClearRenderTargetView(BackBufferRTV, clearColor);
 	d3dDeviceContext->ClearDepthStencilView(d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, clearDepth, clearStencil);
@@ -241,14 +177,6 @@ void D3DContext::Clear(const float clearColor[4], float clearDepth, uint8_t clea
 
 void D3DContext::Present() {
 	d3dSwapChain->Present(vsync ? 1 : 0, 0);
-}
-
-void D3DContext::UnloadContent() {
-	SafeRelease(d3dConstantBuffers[CB_Application]);
-	SafeRelease(d3dConstantBuffers[CB_Frame]);
-	SafeRelease(d3dConstantBuffers[CB_Object]);
-	SafeRelease(d3dIndexBuffer);
-	SafeRelease(d3dVertexBuffer);
 }
 
 void D3DContext::Cleanup() {

@@ -159,7 +159,6 @@ int Run(D3DContext* d3dContext, Renderer& renderer, Scene& scene) {
 
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
-			d3dContext->Update(deltaTime);
 			renderer.RenderScene(d3dContext, scene, deltaTime);
 		}
 	}
