@@ -69,7 +69,6 @@ static IObject* texturedCubeObj = nullptr;
 
 Scene buildExampleScene(D3DContext* d3dContext) {
 	Scene scene = Scene();
-	scene.Initialise(d3dContext);
 
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 

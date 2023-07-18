@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Object.h"
 #include "ExampleScene.h"
+#include "Renderer.h"
 
 #include "imgui.h"
 #include "imgui_impl_win32.h"
@@ -19,7 +20,7 @@ HWND g_WindowHandle = 0;
 const bool g_EnableVSync = true;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
-int Run(D3DContext* d3dContext, Scene* scene);
+int Run(D3DContext* d3dContext, Renderer& renderer, Scene& scene);
 
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
@@ -124,9 +125,11 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 		return -1;
 	}
 
+	Renderer renderer = {};
+	renderer.Initialise(&d3dContext);
 	Scene scene = buildExampleScene(&d3dContext);
 
-	int ret = Run(&d3dContext, &scene);
+	int ret = Run(&d3dContext, renderer, scene);
 
 	cleanupExampleScene();
 
@@ -138,7 +141,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 }
 
 
-int Run(D3DContext* d3dContext, Scene* scene) {
+int Run(D3DContext* d3dContext, Renderer& renderer, Scene& scene) {
 	MSG msg = { 0 };
 
 	static DWORD previousTime = timeGetTime();
@@ -157,7 +160,7 @@ int Run(D3DContext* d3dContext, Scene* scene) {
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
 			d3dContext->Update(deltaTime);
-			scene->RenderScene(d3dContext, deltaTime);
+			renderer.RenderScene(d3dContext, scene, deltaTime);
 		}
 	}
 
