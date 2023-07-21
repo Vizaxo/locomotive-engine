@@ -180,9 +180,6 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 }
 
 void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj) {
-	const UINT offset = 0;
-	Mesh& mesh = obj.mesh;
-
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 
 	for (VertexBuffer& vertexBuffer : obj.mesh.meshData.vertexBuffers)
