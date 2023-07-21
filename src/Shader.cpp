@@ -21,3 +21,12 @@ PixelShader::PixelShader(D3DContext* d3dContext, const void* bytecode, size_t by
 	HRASSERT(d3dContext->d3dDevice->CreatePixelShader(bytecode, bytecodeSize, nullptr, &pixelShader));
 }
 
+void VertexShader::Bind(D3DContext* d3dContext)
+{
+	d3dContext->d3dDeviceContext->VSSetShader(vertexShader, nullptr, 0);
+}
+
+void PixelShader::Bind(D3DContext* d3dContext)
+{
+	d3dContext->d3dDeviceContext->PSSetShader(pixelShader, nullptr, 0);
+}

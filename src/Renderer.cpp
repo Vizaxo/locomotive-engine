@@ -151,8 +151,8 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->IASetVertexBuffers(0, 1, &GBufferCompositeVertexBuffer, &stride, &offset);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	d3dDeviceContext->VSSetShader(screenShader.vertexShader, nullptr, 0);
-	d3dDeviceContext->PSSetShader(GBufferCompositeShader.pixelShader, nullptr, 0);
+	screenShader.Bind(d3dContext);
+	GBufferCompositeShader.Bind(d3dContext);
 	d3dDeviceContext->IASetInputLayout(GBufferCompositeInputLayout);
 
 	d3dDeviceContext->OMSetRenderTargets(1, &d3dContext->BackBufferRTV, d3dContext->d3dDepthStencilView);
@@ -191,8 +191,8 @@ void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj
 	d3dDeviceContext->IASetIndexBuffer(obj.mesh.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	d3dDeviceContext->VSSetShader(obj.mesh.vertexShader.vertexShader, nullptr, 0);
-	d3dDeviceContext->PSSetShader(obj.material->pixelShader.pixelShader, nullptr, 0);
+	obj.mesh.vertexShader.Bind(d3dContext);
+	obj.material->pixelShader.Bind(d3dContext);
 	d3dDeviceContext->IASetInputLayout(obj.mesh.inputLayout);
 
 	if (obj.material->shaderResourceView) {
