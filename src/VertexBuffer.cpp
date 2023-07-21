@@ -23,5 +23,6 @@ void VertexBuffer::Initialise(D3DContext* d3dContext) {
 }
 
 void VertexBuffer::Bind(D3DContext* d3dContext) {
+	assert(vertexBuffer != nullptr);
 	d3dContext->d3dDeviceContext->IASetVertexBuffers(slot, 1, &vertexBuffer, &stride, &offset);
 }

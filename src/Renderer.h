@@ -23,7 +23,7 @@ public:
 	VertexShader screenShader;
 	PixelShader GBufferCompositeShader;
 	ID3D11InputLayout* GBufferCompositeInputLayout = nullptr;
-	ID3D11Buffer* GBufferCompositeVertexBuffer = nullptr;
+	VertexBuffer* GBufferCompositeVertexBuffer;
 	ID3D11ShaderResourceView* GBufferDiffuseSRV = nullptr;
 	ID3D11SamplerState* GBufferDiffuseSamplerState = nullptr;
 

@@ -8,10 +8,11 @@
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
+#include "Utils.h"
 
 using namespace DirectX;
 
-XMFLOAT3 triangleVertices[3] = {
+std::vector<XMFLOAT3> triangleVertices = {
 	XMFLOAT3(-1.0, -1.0, 0.0),
 	XMFLOAT3(-1.0, 3.0, 0.0),
 	XMFLOAT3(3.0, -1.0, 0.0),
@@ -28,20 +29,8 @@ Renderer::Renderer(D3DContext* d3dContext)
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 	GBufferCompositeInputLayout = screenShader.CreateInputLayout(d3dContext, vertexLayoutDesc);
 
-	// Setup vertex buffer
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.ByteWidth = sizeof(XMFLOAT3) * 9;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	D3D11_SUBRESOURCE_DATA resourceData;
-	ZeroMemory(&resourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	resourceData.pSysMem = triangleVertices;
-
-	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&vertexBufferDesc, &resourceData, &GBufferCompositeVertexBuffer));
+	GBufferCompositeVertexBuffer = new VertexBuffer(toByteVector(triangleVertices), vertexLayoutDesc, sizeof(XMFLOAT3), 0);
+	GBufferCompositeVertexBuffer->Initialise(d3dContext);
 
 	// Create GBuffer
 	D3D11_TEXTURE2D_DESC texture2DDesc = {
@@ -148,7 +137,7 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 
 	UINT32 stride = sizeof(XMFLOAT3);
 	UINT32 offset = 0;
-	d3dDeviceContext->IASetVertexBuffers(0, 1, &GBufferCompositeVertexBuffer, &stride, &offset);
+	GBufferCompositeVertexBuffer->Bind(d3dContext);
 	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	screenShader.Bind(d3dContext);
