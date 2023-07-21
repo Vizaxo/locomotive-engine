@@ -26,6 +26,10 @@ public:
 	VertexBuffer* GBufferCompositeVertexBuffer;
 	ID3D11ShaderResourceView* GBufferDiffuseSRV = nullptr;
 	ID3D11SamplerState* GBufferDiffuseSamplerState = nullptr;
+	ID3D11ShaderResourceView* GBufferNormalSRV = nullptr;
+	ID3D11SamplerState* GBufferNormalSamplerState = nullptr;
+	ID3D11ShaderResourceView* GBufferWorldPosSRV = nullptr;
+	ID3D11SamplerState* GBufferWorldPosSamplerState = nullptr;
 
 	ID3D11Texture2D* GBufferTextures[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
 	ID3D11RenderTargetView* GBuffer[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};

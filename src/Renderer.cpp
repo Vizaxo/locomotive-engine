@@ -34,7 +34,7 @@ Renderer::Renderer(D3DContext* d3dContext)
 
 	// Create GBuffer
 	D3D11_TEXTURE2D_DESC texture2DDesc = {
-		d3dContext->clientWidth, d3dContext->clientHeight, 1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, {1, 0},
+		d3dContext->clientWidth, d3dContext->clientHeight, 1, 1, DXGI_FORMAT_R32G32B32A32_FLOAT, {1, 0},
 		D3D11_USAGE_DEFAULT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 0, 0
 	};
 	for (int i = 0; i < GBUFFER_COUNT; i++) {
@@ -45,11 +45,13 @@ Renderer::Renderer(D3DContext* d3dContext)
 	//Diffuse
 	//SRV
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	D3D11_TEX2D_SRV tex2DSRV = { 0, (UINT)-1};
 	srvDesc.Texture2D = tex2DSRV;
 	HRASSERT(d3dContext->d3dDevice->CreateShaderResourceView(GBufferTextures[DIFFUSE], &srvDesc, &GBufferDiffuseSRV));
+	HRASSERT(d3dContext->d3dDevice->CreateShaderResourceView(GBufferTextures[NORMAL], &srvDesc, &GBufferNormalSRV));
+	HRASSERT(d3dContext->d3dDevice->CreateShaderResourceView(GBufferTextures[WORLDPOS], &srvDesc, &GBufferWorldPosSRV));
 
 	//Sampler state
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -63,6 +65,8 @@ Renderer::Renderer(D3DContext* d3dContext)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &GBufferDiffuseSamplerState));
+	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &GBufferNormalSamplerState));
+	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &GBufferWorldPosSamplerState));
 
 	const D3D11_BUFFER_DESC cbWindowWidthDesc = { max(2 * sizeof(float), 16), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
 	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbWindowWidthDesc, nullptr, &cbWindowSize));
@@ -126,7 +130,9 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->OMSetRenderTargets(GBUFFER_COUNT, GBuffer, d3dContext->d3dDepthStencilView);
 	d3dDeviceContext->OMSetDepthStencilState(d3dContext->d3dDepthStencilState, 1);
 
-	d3dDeviceContext->ClearRenderTargetView(GBuffer[0], DirectX::Colors::CornflowerBlue);
+	d3dDeviceContext->ClearRenderTargetView(GBuffer[0], DirectX::Colors::Black);
+	d3dDeviceContext->ClearRenderTargetView(GBuffer[1], DirectX::Colors::Black);
+	d3dDeviceContext->ClearRenderTargetView(GBuffer[2], DirectX::Colors::Black);
 	d3dDeviceContext->ClearDepthStencilView(d3dContext->d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
 	// Render to GBuffer
@@ -149,6 +155,13 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	//Set textures
 	d3dDeviceContext->PSSetShaderResources(0, 1, &GBufferDiffuseSRV);
 	d3dDeviceContext->PSSetSamplers(0, 1, &GBufferDiffuseSamplerState);
+
+	d3dDeviceContext->PSSetShaderResources(1, 1, &GBufferNormalSRV);
+	d3dDeviceContext->PSSetSamplers(1, 1, &GBufferNormalSamplerState);
+
+	d3dDeviceContext->PSSetShaderResources(2, 1, &GBufferWorldPosSRV);
+	d3dDeviceContext->PSSetSamplers(2, 1, &GBufferWorldPosSamplerState);
+
 	float windowSizeData[2] = {d3dContext->clientWidth, d3dContext->clientHeight};
 	d3dDeviceContext->UpdateSubresource(cbWindowSize, 0, nullptr, &windowSizeData, 0, 0);
 	d3dDeviceContext->PSSetConstantBuffers(0, 1, &cbWindowSize);

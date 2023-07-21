@@ -5,7 +5,7 @@
 enum GBufferID {
 	DIFFUSE = 0,
 	NORMAL = 1,
-	ZBUFFER = 2,
+	WORLDPOS = 2,
 	GBUFFER_COUNT = 3,
 };
 

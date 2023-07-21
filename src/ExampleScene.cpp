@@ -114,7 +114,26 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 		{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		1);
 
-	colouredCubeMeshData = new MeshData({ cubePositionsVB, cubeColoursVB }, cubeIndices);
+	// Calculate normals
+	std::vector<DirectX::XMFLOAT3> cubeNormals = std::vector<DirectX::XMFLOAT3>(cubePositions.size());
+	for (size_t i = 0; i < cubeIndices.size(); i += 3) {
+		DirectX::XMFLOAT3* v1 = (DirectX::XMFLOAT3*)&cubePositions[cubeIndices[i]];
+		DirectX::XMFLOAT3* v2 = (DirectX::XMFLOAT3*)&cubePositions[cubeIndices[i + 1]];
+		DirectX::XMFLOAT3* v3 = (DirectX::XMFLOAT3*)&cubePositions[cubeIndices[i + 2]];
+		DirectX::XMVECTOR faceNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(XMLoadFloat3(v2), XMLoadFloat3(v1))
+			, DirectX::XMVectorSubtract(XMLoadFloat3(v3), XMLoadFloat3(v1))));
+		DirectX::XMFLOAT3 faceNormalV3;
+		XMStoreFloat3(&faceNormalV3, faceNormal);
+
+		cubeNormals[cubeIndices[i]] = faceNormalV3;
+		cubeNormals[cubeIndices[i+1]] = faceNormalV3;
+		cubeNormals[cubeIndices[i+2]] = faceNormalV3;
+	}
+	VertexBuffer cubeNormalsVB = CreateVertexBuffer(cubeNormals,
+		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+		2);
+
+	colouredCubeMeshData = new MeshData({ cubePositionsVB, cubeColoursVB, cubeNormalsVB }, cubeIndices);
 	colouredCubeMesh = new Mesh(d3dContext, *colouredCubeMeshData, *baseColourVertexShader);
 	colouredCubeObj = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *colouredCubeMesh, baseColourMaterial);
 	scene.objects.push_back(colouredCubeObj);
@@ -125,7 +144,27 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 			{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color), D3D11_INPUT_PER_VERTEX_DATA, 0}
 		},
 		0);
-	colouredTriangleMeshData = new MeshData({ colouredTriangleVB }, triangleIndices);
+
+	// Calculate normals
+	std::vector<DirectX::XMFLOAT3> triangleNormals = std::vector<DirectX::XMFLOAT3>(triangleVertices.size());
+	for (size_t i = 0; i < triangleIndices.size(); i += 3) {
+		DirectX::XMFLOAT3* v1 = (DirectX::XMFLOAT3*)&triangleVertices[triangleIndices[i]];
+		DirectX::XMFLOAT3* v2 = (DirectX::XMFLOAT3*)&triangleVertices[triangleIndices[i + 1]];
+		DirectX::XMFLOAT3* v3 = (DirectX::XMFLOAT3*)&triangleVertices[triangleIndices[i + 2]];
+		DirectX::XMVECTOR faceNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(XMLoadFloat3(v2), XMLoadFloat3(v1))
+			, DirectX::XMVectorSubtract(XMLoadFloat3(v3), XMLoadFloat3(v1))));
+		DirectX::XMFLOAT3 faceNormalV3;
+		XMStoreFloat3(&faceNormalV3, faceNormal);
+
+		triangleNormals[triangleIndices[i]] = faceNormalV3;
+		triangleNormals[triangleIndices[i+1]] = faceNormalV3;
+		triangleNormals[triangleIndices[i+2]] = faceNormalV3;
+	}
+	VertexBuffer triangleNormalsVB = CreateVertexBuffer(triangleNormals,
+		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+		2);
+
+	colouredTriangleMeshData = new MeshData({ colouredTriangleVB, triangleNormalsVB }, triangleIndices);
 	colouredTriangleMesh = new Mesh(d3dContext, *colouredTriangleMeshData, *baseColourVertexShader);
 	colouredTriangleObj = new Object(d3dContext, XMVectorSet(2, 0, 0, 0), 0.0f,  *colouredTriangleMesh, baseColourMaterial);
 	scene.objects.push_back(colouredTriangleObj);
@@ -149,6 +188,18 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 			XMStoreFloat3(v, DirectX::XMVectorScale(XMLoadFloat3(v), 10.0f));
 		}
 
+		std::vector<DirectX::XMFLOAT3> colours = std::vector<DirectX::XMFLOAT3>(dragon->vertexBuffers[0].verts.size() / dragon->vertexBuffers[0].stride);
+		for (size_t i = 0; i < dragon->indices.size(); i += 3) {
+			DirectX::XMFLOAT3 colour = { 0.5f, 0.8f, 0.1f };
+			colours[dragon->indices[i]] = colour;
+			colours[dragon->indices[i+1]] = colour;
+			colours[dragon->indices[i+2]] = colour;
+		}
+		VertexBuffer dragonColours = CreateVertexBuffer(colours,
+			{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+			1);
+		dragon->vertexBuffers.push_back(dragonColours);
+
 		// Calculate normals
 		std::vector<DirectX::XMFLOAT3> normals = std::vector<DirectX::XMFLOAT3>(dragon->vertexBuffers[0].verts.size() / dragon->vertexBuffers[0].stride);
 		for (size_t i = 0; i < dragon->indices.size(); i += 3) {
@@ -167,8 +218,8 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 			normals[dragon->indices[i+2]] = faceNormalV3;
 		}
 		VertexBuffer dragonNormals = CreateVertexBuffer(normals,
-			{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} }, //TODO: change to NORMAL and different slot
-			1);
+			{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+			2);
 		dragon->vertexBuffers.push_back(dragonNormals);
 
 		dragonMeshData = new MeshData(*dragon);
