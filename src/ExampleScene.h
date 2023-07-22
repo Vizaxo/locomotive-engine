@@ -1,7 +1,9 @@
 #pragma once
 
-#include "D3DContext.h"
-#include "Scene.h"
+#include "DirectXTemplatePCH.h"
+
+#include "renderer/D3DContext.h"
+#include "renderer/Scene.h"
 
 Scene buildExampleScene(D3DContext* d3dContext);
 void cleanupExampleScene();

@@ -1,5 +1,3 @@
-#include "DirectXTemplatePCH.h"
-
 #include "Renderer.h"
 
 #include "GBufferComposite.h"

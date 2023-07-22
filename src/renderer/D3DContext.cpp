@@ -1,5 +1,3 @@
-#include "DirectXTemplatePCH.h"
-
 #include "D3DContext.h"
 #include <tuple>
 

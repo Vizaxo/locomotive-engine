@@ -1,10 +1,10 @@
 #include "DirectXTemplatePCH.h"
 
-#include "D3DContext.h"
-#include "Scene.h"
-#include "Object.h"
+#include "renderer/D3DContext.h"
+#include "renderer/Scene.h"
+#include "renderer/Object.h"
 #include "ExampleScene.h"
-#include "Renderer.h"
+#include "renderer/Renderer.h"
 
 #include "imgui.h"
 #include "imgui_impl_win32.h"

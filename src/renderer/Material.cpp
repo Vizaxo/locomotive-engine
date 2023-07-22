@@ -1,4 +1,3 @@
-#include "DirectXTemplatePCH.h"
 #include "Material.h"
 #include "Texture2D.h"
 #include <vector>

@@ -1,5 +1,3 @@
-#include "DirectXTemplatePCH.h"
-
 #include "Shader.h"
 
 VertexShader::VertexShader(D3DContext* d3dContext, const void* bytecode, size_t bytecodeSize)

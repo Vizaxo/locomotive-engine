@@ -1,11 +1,12 @@
 #pragma once
 
 #include "DirectXTemplatePCH.h"
+
 #include <variant>
 #include <fstream>
 #include <vector>
 
-#include "Mesh.h"
+#include "renderer/Mesh.h"
 
 namespace ModelLoader {
 	std::variant<MeshData, std::string> LoadModel(LPCWSTR filepath);

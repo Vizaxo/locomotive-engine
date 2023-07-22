@@ -1,5 +1,3 @@
-#include "DirectXTemplatePCH.h"
-
 #include "Mesh.h"
 
 #include <set>
