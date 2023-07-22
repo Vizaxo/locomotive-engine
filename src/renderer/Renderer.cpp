@@ -10,7 +10,7 @@
 
 using namespace DirectX;
 
-std::vector<XMFLOAT3> triangleVertices = {
+static std::vector<XMFLOAT3> triangleVertices = {
 	XMFLOAT3(-1.0, -1.0, 0.0),
 	XMFLOAT3(-1.0, 3.0, 0.0),
 	XMFLOAT3(3.0, -1.0, 0.0),

@@ -60,9 +60,12 @@ std::vector<VertexPosColor> triangleVertices = {
 	{XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
 	{XMFLOAT3(-0.5f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
 	{XMFLOAT3(0.5f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
+	{XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
+	{XMFLOAT3(-0.5f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
+	{XMFLOAT3(0.5f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
 };
 
-std::vector<int> triangleIndices = { 0,1,2,2,1,0 };
+std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
 static Material* baseColourMaterial = nullptr;
 static Material* texturedMaterial = nullptr;
