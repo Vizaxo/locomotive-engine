@@ -159,8 +159,8 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->Draw(3, 0);
 
 	// Clear gbuffer textures so they can be rendered to
-	d3dDeviceContext->PSSetShaderResources(0, 0, nullptr);
-	d3dDeviceContext->PSSetSamplers(0, 0, nullptr);
+	ID3D11ShaderResourceView* nullSRVs[3] = {nullptr, nullptr, nullptr};
+	d3dDeviceContext->PSSetShaderResources(0, 3, nullSRVs);
 
 	// Re-set the render targets (without depth) so ImGui shows up as a separate pass in RenderDoc
 	d3dDeviceContext->OMSetRenderTargets(1, &d3dContext->BackBufferRTV, nullptr);
