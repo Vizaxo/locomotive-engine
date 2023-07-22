@@ -5,8 +5,40 @@
 #include "renderer/D3DContext.h"
 #include "renderer/Scene.h"
 
-Scene buildExampleScene(D3DContext* d3dContext);
-void cleanupExampleScene();
+class ExampleScene {
+public:
+	ExampleScene(D3DContext* d3dContext);
+	~ExampleScene();
+	void Tick(float deltaTime);
+
+	Scene scene;
+
+private:
+	Material* baseColourMaterial = nullptr;
+	Material* texturedMaterial = nullptr;
+	Texture2D* gravelTexture = nullptr;
+	PixelShader* baseColourPixelShader = nullptr;
+	PixelShader* texturedPixelShader = nullptr;
+	VertexShader* baseColourVertexShader = nullptr;
+	VertexShader* texturedVertexShader = nullptr;
+
+	MeshData* colouredCubeMeshData = nullptr;
+	Mesh* colouredCubeMesh = nullptr;
+	Object* colouredCubeObj = nullptr;
+
+	MeshData* dragonMeshData = nullptr;
+	Mesh* dragonMesh = nullptr;
+	Object* stanfordDragonObj = nullptr;
+
+	MeshData* colouredTriangleMeshData = nullptr;
+	Mesh* colouredTriangleMesh = nullptr;
+	Object* colouredTriangleObj = nullptr;
+
+	MeshData* texturedCubeMeshData = nullptr;
+	Mesh* texturedCubeMesh = nullptr;
+	Object* texturedCubeObj = nullptr;
+};
+
 
 struct VertexPosColor {
 	DirectX::XMFLOAT3 Position;

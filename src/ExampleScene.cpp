@@ -1,5 +1,6 @@
 #include "ExampleScene.h"
 #include "Utils.h"
+#include "ImGuiUtils.h"
 #include "renderer/Object.h"
 #include "renderer/Material.h"
 #include "renderer/Texture2D.h"
@@ -67,33 +68,7 @@ std::vector<VertexPosColor> triangleVertices = {
 
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
-static Material* baseColourMaterial = nullptr;
-static Material* texturedMaterial = nullptr;
-static Texture2D* gravelTexture = nullptr;
-static PixelShader* baseColourPixelShader = nullptr;
-static PixelShader* texturedPixelShader = nullptr;
-static VertexShader* baseColourVertexShader = nullptr;
-static VertexShader* texturedVertexShader = nullptr;
-
-static MeshData* colouredCubeMeshData = nullptr;
-static Mesh* colouredCubeMesh = nullptr;
-static Object* colouredCubeObj = nullptr;
-
-static MeshData* dragonMeshData = nullptr;
-static Mesh* dragonMesh = nullptr;
-static Object* stanfordDragonObj = nullptr;
-
-static MeshData* colouredTriangleMeshData = nullptr;
-static Mesh* colouredTriangleMesh = nullptr;
-static Object* colouredTriangleObj = nullptr;
-
-static MeshData* texturedCubeMeshData = nullptr;
-static Mesh* texturedCubeMesh = nullptr;
-static Object* texturedCubeObj = nullptr;
-
-Scene buildExampleScene(D3DContext* d3dContext) {
-	Scene scene = Scene();
-
+ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 
 	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
@@ -244,16 +219,49 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 	scene.lightData.lights[scene.lightData.numLights].radius = 20.0f;
 	scene.lightData.numLights++;
-
-	return scene;
 }
 
-void cleanupExampleScene() {
+ExampleScene::~ExampleScene() {
 	delete baseColourMaterial;
 	delete texturedMaterial;
 	delete gravelTexture;
-	delete colouredCubeObj;
+	delete baseColourPixelShader;
+	delete texturedPixelShader;
+	delete baseColourVertexShader;
+	delete texturedVertexShader;
+
+	delete colouredCubeMeshData;
 	delete colouredCubeMesh;
+	delete colouredCubeObj;
+
+	delete dragonMeshData;
+	delete dragonMesh;
+	delete stanfordDragonObj;
+
+	delete colouredTriangleMeshData;
+	delete colouredTriangleMesh;
 	delete colouredTriangleObj;
+
+	delete texturedCubeMeshData;
+	delete texturedCubeMesh;
 	delete texturedCubeObj;
+}
+
+void ExampleScene::Tick(float deltaTime) {
+	{
+		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
+		if (scene.objects.size() >= 1)
+			MkSliderV3("Coloured cube", scene.objects[0]->GetPos(), -10.0f, 10.0f);
+		if (scene.objects.size() >= 2)
+			MkSliderV3("Coloured triangle", scene.objects[1]->GetPos(), -2.0f, 2.0f);
+		if (scene.objects.size() >= 3)
+			MkSliderV3("Textured cube", scene.objects[2]->GetPos(), -2.0f, 2.0f);
+		if (scene.objects.size() >= 3)
+			MkSliderV3("Dragon", scene.objects[3]->GetPos(), -5.0f, 5.0f);
+		ImGui::End();
+	}
+
+	for (Object* obj : scene.objects) {
+		obj->angle += 90.f * deltaTime;
+	}
 }

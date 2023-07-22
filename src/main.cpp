@@ -20,7 +20,7 @@ HWND g_WindowHandle = 0;
 const bool g_EnableVSync = true;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
-int Run(D3DContext* d3dContext, Renderer& renderer, Scene& scene);
+int Run(D3DContext* d3dContext, Renderer& renderer);
 
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
@@ -126,11 +126,8 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 	}
 
 	Renderer renderer(&d3dContext);
-	Scene scene = buildExampleScene(&d3dContext);
 
-	int ret = Run(&d3dContext, renderer, scene);
-
-	cleanupExampleScene();
+	int ret = Run(&d3dContext, renderer);
 
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
@@ -140,7 +137,8 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 }
 
 
-int Run(D3DContext* d3dContext, Renderer& renderer, Scene& scene) {
+int Run(D3DContext* d3dContext, Renderer& renderer) {
+	ExampleScene exampleScene(d3dContext);
 	MSG msg = { 0 };
 
 	static DWORD previousTime = timeGetTime();
@@ -158,7 +156,9 @@ int Run(D3DContext* d3dContext, Renderer& renderer, Scene& scene) {
 
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
-			renderer.RenderScene(d3dContext, scene, deltaTime);
+			renderer.InitFrame(d3dContext);
+			exampleScene.Tick(deltaTime);
+			renderer.RenderScene(d3dContext, exampleScene.scene, deltaTime);
 		}
 	}
 

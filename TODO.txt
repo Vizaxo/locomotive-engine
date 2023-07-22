@@ -10,7 +10,7 @@ Short-term:
 - Improve ergonomics of scene creation
 - Controllable camera
 - Make shaders load dynamically
-- Move scene update data (imgui sliders) out of the renderer
+- Move scene update data (imgui sliders) out of the renderer /
 
 
 Long-term:

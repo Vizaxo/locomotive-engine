@@ -92,30 +92,20 @@ Renderer::Renderer(D3DContext* d3dContext)
 
 }
 
-void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime) {
+void Renderer::InitFrame(D3DContext* d3dContext) {
 	// Start the Dear ImGui frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+}
+
+void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime) {
 
 	XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);
 	XMVECTOR focusPoint = XMVectorSet(0, 0, 0, 1);
 	XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
 	ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
 	d3dContext->d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Frame], 0, nullptr, &ViewMatrix, 0, 0);
-
-	{
-		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
-		if (scene.objects.size() >= 1)
-			MkSliderV3("Coloured cube", scene.objects[0]->GetPos(), -10.0f, 10.0f);
-		if (scene.objects.size() >= 2)
-			MkSliderV3("Coloured triangle", scene.objects[1]->GetPos(), -2.0f, 2.0f);
-		if (scene.objects.size() >= 3)
-			MkSliderV3("Textured cube", scene.objects[2]->GetPos(), -2.0f, 2.0f);
-		if (scene.objects.size() >= 3)
-			MkSliderV3("Dragon", scene.objects[3]->GetPos(), -5.0f, 5.0f);
-		ImGui::End();
-	}
 
 	{
 		ImGui::Begin("Stats");
@@ -204,8 +194,6 @@ void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj
 		d3dDeviceContext->PSSetShaderResources(0, 1, &obj.material->shaderResourceView);
 		d3dDeviceContext->PSSetSamplers(0, 1, &obj.material->samplerState);
 	}
-
-	obj.angle += 90.f * deltaTime;
 
 	DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX modelMatrix = obj.GetModelMatrix();
