@@ -236,20 +236,23 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	planeObject = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMesh, baseColourMaterial);
 	scene.objects.push_back(planeObject);
 
-	scene.lightData.lights[scene.lightData.numLights].pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-	scene.lightData.lights[scene.lightData.numLights].radius = 5.0f;
-	scene.lightData.numLights++;
+	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	scene.lightData.pointLights[scene.lightData.numPointLights].radius = 5.0f;
+	scene.lightData.numPointLights++;
 
-	scene.lightData.lights[scene.lightData.numLights].pos = DirectX::XMFLOAT3(3.0f, 0.0f, 0.0f);
-	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-	scene.lightData.lights[scene.lightData.numLights].radius = 5.0f;
-	scene.lightData.numLights++;
+	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(3.0f, 0.0f, 0.0f);
+	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+	scene.lightData.pointLights[scene.lightData.numPointLights].radius = 5.0f;
+	scene.lightData.numPointLights++;
 
-	scene.lightData.lights[scene.lightData.numLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
-	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
-	scene.lightData.lights[scene.lightData.numLights].radius = 20.0f;
-	scene.lightData.numLights++;
+	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
+	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+	scene.lightData.pointLights[scene.lightData.numPointLights].radius = 20.0f;
+	scene.lightData.numPointLights++;
+
+	XMStoreFloat3(&scene.lightData.directionalLight.direction, DirectX::XMVector3Normalize(DirectX::XMVectorSet(1.0f, -1.0f, 0.1f, 0.0f)));
+	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(0.3f, 0.3f, 0.2f);
 }
 
 ExampleScene::~ExampleScene() {

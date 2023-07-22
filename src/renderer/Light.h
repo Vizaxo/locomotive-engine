@@ -4,7 +4,7 @@
 
 #define MAX_LIGHTS 32
 
-struct alignas(16) Light {
+struct alignas(16) PointLight {
 	union {
 		DirectX::XMFLOAT3 pos;
 		float _pad[4];
@@ -12,10 +12,18 @@ struct alignas(16) Light {
 	DirectX::XMFLOAT3 colour;
 	float radius;
 };
-static_assert(sizeof(Light) == 8*4);
+static_assert(sizeof(PointLight) == 8*4);
+
+struct DirectionalLight {
+	union {
+		DirectX::XMFLOAT3 direction;
+		float _pad[4];
+	};
+	DirectX::XMFLOAT3 colour;
+};
 
 struct alignas(16) LightData {
-	Light lights[MAX_LIGHTS];
-	int numLights = 0;
+	PointLight pointLights[MAX_LIGHTS];
+	DirectionalLight directionalLight;
+	int numPointLights = 0;
 };
-static_assert(sizeof(LightData) == 1040);
