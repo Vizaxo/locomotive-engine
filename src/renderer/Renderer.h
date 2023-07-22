@@ -35,6 +35,7 @@ public:
 	ID3D11RenderTargetView* GBuffer[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
 
 	ID3D11Buffer* cbWindowSize = nullptr;
+	ID3D11Buffer* cbLights = nullptr;
 
 	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
 

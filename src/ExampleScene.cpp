@@ -191,7 +191,7 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 
 		std::vector<DirectX::XMFLOAT3> colours = std::vector<DirectX::XMFLOAT3>(dragon->vertexBuffers[0].verts.size() / dragon->vertexBuffers[0].stride);
 		for (size_t i = 0; i < dragon->indices.size(); i += 3) {
-			DirectX::XMFLOAT3 colour = { 0.5f, 0.8f, 0.1f };
+			DirectX::XMFLOAT3 colour = { 0.9f, 0.9f, 0.9f };
 			colours[dragon->indices[i]] = colour;
 			colours[dragon->indices[i+1]] = colour;
 			colours[dragon->indices[i+2]] = colour;
@@ -229,6 +229,21 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 
 		scene.objects.push_back(stanfordDragonObj);
 	}
+
+	scene.lightData.lights[scene.lightData.numLights].pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	scene.lightData.lights[scene.lightData.numLights].radius = 5.0f;
+	scene.lightData.numLights++;
+
+	scene.lightData.lights[scene.lightData.numLights].pos = DirectX::XMFLOAT3(3.0f, 0.0f, 0.0f);
+	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+	scene.lightData.lights[scene.lightData.numLights].radius = 5.0f;
+	scene.lightData.numLights++;
+
+	scene.lightData.lights[scene.lightData.numLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
+	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+	scene.lightData.lights[scene.lightData.numLights].radius = 20.0f;
+	scene.lightData.numLights++;
 
 	return scene;
 }

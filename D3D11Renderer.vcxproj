@@ -172,6 +172,7 @@
     <ClInclude Include="src\DirectXTemplatePCH.h" />
     <ClInclude Include="src\ExampleScene.h" />
     <ClInclude Include="src\ImGuiUtils.h" />
+    <ClInclude Include="src\renderer\Light.h" />
     <ClInclude Include="src\renderer\Material.h" />
     <ClInclude Include="src\renderer\Mesh.h" />
     <ClInclude Include="src\editor\ModelLoader.h" />

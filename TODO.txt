@@ -4,7 +4,7 @@ Short-term:
 - Encapsulate Windows code in a class
 - Normal maps
 - Loading objects /
-- Multiple lights
+- Multiple lights /
 - Phong lighting
 - Unify texturing with lighting pass /
 - Improve ergonomics of scene creation

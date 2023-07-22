@@ -7,6 +7,7 @@
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 #include "Utils.h"
+#include "Light.h"
 
 using namespace DirectX;
 
@@ -69,6 +70,9 @@ Renderer::Renderer(D3DContext* d3dContext)
 	const D3D11_BUFFER_DESC cbWindowWidthDesc = { max(2 * sizeof(float), 16), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
 	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbWindowWidthDesc, nullptr, &cbWindowSize));
 
+	const D3D11_BUFFER_DESC cbLightsDesc = { sizeof(LightData), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
+	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbLightsDesc, nullptr, &cbLights));
+
 	// Constant buffers
 
 	D3D11_BUFFER_DESC constantBufferDesc;
@@ -108,6 +112,8 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 			MkSliderV3("Coloured triangle", scene.objects[1]->GetPos(), -2.0f, 2.0f);
 		if (scene.objects.size() >= 3)
 			MkSliderV3("Textured cube", scene.objects[2]->GetPos(), -2.0f, 2.0f);
+		if (scene.objects.size() >= 3)
+			MkSliderV3("Dragon", scene.objects[3]->GetPos(), -5.0f, 5.0f);
 		ImGui::End();
 	}
 
@@ -164,6 +170,8 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->UpdateSubresource(cbWindowSize, 0, nullptr, &windowSizeData, 0, 0);
 	d3dDeviceContext->PSSetConstantBuffers(0, 1, &cbWindowSize);
 
+	d3dDeviceContext->UpdateSubresource(cbLights, 0, nullptr, &scene.lightData, 0, 0);
+	d3dDeviceContext->PSSetConstantBuffers(1, 1, &cbLights);
 
 	d3dDeviceContext->Draw(3, 0);
 
