@@ -67,8 +67,8 @@ Renderer::Renderer(D3DContext* d3dContext)
 	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &GBufferNormalSamplerState));
 	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &GBufferWorldPosSamplerState));
 
-	const D3D11_BUFFER_DESC cbWindowWidthDesc = { max(2 * sizeof(float), 16), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
-	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbWindowWidthDesc, nullptr, &cbWindowSize));
+	const D3D11_BUFFER_DESC cbFrameDataDesc = { sizeof(FrameData), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
+	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbFrameDataDesc, nullptr, &cbFrameData));
 
 	const D3D11_BUFFER_DESC cbLightsDesc = { sizeof(LightData), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
 	HRASSERT(d3dContext->d3dDevice->CreateBuffer(&cbLightsDesc, nullptr, &cbLights));
@@ -117,9 +117,9 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->OMSetRenderTargets(GBUFFER_COUNT, GBuffer, d3dContext->d3dDepthStencilView);
 	d3dDeviceContext->OMSetDepthStencilState(d3dContext->d3dDepthStencilState, 1);
 
-	d3dDeviceContext->ClearRenderTargetView(GBuffer[0], DirectX::Colors::Black);
-	d3dDeviceContext->ClearRenderTargetView(GBuffer[1], DirectX::Colors::Black);
-	d3dDeviceContext->ClearRenderTargetView(GBuffer[2], DirectX::Colors::Black);
+	d3dDeviceContext->ClearRenderTargetView(GBuffer[0], DirectX::Colors::Transparent);
+	d3dDeviceContext->ClearRenderTargetView(GBuffer[1], DirectX::Colors::Transparent);
+	d3dDeviceContext->ClearRenderTargetView(GBuffer[2], DirectX::Colors::Transparent);
 	d3dDeviceContext->ClearDepthStencilView(d3dContext->d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
 	// Render to GBuffer
@@ -149,9 +149,12 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->PSSetShaderResources(2, 1, &GBufferWorldPosSRV);
 	d3dDeviceContext->PSSetSamplers(2, 1, &GBufferWorldPosSamplerState);
 
-	float windowSizeData[2] = {d3dContext->clientWidth, d3dContext->clientHeight};
-	d3dDeviceContext->UpdateSubresource(cbWindowSize, 0, nullptr, &windowSizeData, 0, 0);
-	d3dDeviceContext->PSSetConstantBuffers(0, 1, &cbWindowSize);
+	FrameData frameData = {
+		DirectX::XMFLOAT2(d3dContext->clientWidth, d3dContext->clientHeight),
+		eyePosition,
+	};
+	d3dDeviceContext->UpdateSubresource(cbFrameData, 0, nullptr, &frameData, 0, 0);
+	d3dDeviceContext->PSSetConstantBuffers(0, 1, &cbFrameData);
 
 	d3dDeviceContext->UpdateSubresource(cbLights, 0, nullptr, &scene.lightData, 0, 0);
 	d3dDeviceContext->PSSetConstantBuffers(1, 1, &cbLights);

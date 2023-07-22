@@ -13,6 +13,14 @@ enum ConstantBuffer {
 	NumConstantBuffers
 };
 
+struct alignas(16) FrameData {
+	union {
+		DirectX::XMFLOAT2 windowSize;
+		float _pad[4];
+	};
+	DirectX::XMVECTOR cameraPos;
+};
+
 class Renderer {
 public:
 	Renderer(D3DContext* d3dContext);
@@ -34,7 +42,7 @@ public:
 	ID3D11Texture2D* GBufferTextures[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
 	ID3D11RenderTargetView* GBuffer[GBUFFER_COUNT] = {nullptr, nullptr, nullptr};
 
-	ID3D11Buffer* cbWindowSize = nullptr;
+	ID3D11Buffer* cbFrameData = nullptr;
 	ID3D11Buffer* cbLights = nullptr;
 
 	ID3D11Buffer* d3dConstantBuffers[NumConstantBuffers];
