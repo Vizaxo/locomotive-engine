@@ -3,4 +3,15 @@ TODO
 Short-term:
 - Encapsulate Windows code in a class
 - Normal maps
-- Loading objects
+- Loading objects /
+- Multiple lights
+- Phong lighting
+- Unify texturing with lighting pass /
+- Improve ergonomics of scene creation
+- Controllable camera
+
+
+Long-term:
+- Create a level/scene editor
+- Hook up networking code from MMO project
+- Skeletal meshes for animation
