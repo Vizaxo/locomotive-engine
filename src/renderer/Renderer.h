@@ -19,7 +19,6 @@ public:
 	~Renderer();
 	void RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime);
 	void RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj);
-	void InitFrame(D3DContext* d3dContext);
 
 	VertexShader screenShader;
 	PixelShader GBufferCompositeShader;

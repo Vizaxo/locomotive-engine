@@ -5,10 +5,7 @@
 #include "renderer/Object.h"
 #include "ExampleScene.h"
 #include "renderer/Renderer.h"
-
-#include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
+#include "renderer/ImGuiUtils.h"
 
 using namespace DirectX;
 
@@ -20,7 +17,7 @@ HWND g_WindowHandle = 0;
 const bool g_EnableVSync = true;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
-int Run(D3DContext* d3dContext, Renderer& renderer);
+int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui);
 
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
@@ -55,7 +52,6 @@ int InitApplication(HINSTANCE hInstance, int cmdShow) {
 	UpdateWindow(g_WindowHandle);
 
 	return 0;
-
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -83,24 +79,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	return 0;
 }
 
-int InitImgui(D3DContext* d3dContext, HWND hwnd) {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplWin32_Init(hwnd);
-    ImGui_ImplDX11_Init(d3dContext->d3dDevice, d3dContext->d3dDeviceContext);
-
-	return 0;
-}
-
 int WINAPI wWinMain(HINSTANCE hInstance,
 	HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow) {
 	UNREFERENCED_PARAMETER(prevInstance);
@@ -116,28 +94,16 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 		return -1;
 	}
 
-
 	D3DContext d3dContext = D3DContext(hInstance, g_WindowHandle, g_EnableVSync);
-
-	if (InitImgui(&d3dContext, g_WindowHandle) != 0) {
-	
-		MessageBox(nullptr, TEXT("Failed to initialise Imgui"), TEXT("Error"), MB_OK);
-		return -1;
-	}
-
+	ImGuiWrapper imgui(&d3dContext, g_WindowHandle);
 	Renderer renderer(&d3dContext);
 
-	int ret = Run(&d3dContext, renderer);
-
-    ImGui_ImplDX11_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
+	int ret = Run(&d3dContext, renderer, imgui);
 
 	return ret;
 }
 
-
-int Run(D3DContext* d3dContext, Renderer& renderer) {
+int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui) {
 	ExampleScene exampleScene(d3dContext);
 	MSG msg = { 0 };
 
@@ -156,7 +122,7 @@ int Run(D3DContext* d3dContext, Renderer& renderer) {
 
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
-			renderer.InitFrame(d3dContext);
+			imgui.InitFrame();
 			exampleScene.Tick(deltaTime);
 			renderer.RenderScene(d3dContext, exampleScene.scene, deltaTime);
 		}

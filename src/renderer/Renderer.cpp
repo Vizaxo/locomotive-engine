@@ -92,13 +92,6 @@ Renderer::Renderer(D3DContext* d3dContext)
 
 }
 
-void Renderer::InitFrame(D3DContext* d3dContext) {
-	// Start the Dear ImGui frame
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-}
-
 void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime) {
 
 	XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);

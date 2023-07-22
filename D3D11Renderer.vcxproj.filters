@@ -57,7 +57,7 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImGuiUtils.cpp">
+    <ClCompile Include="src\renderer\ImGuiUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\ModelLoader.cpp">
@@ -122,7 +122,7 @@
     <ClInclude Include="include\imgui\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImGuiUtils.h">
+    <ClInclude Include="src\renderer\ImGuiUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\ModelLoader.h">

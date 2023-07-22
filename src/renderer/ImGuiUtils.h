@@ -1,5 +1,8 @@
 #pragma once
 
+#include "DirectXTemplatePCH.h"
+
+#include "renderer/D3DContext.h"
 #include "imgui.h"
 
 #define STR1(x)  #x
@@ -14,3 +17,10 @@
 namespace ImGui {
 	void SliderVectorF3(DirectX::XMVECTOR& v, float minBound, float maxBound, float floats[], const char* label);
 }
+
+class ImGuiWrapper {
+public:
+	ImGuiWrapper(D3DContext* d3dContext, HWND hwnd);
+	~ImGuiWrapper();
+	void InitFrame();
+};
