@@ -66,6 +66,17 @@ std::vector<VertexPosColor> triangleVertices = {
 	{XMFLOAT3(0.5f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
 };
 
+std::vector<DirectX::XMFLOAT3> planePositions = {
+	{XMFLOAT3(-100.0f, -2.0f, -100.0f)},
+	{XMFLOAT3(-100.0f, -2.0f, 100.0f)},
+	{XMFLOAT3(100.0f, -2.0f, -100.0f)},
+	{XMFLOAT3(100.0f, -2.0f, 100.0f)},
+};
+
+std::vector<int> planeIndices = {
+	{0, 1, 2, 1, 3, 2}
+};
+
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
 ExampleScene::ExampleScene(D3DContext* d3dContext) {
@@ -205,6 +216,26 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 		scene.objects.push_back(stanfordDragonObj);
 	}
 
+	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
+	for (int i = 0; i < planePositions.size(); i++) {
+		planeNormals.push_back(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+		planeColours.push_back(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+	}
+	VertexBuffer planePositionsVB = CreateVertexBuffer(planePositions,
+		{ {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+		0);
+	VertexBuffer planeColoursVB = CreateVertexBuffer(planeColours,
+		{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+		1);
+	VertexBuffer planeNormalsVB = CreateVertexBuffer(planeNormals,
+		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+		2);
+
+	planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, planeIndices);
+	planeMesh = new Mesh(d3dContext, *planeMeshData, *baseColourVertexShader);
+	planeObject = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMesh, baseColourMaterial);
+	scene.objects.push_back(planeObject);
+
 	scene.lightData.lights[scene.lightData.numLights].pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	scene.lightData.lights[scene.lightData.numLights].colour = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 	scene.lightData.lights[scene.lightData.numLights].radius = 5.0f;
@@ -245,6 +276,10 @@ ExampleScene::~ExampleScene() {
 	delete texturedCubeMeshData;
 	delete texturedCubeMesh;
 	delete texturedCubeObj;
+
+	delete planeMeshData;
+	delete planeMesh;
+	delete planeObject;
 }
 
 void ExampleScene::Tick(float deltaTime) {

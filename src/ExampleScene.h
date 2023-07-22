@@ -37,6 +37,10 @@ private:
 	MeshData* texturedCubeMeshData = nullptr;
 	Mesh* texturedCubeMesh = nullptr;
 	Object* texturedCubeObj = nullptr;
+
+	MeshData* planeMeshData;
+	Mesh* planeMesh;
+	Object* planeObject;
 };
 
 
