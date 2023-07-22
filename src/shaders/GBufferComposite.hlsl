@@ -46,10 +46,10 @@ float4 main(float4 uv : SV_POSITION) : SV_TARGET
 		float3 lightVec = worldPos - lightPos;
 		float3 lightDir = -normalize(lightVec);
 		float lightDist = length(lightVec);
-		float angleAttenuation = dot(normal, lightDir);
+		float angleAttenuation = max(dot(normal, lightDir), 0);
 
 		//Exponential falloff
-		float distanceAttenuation = pow(2, -(1 / (pointLights[i].radius * 0.5)) * lightDist);
+		float distanceAttenuation = max(pow(2, -(1 / (pointLights[i].radius * 0.5)) * lightDist), 0);
 
 		colour += pointLights[i].colour * distanceAttenuation * angleAttenuation * diffuse;
 
@@ -61,7 +61,7 @@ float4 main(float4 uv : SV_POSITION) : SV_TARGET
 	}
 
 	float3 lightDir = directionalLight.direction;
-	float angleAttenuation = dot(normal, -lightDir);
+	float angleAttenuation = max(dot(normal, -lightDir), 0);
 
 	colour += directionalLight.colour * angleAttenuation * diffuse;
 
@@ -73,7 +73,8 @@ float4 main(float4 uv : SV_POSITION) : SV_TARGET
 
 
 	float3 ambient = 0.1 * float3(0.7f, 0.7f, 1.0f);
-	colour += ambient;
+	colour += ambient * diffuse;
 
-	return float4(colour, 0.0f);
+	float gamma = 2.2f;
+	return float4(pow(colour, 1.0/gamma), 0.0f);
 }

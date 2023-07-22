@@ -27,7 +27,7 @@ std::vector<DirectX::XMFLOAT3> cubePositions = {
 };
 
 std::vector<DirectX::XMFLOAT3> cubeColours = {
-	{XMFLOAT3(0.0f, 0.0f, 0.0f)},
+	{XMFLOAT3(0.1f, 0.1f, 0.1f)},
 	{XMFLOAT3(1.0f, 0.0f, 0.0f)},
 	{XMFLOAT3(0.0f, 1.0f, 0.0f)},
 	{XMFLOAT3(1.0f, 1.0f, 0.0f)},
@@ -252,7 +252,7 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	scene.lightData.numPointLights++;
 
 	XMStoreFloat3(&scene.lightData.directionalLight.direction, DirectX::XMVector3Normalize(DirectX::XMVectorSet(1.0f, -1.0f, 0.1f, 0.0f)));
-	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(0.3f, 0.3f, 0.2f);
+	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(0.01f, 0.01f, 0.005f);
 }
 
 ExampleScene::~ExampleScene() {

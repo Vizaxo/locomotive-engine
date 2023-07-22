@@ -16,7 +16,8 @@ struct PixelShaderOutput {
 PixelShaderOutput main(PixelShaderInput IN)
 {
 	PixelShaderOutput OUT;
-	OUT.color = float4(tex.Sample(ss, IN.uv).xyz, 0.1f);
+	float gamma = 2.2;
+	OUT.color = float4(pow(tex.Sample(ss, IN.uv).xyz, gamma), 0.1f);
 	OUT.normal = IN.normal;
 	OUT.worldPos = IN.worldPos;
 
