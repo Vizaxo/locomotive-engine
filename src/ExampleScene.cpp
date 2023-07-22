@@ -172,7 +172,7 @@ Scene buildExampleScene(D3DContext* d3dContext) {
 	VertexBuffer cubeUVsVB = CreateVertexBuffer(cubeUVs,
 		{ {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		1);
-	texturedCubeMeshData = new MeshData({ cubePositionsVB, cubeUVsVB }, cubeIndices);
+	texturedCubeMeshData = new MeshData({ cubePositionsVB, cubeUVsVB, cubeNormalsVB }, cubeIndices);
 	texturedCubeMesh = new Mesh(d3dContext, *texturedCubeMeshData, *texturedVertexShader);
 	texturedCubeObj = new Object(d3dContext, XMVectorSet(3, -1, 0, 0), 0.0f,  *texturedCubeMesh, texturedMaterial);
 	scene.objects.push_back(texturedCubeObj);
