@@ -93,6 +93,7 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	baseColourMaterial = new Material(*baseColourPixelShader);
 	texturedMaterial = (new Material(*texturedPixelShader))->setTexture(d3dContext, gravelTexture);
 
+	/*
 	VertexBuffer cubePositionsVB = CreateVertexBuffer(cubePositions,
 		{ {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		0);
@@ -163,6 +164,7 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	texturedCubeMesh = new Mesh(d3dContext, *texturedCubeMeshData, *texturedVertexShader);
 	texturedCubeObj = new Object(d3dContext, XMVectorSet(3, -1, 0, 0), 0.0f,  *texturedCubeMesh, texturedMaterial);
 	scene.objects.push_back(texturedCubeObj);
+	*/
 
 	auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_res3.ply");
 	//auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_vrip.ply");
@@ -174,18 +176,7 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 			DirectX::XMFLOAT3* v = (DirectX::XMFLOAT3*)&dragon->vertexBuffers[0].verts[i];
 			XMStoreFloat3(v, DirectX::XMVectorScale(XMLoadFloat3(v), 10.0f));
 		}
-
-		std::vector<DirectX::XMFLOAT3> colours = std::vector<DirectX::XMFLOAT3>(dragon->vertexBuffers[0].verts.size() / dragon->vertexBuffers[0].stride);
-		for (size_t i = 0; i < dragon->indices.size(); i += 3) {
-			DirectX::XMFLOAT3 colour = { 0.9f, 0.9f, 0.9f };
-			colours[dragon->indices[i]] = colour;
-			colours[dragon->indices[i+1]] = colour;
-			colours[dragon->indices[i+2]] = colour;
-		}
-		VertexBuffer dragonColours = CreateVertexBuffer(colours,
-			{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
-			1);
-		dragon->vertexBuffers.push_back(dragonColours);
+		std::vector<int>& dragonIndices = dragon->indices;
 
 		// Calculate normals
 		std::vector<DirectX::XMFLOAT3> normals = std::vector<DirectX::XMFLOAT3>(dragon->vertexBuffers[0].verts.size() / dragon->vertexBuffers[0].stride);
@@ -209,11 +200,43 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 			2);
 		dragon->vertexBuffers.push_back(dragonNormals);
 
+		std::vector<DirectX::XMFLOAT3> colours = std::vector<DirectX::XMFLOAT3>(dragon->vertexBuffers[0].verts.size() / dragon->vertexBuffers[0].stride);
+		for (size_t i = 0; i < dragon->indices.size(); i += 3) {
+			DirectX::XMFLOAT3 colour = { 0.9f, 0.9f, 0.9f };
+			colours[dragon->indices[i]] = colour;
+			colours[dragon->indices[i+1]] = colour;
+			colours[dragon->indices[i+2]] = colour;
+		}
+		VertexBuffer dragonColours = CreateVertexBuffer(colours,
+			{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+			1);
+		dragon->vertexBuffers.push_back(dragonColours);
+
 		dragonMeshData = new MeshData(*dragon);
 		dragonMesh = new Mesh(d3dContext, *dragonMeshData, *baseColourVertexShader);
 		stanfordDragonObj = new Object(d3dContext, XMVectorSet(0, 1, 0, 0), 0.0f, *dragonMesh, baseColourMaterial);
 
 		scene.objects.push_back(stanfordDragonObj);
+
+
+		//  dragon 2
+		std::vector<DirectX::XMFLOAT3> dragon2Colours = std::vector<DirectX::XMFLOAT3>(dragon->vertexBuffers[0].verts.size() / dragon->vertexBuffers[0].stride);
+		for (size_t i = 0; i < dragon->indices.size(); i += 3) {
+			DirectX::XMFLOAT3 colour = { 0.1f, 0.9f, 0.3f };
+			dragon2Colours[dragon->indices[i]] = colour;
+			dragon2Colours[dragon->indices[i+1]] = colour;
+			dragon2Colours[dragon->indices[i+2]] = colour;
+		}
+		VertexBuffer dragon2ColoursVB = CreateVertexBuffer(dragon2Colours,
+			{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+			1);
+
+		dragon2MD = new MeshData({dragon->vertexBuffers[0], dragon2ColoursVB, dragonNormals}, dragonIndices);
+		dragon2M = new Mesh(d3dContext, *dragon2MD, *baseColourVertexShader);
+		dragon2O = new Object(d3dContext, XMVectorSet(2, 1, 0, 0), 0.0f, *dragon2M, baseColourMaterial);
+
+		scene.objects.push_back(dragon2O);
+
 	}
 
 	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
@@ -252,7 +275,7 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	scene.lightData.numPointLights++;
 
 	XMStoreFloat3(&scene.lightData.directionalLight.direction, DirectX::XMVector3Normalize(DirectX::XMVectorSet(1.0f, -1.0f, 0.1f, 0.0f)));
-	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(0.01f, 0.01f, 0.005f);
+	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(100.0f, 98.0f, 98.0f);
 }
 
 ExampleScene::~ExampleScene() {
@@ -283,6 +306,10 @@ ExampleScene::~ExampleScene() {
 	delete planeMeshData;
 	delete planeMesh;
 	delete planeObject;
+
+	delete dragon2MD;
+	delete dragon2M;
+	delete dragon2O;
 }
 
 void ExampleScene::Tick(float deltaTime) {
@@ -294,12 +321,12 @@ void ExampleScene::Tick(float deltaTime) {
 			MkSliderV3("Coloured triangle", scene.objects[1]->GetPos(), -2.0f, 2.0f);
 		if (scene.objects.size() >= 3)
 			MkSliderV3("Textured cube", scene.objects[2]->GetPos(), -2.0f, 2.0f);
-		if (scene.objects.size() >= 3)
+		if (scene.objects.size() >= 4)
 			MkSliderV3("Dragon", scene.objects[3]->GetPos(), -5.0f, 5.0f);
 		ImGui::End();
 	}
 
 	for (Object* obj : scene.objects) {
-		obj->angle += 90.f * deltaTime;
+		//obj->angle += 90.f * deltaTime;
 	}
 }

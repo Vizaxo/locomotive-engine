@@ -30,6 +30,10 @@ private:
 	Mesh* dragonMesh = nullptr;
 	Object* stanfordDragonObj = nullptr;
 
+	MeshData* dragon2MD = nullptr;
+	Mesh* dragon2M = nullptr;
+	Object* dragon2O = nullptr;
+
 	MeshData* colouredTriangleMeshData = nullptr;
 	Mesh* colouredTriangleMesh = nullptr;
 	Object* colouredTriangleObj = nullptr;
