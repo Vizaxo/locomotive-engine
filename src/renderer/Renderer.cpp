@@ -8,6 +8,9 @@
 #include "imgui_impl_dx11.h"
 #include "Utils.h"
 #include "Light.h"
+#include "Object.h"
+#include "Mesh.h"
+#include "Scene.h"
 
 using namespace DirectX;
 

@@ -142,7 +142,7 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\renderer\D3DContext.cpp" />
+    <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
     <ClCompile Include="src\DirectXTemplatePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -155,9 +155,9 @@
     <ClCompile Include="src\editor\ModelLoader.cpp" />
     <ClCompile Include="src\renderer\Object.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
-    <ClCompile Include="src\renderer\Shader.cpp" />
-    <ClCompile Include="src\renderer\Texture2D.cpp" />
-    <ClCompile Include="src\renderer\VertexBuffer.cpp" />
+    <ClCompile Include="src\rhi\dx11\Shader.cpp" />
+    <ClCompile Include="src\rhi\dx11\Texture2D.cpp" />
+    <ClCompile Include="src\rhi\dx11\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
@@ -168,7 +168,8 @@
     <ClInclude Include="include\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
-    <ClInclude Include="src\renderer\D3DContext.h" />
+    <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\rhi\dx11\D3DContext.h" />
     <ClInclude Include="src\DirectXTemplatePCH.h" />
     <ClInclude Include="src\ExampleScene.h" />
     <ClInclude Include="src\renderer\ImGuiUtils.h" />
@@ -179,10 +180,11 @@
     <ClInclude Include="src\renderer\Object.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\Scene.h" />
-    <ClInclude Include="src\renderer\Shader.h" />
-    <ClInclude Include="src\renderer\Texture2D.h" />
+    <ClInclude Include="src\rhi\RHI.h" />
+    <ClInclude Include="src\rhi\dx11\Shader.h" />
+    <ClInclude Include="src\rhi\dx11\Texture2D.h" />
     <ClInclude Include="src\Utils.h" />
-    <ClInclude Include="src\renderer\VertexBuffer.h" />
+    <ClInclude Include="src\rhi\dx11\VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\BaseColourPixelShader.hlsl">

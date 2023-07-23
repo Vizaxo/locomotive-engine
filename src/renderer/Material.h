@@ -3,8 +3,7 @@
 #include "DirectXTemplatePCH.h"
 #include <vector>
 
-#include "Texture2D.h"
-#include "Shader.h"
+#include "rhi/RHI.h"
 
 class Material {
 public:

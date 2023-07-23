@@ -1,12 +1,12 @@
 #include "ExampleScene.h"
+
 #include "Utils.h"
+#include "rhi/RHI.h"
 #include "renderer/ImGuiUtils.h"
 #include "renderer/Object.h"
 #include "renderer/Material.h"
-#include "renderer/Texture2D.h"
 #include "editor/ModelLoader.h"
 #include "renderer/Mesh.h"
-#include "renderer/VertexBuffer.h"
 
 #include "BaseColourVertexShader.h"
 #include "BaseColourPixelShader.h"

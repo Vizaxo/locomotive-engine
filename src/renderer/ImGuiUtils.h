@@ -2,7 +2,7 @@
 
 #include "DirectXTemplatePCH.h"
 
-#include "renderer/D3DContext.h"
+#include "rhi/RHI.h"
 #include "imgui.h"
 
 #define STR1(x)  #x

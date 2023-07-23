@@ -2,7 +2,7 @@
 
 #include "DirectXTemplatePCH.h"
 
-#include "D3DContext.h"
+#include "rhi/RHI.h"
 #include "Material.h"
 #include "Mesh.h"
 

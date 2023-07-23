@@ -11,7 +11,8 @@ Short-term:
 - Controllable camera
 - Make shaders load dynamically
 - Move scene update data (imgui sliders) out of the renderer /
-
+- Move DX11 code to RHI layer
+- Build more of DX11 RHI layer (so rednere doesn't reference DX11 directly)
 
 Long-term:
 - Create a level/scene editor

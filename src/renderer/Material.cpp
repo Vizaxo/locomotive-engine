@@ -1,5 +1,4 @@
 #include "Material.h"
-#include "Texture2D.h"
 #include <vector>
 
 Material::Material(PixelShader& pixelShader)

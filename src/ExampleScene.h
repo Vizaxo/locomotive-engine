@@ -2,8 +2,11 @@
 
 #include "DirectXTemplatePCH.h"
 
-#include "renderer/D3DContext.h"
+#include "rhi/RHI.h"
 #include "renderer/Scene.h"
+#include "renderer/Material.h"
+#include "renderer/Mesh.h"
+#include "renderer/Object.h"
 
 class ExampleScene {
 public:

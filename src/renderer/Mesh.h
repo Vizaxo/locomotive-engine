@@ -2,9 +2,7 @@
 
 #include "DirectXTemplatePCH.h"
 
-#include "D3DContext.h"
-#include "Shader.h"
-#include "VertexBuffer.h"
+#include "rhi/RHI.h"
 
 #include <vector>
 

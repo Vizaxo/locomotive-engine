@@ -2,8 +2,7 @@
 
 #include "DirectXTemplatePCH.h"
 
-#include "D3DContext.h"
-#include "Object.h"
+#include "rhi/RHI.h"
 #include "Scene.h"
 
 enum ConstantBuffer {
