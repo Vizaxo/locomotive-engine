@@ -29,6 +29,22 @@ cbuffer lights : register(b1) {
 	int numPointLights;
 }
 
+float3 aces_approx(float3 v)
+{
+    v *= 0.6f;
+    float a = 2.51f;
+    float b = 0.03f;
+    float c = 2.43f;
+    float d = 0.59f;
+    float e = 0.14f;
+    return clamp((v*(a*v+b))/(v*(c*v+d)+e), 0.0f, 1.0f);
+}
+
+float3 reinhard_extended(float3 v, float whitePoint) {
+	float3 numerator = v * (1.0f + (v / (whitePoint * whitePoint)));
+	return numerator / (1.0f + v);
+}
+
 float4 main(float4 uv : SV_POSITION) : SV_TARGET
 {
 	float4 GBufferA = texDiffuse.Sample(sampleDiffuse, uv.xy / windowSize.xy);
@@ -49,6 +65,7 @@ float4 main(float4 uv : SV_POSITION) : SV_TARGET
 		float angleAttenuation = max(dot(normal, lightDir), 0);
 
 		//Exponential falloff
+		//TODO: make quadratic falloff
 		float distanceAttenuation = max(pow(2, -(1 / (pointLights[i].radius * 0.5)) * lightDist), 0);
 
 		colour += pointLights[i].colour * distanceAttenuation * angleAttenuation * diffuse;
@@ -74,6 +91,14 @@ float4 main(float4 uv : SV_POSITION) : SV_TARGET
 
 	float3 ambient = 0.1 * float3(0.7f, 0.7f, 1.0f);
 	colour += ambient * diffuse;
+
+	// naive (non-luminance) Reinhard tonemapping
+	//colour = aces_approx(colour);
+
+	float exposure = 1.0f/50.0f;
+	colour *= exposure;
+
+	colour = colour / (1 + colour);
 
 	float gamma = 2.2f;
 	return float4(pow(colour, 1.0/gamma), 0.0f);
