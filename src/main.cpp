@@ -95,6 +95,11 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 	}
 
 	D3DContext d3dContext = D3DContext(hInstance, g_WindowHandle, g_EnableVSync);
+	if (d3dContext.d3dDevice == nullptr || d3dContext.d3dDeviceContext == nullptr) {
+		MessageBox(nullptr, TEXT("Failed to create D3DContext"), TEXT("Error"), MB_OK);
+		return -1;
+	}
+
 	ImGuiWrapper imgui(&d3dContext, g_WindowHandle);
 	Renderer renderer(&d3dContext);
 

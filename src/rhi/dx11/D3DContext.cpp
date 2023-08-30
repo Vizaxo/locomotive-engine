@@ -143,11 +143,13 @@ int D3DContext::CreateRasterizerState() {
 }
 
 int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
-	assert(CreateDeviceAndSwapchain() >= 0);
-	assert(CreateRenderTargetView() >= 0);
-	assert(CreateDepthStencilView() >= 0);
-	assert(CreateDepthStencilState() >= 0);
-	assert(CreateRasterizerState() >= 0);
+#define check(f) do {if (f != 0) return -1;} while(0);
+	check(CreateDeviceAndSwapchain());
+	check(CreateRenderTargetView());
+	check(CreateDepthStencilView());
+	check(CreateDepthStencilState());
+	check(CreateRasterizerState());
+#undef check
 
 	Viewport.Width = static_cast<float>(clientWidth);
 	Viewport.Height = static_cast<float>(clientHeight);
