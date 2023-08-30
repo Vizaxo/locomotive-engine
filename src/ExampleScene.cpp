@@ -77,6 +77,54 @@ std::vector<int> planeIndices = {
 	{0, 1, 2, 1, 3, 2}
 };
 
+const float sqrt3 = sqrt(3);
+std::vector<DirectX::XMFLOAT3> hexPrismPositions = {
+	{XMFLOAT3(0.f,       0.f,    0.f       )},
+	{XMFLOAT3(1.f/2.f,   0.f,    sqrt3/2.f )},
+	{XMFLOAT3(1.f,       0.f,    0.f       )},
+	{XMFLOAT3(1.f/2.f,   0.f,    -sqrt3/2.f)},
+	{XMFLOAT3(-1.f/2.f,  0.f,    -sqrt3/2.f)},
+	{XMFLOAT3(-1.f,      0.f,    0.f       )},
+	{XMFLOAT3(-1.f/2.f,  0.f,    sqrt3/2.f )},
+	{XMFLOAT3(0.f,       -100.f, 0.f       )},
+	{XMFLOAT3(1.f/2.f,   -100.f, sqrt3/2.f )},
+	{XMFLOAT3(1.f,       -100.f, 0.f       )},
+	{XMFLOAT3(1.f/2.f,   -100.f, -sqrt3/2.f)},
+	{XMFLOAT3(-1.f/2.f,  -100.f, -sqrt3/2.f)},
+	{XMFLOAT3(-1.f,      -100.f, 0.f       )},
+	{XMFLOAT3(-1.f/2.f,  -100.f, sqrt3/2.f )},
+};
+
+std::vector<int> hexPrismIndices = {
+	//top
+	0,1,2,
+	0,2,3,
+	0,3,4,
+	0,4,5,
+	0,5,6,
+	0,6,1,
+	//sides
+	2,1,8,
+	2,8,9,
+	3,2,9,
+	3,9,10,
+	4,3,10,
+	4,10,11,
+	5,4,11,
+	5,11,12,
+	6,5,12,
+	6,12,13,
+	1,6,13,
+	6,13,8,
+	//bottom
+	9,8,7,
+	10,9,7,
+	11,10,7,
+	12,11,7,
+	13,12,7,
+	8,13,7,
+};
+
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
 ExampleScene::ExampleScene(D3DContext* d3dContext) {
@@ -165,6 +213,40 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	texturedCubeObj = new Object(d3dContext, XMVectorSet(3, -1, 0, 0), 0.0f,  *texturedCubeMesh, texturedMaterial);
 	scene.objects.push_back(texturedCubeObj);
 	*/
+
+	VertexBuffer hexPrismPosVB = CreateVertexBuffer(hexPrismPositions,
+		{  {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
+		0);
+	std::vector<DirectX::XMFLOAT3> hexPrismNormals = std::vector<DirectX::XMFLOAT3>(hexPrismPositions.size());
+	for (size_t i = 0; i < hexPrismIndices.size(); i += 3) {
+		DirectX::XMFLOAT3* v1 = (DirectX::XMFLOAT3*)&hexPrismPositions[hexPrismIndices[i]];
+		DirectX::XMFLOAT3* v2 = (DirectX::XMFLOAT3*)&hexPrismPositions[hexPrismIndices[i + 1]];
+		DirectX::XMFLOAT3* v3 = (DirectX::XMFLOAT3*)&hexPrismPositions[hexPrismIndices[i + 2]];
+		DirectX::XMVECTOR faceNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(XMLoadFloat3(v2), XMLoadFloat3(v1))
+			, DirectX::XMVectorSubtract(XMLoadFloat3(v3), XMLoadFloat3(v1))));
+		DirectX::XMFLOAT3 faceNormalV3;
+		XMStoreFloat3(&faceNormalV3, faceNormal);
+
+		hexPrismNormals[hexPrismIndices[i]] = faceNormalV3;
+		hexPrismNormals[hexPrismIndices[i+1]] = faceNormalV3;
+		hexPrismNormals[hexPrismIndices[i+2]] = faceNormalV3;
+	}
+
+	std::vector<DirectX::XMFLOAT3> hexPrismColours = std::vector<DirectX::XMFLOAT3>(hexPrismPositions.size());
+	for (size_t i = 0; i < hexPrismPositions.size(); i++) {
+		hexPrismColours[i] = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	}
+	VertexBuffer hexPrismColoursVB = CreateVertexBuffer(hexPrismColours, 
+		{ {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
+		1);
+
+	VertexBuffer hexPrismNormalsVB = CreateVertexBuffer(hexPrismNormals,
+		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
+		2);
+	MeshData* hexPrismMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, hexPrismIndices);
+	Mesh* hexPrismMesh = new Mesh(d3dContext, *hexPrismMeshData, *baseColourVertexShader);
+	Object* hexPrism = new Object(d3dContext,XMVectorSet(0.0f,0.0f,0.0f, 0.0f),0.0f,*hexPrismMesh,baseColourMaterial);
+	scene.objects.push_back(hexPrism);
 
 	auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_res3.ply");
 	//auto res = ModelLoader::LoadModel(L"resources\\models\\stanford_dragon_vrip.ply");
