@@ -7,6 +7,7 @@
 #include "renderer/Material.h"
 #include "editor/ModelLoader.h"
 #include "renderer/Mesh.h"
+#include "HexCoord.h"
 
 #include "BaseColourVertexShader.h"
 #include "BaseColourPixelShader.h"
@@ -194,6 +195,11 @@ void ExampleScene::setupLighting() {
 	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(100.0f, 98.0f, 98.0f);
 }
 
+void ExampleScene::setupCamera() {
+	scene.eyePosition = XMVectorSet(0, 10, -10, 1);
+	scene.focusPoint = XMVectorSet(0, 0, 0, 1);
+}
+
 ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 
@@ -204,10 +210,15 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	makePlane(d3dContext);
 	createHexMesh(d3dContext);
 
-	scene.objects.push_back(Object(d3dContext,XMVectorSet(0.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial));
-	scene.objects.push_back(Object(d3dContext,XMVectorSet(1.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial));
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			HexCoord c = {i-5, j-5};
+			scene.objects.push_back(Object(d3dContext, XMVectorSet(c.cartesian().x, (i+j)/10.f, c.cartesian().y, 0.0f), 90.0f, *hexMesh, baseColourMaterial));
+		}
+	}
 
 	setupLighting();
+	setupCamera();
 }
 
 ExampleScene::~ExampleScene() {

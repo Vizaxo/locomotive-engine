@@ -96,11 +96,8 @@ Renderer::Renderer(D3DContext* d3dContext)
 }
 
 void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime) {
-
-	XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);
-	XMVECTOR focusPoint = XMVectorSet(0, 0, 0, 1);
 	XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
-	ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
+	ViewMatrix = XMMatrixLookAtLH(scene.eyePosition, scene.focusPoint, upDirection);
 	d3dContext->d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Frame], 0, nullptr, &ViewMatrix, 0, 0);
 
 	{
@@ -154,7 +151,7 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 
 	FrameData frameData = {
 		DirectX::XMFLOAT2(d3dContext->clientWidth, d3dContext->clientHeight),
-		eyePosition,
+		scene.eyePosition,
 	};
 	d3dDeviceContext->UpdateSubresource(cbFrameData, 0, nullptr, &frameData, 0, 0);
 	d3dDeviceContext->PSSetConstantBuffers(0, 1, &cbFrameData);

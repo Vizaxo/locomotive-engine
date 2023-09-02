@@ -17,6 +17,7 @@ public:
 	void makePlane(D3DContext* d3dContext);
 	void createHexMesh(D3DContext* d3dContext);
 	void setupLighting();
+	void setupCamera();
 
 	Scene scene;
 
