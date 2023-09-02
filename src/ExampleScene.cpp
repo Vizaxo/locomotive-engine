@@ -149,16 +149,7 @@ void ExampleScene::makePlane(D3DContext* d3dContext) {
 	scene.objects.push_back(plane);
 }
 
-ExampleScene::ExampleScene(D3DContext* d3dContext) {
-	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
-
-	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
-	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
-
-	baseColourMaterial = new Material(*baseColourPixelShader);
-
-	makePlane(d3dContext);
-
+void ExampleScene::createHexMesh(D3DContext* d3dContext) {
 	VertexBuffer hexPrismPosVB = CreateVertexBuffer(hexPrismPositions,
 		{  {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
 		0);
@@ -191,13 +182,9 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 		2);
 	hexMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, hexPrismIndices);
 	hexMesh = new Mesh(d3dContext, *hexMeshData, *baseColourVertexShader);
+}
 
-	Object hexObject = Object(d3dContext,XMVectorSet(0.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial);
-	scene.objects.push_back(hexObject);
-
-	Object hexObject2 = Object(d3dContext,XMVectorSet(1.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial);
-	scene.objects.push_back(hexObject2);
-
+void ExampleScene::setupLighting() {
 	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].radius = 20.0f;
@@ -205,6 +192,22 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 
 	XMStoreFloat3(&scene.lightData.directionalLight.direction, DirectX::XMVector3Normalize(DirectX::XMVectorSet(1.0f, -1.0f, 0.1f, 0.0f)));
 	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(100.0f, 98.0f, 98.0f);
+}
+
+ExampleScene::ExampleScene(D3DContext* d3dContext) {
+	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
+
+	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
+	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
+	baseColourMaterial = new Material(*baseColourPixelShader);
+
+	makePlane(d3dContext);
+	createHexMesh(d3dContext);
+
+	scene.objects.push_back(Object(d3dContext,XMVectorSet(0.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial));
+	scene.objects.push_back(Object(d3dContext,XMVectorSet(1.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial));
+
+	setupLighting();
 }
 
 ExampleScene::~ExampleScene() {

@@ -15,6 +15,8 @@ public:
 
 	void Tick(float deltaTime);
 	void makePlane(D3DContext* d3dContext);
+	void createHexMesh(D3DContext* d3dContext);
+	void setupLighting();
 
 	Scene scene;
 
