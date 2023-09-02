@@ -116,7 +116,7 @@ std::vector<int> hexPrismIndices = {
 	6,5,12,
 	6,12,13,
 	1,6,13,
-	6,13,8,
+	1,13,8,
 	//bottom
 	9,8,7,
 	10,9,7,
