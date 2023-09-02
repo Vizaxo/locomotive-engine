@@ -12,7 +12,9 @@ class ExampleScene {
 public:
 	ExampleScene(D3DContext* d3dContext);
 	~ExampleScene();
+
 	void Tick(float deltaTime);
+	void makePlane(D3DContext* d3dContext);
 
 	Scene scene;
 
@@ -23,11 +25,9 @@ private:
 
 	MeshData* planeMeshData;
 	Mesh* planeMesh;
-	Object* planeObject;
 
 	MeshData* hexMeshData;
 	Mesh* hexMesh;
-	Object* hexObject;
 };
 
 

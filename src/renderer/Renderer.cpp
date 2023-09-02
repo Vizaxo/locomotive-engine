@@ -126,8 +126,8 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 	d3dDeviceContext->ClearDepthStencilView(d3dContext->d3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
 	// Render to GBuffer
-	for (Object* obj : scene.objects) {
-		RenderObject(d3dContext, deltaTime, *obj);
+	for (Object& obj : scene.objects) {
+		RenderObject(d3dContext, deltaTime, obj);
 	}
 
 

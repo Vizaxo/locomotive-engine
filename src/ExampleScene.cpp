@@ -127,15 +127,7 @@ std::vector<int> hexPrismIndices = {
 
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
-ExampleScene::ExampleScene(D3DContext* d3dContext) {
-	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
-
-	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
-	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
-
-	baseColourMaterial = new Material(*baseColourPixelShader);
-
-
+void ExampleScene::makePlane(D3DContext* d3dContext) {
 	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
 	for (int i = 0; i < planePositions.size(); i++) {
 		planeNormals.push_back(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
@@ -153,8 +145,19 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 
 	planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, planeIndices);
 	planeMesh = new Mesh(d3dContext, *planeMeshData, *baseColourVertexShader);
-	planeObject = new Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMesh, baseColourMaterial);
-	scene.objects.push_back(planeObject);
+	Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMesh, baseColourMaterial);
+	scene.objects.push_back(plane);
+}
+
+ExampleScene::ExampleScene(D3DContext* d3dContext) {
+	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
+
+	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
+	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
+
+	baseColourMaterial = new Material(*baseColourPixelShader);
+
+	makePlane(d3dContext);
 
 	VertexBuffer hexPrismPosVB = CreateVertexBuffer(hexPrismPositions,
 		{  {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
@@ -188,8 +191,12 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 		2);
 	hexMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, hexPrismIndices);
 	hexMesh = new Mesh(d3dContext, *hexMeshData, *baseColourVertexShader);
-	hexObject = new Object(d3dContext,XMVectorSet(0.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial);
+
+	Object hexObject = Object(d3dContext,XMVectorSet(0.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial);
 	scene.objects.push_back(hexObject);
+
+	Object hexObject2 = Object(d3dContext,XMVectorSet(1.0f,0.0f,0.0f, 0.0f),0.0f,*hexMesh,baseColourMaterial);
+	scene.objects.push_back(hexObject2);
 
 	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
@@ -207,28 +214,22 @@ ExampleScene::~ExampleScene() {
 
 	delete planeMeshData;
 	delete planeMesh;
-	delete planeObject;
 
 	delete hexMeshData;
 	delete hexMesh;
-	delete hexObject;
 }
 
 void ExampleScene::Tick(float deltaTime) {
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
 		if (scene.objects.size() >= 1)
-			MkSliderV3("Plane", scene.objects[0]->GetPos(), -10.0f, 10.0f);
+			MkSliderV3("Plane", scene.objects[0].GetPos(), -10.0f, 10.0f);
 		if (scene.objects.size() >= 2)
-			MkSliderV3("Hex 1", scene.objects[1]->GetPos(), -2.0f, 2.0f);
+			MkSliderV3("Hex 1", scene.objects[1].GetPos(), -2.0f, 2.0f);
 		if (scene.objects.size() >= 3)
-			MkSliderV3("Textured cube", scene.objects[2]->GetPos(), -2.0f, 2.0f);
+			MkSliderV3("Textured cube", scene.objects[2].GetPos(), -2.0f, 2.0f);
 		if (scene.objects.size() >= 4)
-			MkSliderV3("Dragon", scene.objects[3]->GetPos(), -5.0f, 5.0f);
+			MkSliderV3("Dragon", scene.objects[3].GetPos(), -5.0f, 5.0f);
 		ImGui::End();
-	}
-
-	for (Object* obj : scene.objects) {
-		//obj->angle += 90.f * deltaTime;
 	}
 }
