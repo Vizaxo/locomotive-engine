@@ -14,5 +14,5 @@ public:
 	void addS(int delta) { q+=delta; r-=delta; }
 	int s() { return -q-r; }
 	float root3over2 = (float)std::sqrt(3.0f)/2;
-	V2 cartesian() { return {root3over2*2*q + r*root3over2, 1.5f * r}; }
+	v2 cartesian() { return {root3over2*2*q + r*root3over2, 1.5f * r}; }
 };

@@ -8,6 +8,7 @@
 #include "editor/ModelLoader.h"
 #include "renderer/Mesh.h"
 #include "HexCoord.h"
+#include "world/World.h"
 
 #include "BaseColourVertexShader.h"
 #include "BaseColourPixelShader.h"
@@ -210,10 +211,11 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	makePlane(d3dContext);
 	createHexMesh(d3dContext);
 
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			HexCoord c = {i-5, j-5};
-			scene.objects.push_back(Object(d3dContext, XMVectorSet(c.cartesian().x, (i+j)/10.f, c.cartesian().y, 0.0f), 90.0f, *hexMesh, baseColourMaterial));
+	int width = 30;
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < width; j++) {
+			HexCoord c = {i-width/2, j-width/2};
+			scene.objects.push_back(Object(d3dContext, XMVectorSet(c.cartesian().x, World::getHeight(c), c.cartesian().y, 0.0f), 90.0f, *hexMesh, baseColourMaterial));
 		}
 	}
 
