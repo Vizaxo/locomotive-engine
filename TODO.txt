@@ -3,18 +3,25 @@ TODO
 Short-term:
 - Encapsulate Windows code in a class
 - Normal maps
-- Loading objects /
-- Multiple lights /
 - Phong lighting
-- Unify texturing with lighting pass /
-- Improve ergonomics of scene creation
 - Controllable camera
 - Make shaders load dynamically
-- Move scene update data (imgui sliders) out of the renderer /
-- Move DX11 code to RHI layer
 - Build more of DX11 RHI layer (so rednere doesn't reference DX11 directly)
+- Set colours/textures on hexes based on height
+- Tile types
+- Abstraction of world rather than directly creating objects
+- Raycast to determine hex/position clicked
+- Ability to place tracks
 
 Long-term:
-- Create a level/scene editor
 - Hook up networking code from MMO project
-- Skeletal meshes for animation
+
+Done:
+- Loading objects
+- Multiple lights
+- Unify texturing with lighting pass
+- Move DX11 code to RHI layer
+- Move scene update data (imgui sliders) out of the renderer
+- Improve ergonomics of scene creation
+- Hex grid
+- Perlin-based heightmap generation
