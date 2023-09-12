@@ -1,5 +1,6 @@
 #include "DirectXTemplatePCH.h"
 
+#include "debug/ttd.h"
 #include "rhi/RHI.h"
 #include "renderer/Scene.h"
 #include "renderer/Object.h"
@@ -108,6 +109,12 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 	return ret;
 }
 
+bool g_shutdownRequested = false;
+
+void RequestShutdown() {
+	g_shutdownRequested = true;
+}
+
 int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui) {
 	ExampleScene exampleScene(d3dContext);
 	MSG msg = { 0 };
@@ -116,11 +123,16 @@ int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui) {
 	static const float targetFramerate = 30.0f;
 	static const float maxTimeStep = 1.0f / targetFramerate;
 
-	while (msg.message != WM_QUIT) {
+	volatile bool debug = false;
+	while (!g_shutdownRequested && msg.message != WM_QUIT) {
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
+			if (debug) {
+				Debug::TTD::StartRecordTrace();
+			}
+
 			DWORD currentTime = timeGetTime();
 			float deltaTime = (currentTime - previousTime) / 1000.0f;
 			previousTime = currentTime;
@@ -130,6 +142,10 @@ int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui) {
 			imgui.InitFrame();
 			exampleScene.Tick(deltaTime);
 			renderer.RenderScene(d3dContext, exampleScene.scene, deltaTime);
+
+			if (debug) {
+				Debug::TTD::StopRecordTrace();
+			}
 		}
 	}
 

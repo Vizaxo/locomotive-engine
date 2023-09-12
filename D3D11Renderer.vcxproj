@@ -143,6 +143,7 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\debug\ttd.cpp" />
     <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
     <ClCompile Include="src\DirectXTemplatePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -163,6 +164,7 @@
     <ClCompile Include="src\world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\debug\ttd.h" />
     <ClInclude Include="src\HexCoord.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
