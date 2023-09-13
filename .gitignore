@@ -362,8 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-include/generated
-include/stb_image
+engine/include/generated
 
 imgui.ini
 
