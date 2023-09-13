@@ -3,7 +3,7 @@
 #include "DirectXTemplatePCH.h"
 
 #include "rhi/RHI.h"
-#include "imgui.h"
+#include "imgui/imgui.h"
 
 #define STR1(x)  #x
 #define STR(x)  STR1(x)

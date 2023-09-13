@@ -12,10 +12,10 @@
 #include "Application.h"
 #include "EngineMain.h"
 
-#include "BaseColourVertexShader.h"
-#include "BaseColourPixelShader.h"
-#include "TexturedPixelShader.h"
-#include "TexturedVertexShader.h"
+#include "generated/BaseColourVertexShader.h"
+#include "generated/BaseColourPixelShader.h"
+#include "generated/TexturedPixelShader.h"
+#include "generated/TexturedVertexShader.h"
 
 using namespace DirectX;
 
