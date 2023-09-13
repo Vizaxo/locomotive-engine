@@ -1,4 +1,4 @@
-#include "ExampleScene.h"
+#include "ExampleProject.h"
 
 #include "Utils.h"
 #include "rhi/RHI.h"
@@ -9,6 +9,8 @@
 #include "renderer/Mesh.h"
 #include "HexCoord.h"
 #include "world/World.h"
+#include "Application.h"
+#include "EngineMain.h"
 
 #include "BaseColourVertexShader.h"
 #include "BaseColourPixelShader.h"
@@ -129,7 +131,14 @@ std::vector<int> hexPrismIndices = {
 
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
-void ExampleScene::makePlane(D3DContext* d3dContext) {
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow) {
+	ExampleApplication app = {};
+
+	engineWinMain(hInstance, prevInstance, cmdLine, cmdShow, app);
+}
+
+
+void ExampleApplication::makePlane(D3DContext* d3dContext) {
 	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
 	for (int i = 0; i < planePositions.size(); i++) {
 		planeNormals.push_back(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
@@ -151,7 +160,7 @@ void ExampleScene::makePlane(D3DContext* d3dContext) {
 	scene.objects.push_back(plane);
 }
 
-void ExampleScene::createHexMesh(D3DContext* d3dContext) {
+void ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 	VertexBuffer hexPrismPosVB = CreateVertexBuffer(hexPrismPositions,
 		{  {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
 		0);
@@ -186,7 +195,7 @@ void ExampleScene::createHexMesh(D3DContext* d3dContext) {
 	hexMesh = new Mesh(d3dContext, *hexMeshData, *baseColourVertexShader);
 }
 
-void ExampleScene::setupLighting() {
+void ExampleApplication::setupLighting() {
 	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].radius = 20.0f;
@@ -196,12 +205,12 @@ void ExampleScene::setupLighting() {
 	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(100.0f, 98.0f, 98.0f);
 }
 
-void ExampleScene::setupCamera() {
+void ExampleApplication::setupCamera() {
 	scene.eyePosition = XMVectorSet(0, 10, -10, 1);
 	scene.focusPoint = XMVectorSet(0, 0, 0, 1);
 }
 
-ExampleScene::ExampleScene(D3DContext* d3dContext) {
+void ExampleApplication::init(D3DContext* d3dContext) {
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 
 	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
@@ -223,7 +232,7 @@ ExampleScene::ExampleScene(D3DContext* d3dContext) {
 	setupCamera();
 }
 
-ExampleScene::~ExampleScene() {
+void ExampleApplication::cleanup() {
 	delete baseColourMaterial;
 	delete baseColourPixelShader;
 	delete baseColourVertexShader;
@@ -235,7 +244,7 @@ ExampleScene::~ExampleScene() {
 	delete hexMesh;
 }
 
-void ExampleScene::Tick(float deltaTime) {
+void ExampleApplication::tick(float deltaTime) {
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
 		if (scene.objects.size() >= 1)
@@ -248,4 +257,8 @@ void ExampleScene::Tick(float deltaTime) {
 			MkSliderV3("Dragon", scene.objects[3].GetPos(), -5.0f, 5.0f);
 		ImGui::End();
 	}
+}
+
+Scene& ExampleApplication::getScene() {
+	return scene;
 }

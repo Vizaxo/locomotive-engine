@@ -7,13 +7,14 @@
 #include "renderer/Material.h"
 #include "renderer/Mesh.h"
 #include "renderer/Object.h"
+#include "Application.h"
 
-class ExampleScene {
-public:
-	ExampleScene(D3DContext* d3dContext);
-	~ExampleScene();
+class ExampleApplication : public Application {
+	void init(D3DContext* d3dContext);
+	void tick(float deltaTime);
+	void cleanup();
+	Scene& getScene();
 
-	void Tick(float deltaTime);
 	void makePlane(D3DContext* d3dContext);
 	void createHexMesh(D3DContext* d3dContext);
 	void setupLighting();

@@ -4,9 +4,9 @@
 #include "rhi/RHI.h"
 #include "renderer/Scene.h"
 #include "renderer/Object.h"
-#include "ExampleScene.h"
 #include "renderer/Renderer.h"
 #include "renderer/ImGuiUtils.h"
+#include "Application.h"
 
 using namespace DirectX;
 
@@ -18,7 +18,7 @@ HWND g_WindowHandle = 0;
 const bool g_EnableVSync = true;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
-int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui);
+int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui, Application& app);
 
 
 int InitApplication(HINSTANCE hInstance, int cmdShow) {
@@ -80,8 +80,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	return 0;
 }
 
-int WINAPI wWinMain(HINSTANCE hInstance,
-	HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow) {
+int engineWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow, Application& app) {
 	UNREFERENCED_PARAMETER(prevInstance);
 	UNREFERENCED_PARAMETER(cmdLine);
 
@@ -104,7 +103,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 	ImGuiWrapper imgui(&d3dContext, g_WindowHandle);
 	Renderer renderer(&d3dContext);
 
-	int ret = Run(&d3dContext, renderer, imgui);
+	int ret = Run(&d3dContext, renderer, imgui, app);
 
 	return ret;
 }
@@ -115,8 +114,8 @@ void RequestShutdown() {
 	g_shutdownRequested = true;
 }
 
-int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui) {
-	ExampleScene exampleScene(d3dContext);
+int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui, Application& app) {
+	app.init(d3dContext);
 	MSG msg = { 0 };
 
 	static DWORD previousTime = timeGetTime();
@@ -140,14 +139,16 @@ int Run(D3DContext* d3dContext, Renderer& renderer, ImGuiWrapper& imgui) {
 			deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
 			imgui.InitFrame();
-			exampleScene.Tick(deltaTime);
-			renderer.RenderScene(d3dContext, exampleScene.scene, deltaTime);
+			app.tick(deltaTime);
+			renderer.RenderScene(d3dContext, app.getScene(), deltaTime);
 
 			if (debug) {
 				Debug::TTD::StopRecordTrace();
 			}
 		}
 	}
+
+	app.cleanup();
 
 	return static_cast<int>(msg.wParam);
 }

@@ -149,9 +149,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\ExampleScene.cpp" />
+    <ClCompile Include="src\example-project\ExampleProject.cpp" />
     <ClCompile Include="src\renderer\ImGuiUtils.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\EngineMain.cpp" />
     <ClCompile Include="src\renderer\Material.cpp" />
     <ClCompile Include="src\renderer\Mesh.cpp" />
     <ClCompile Include="src\editor\ModelLoader.cpp" />
@@ -164,7 +164,9 @@
     <ClCompile Include="src\world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\debug\ttd.h" />
+    <ClInclude Include="src\EngineMain.h" />
     <ClInclude Include="src\HexCoord.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
@@ -177,7 +179,7 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\rhi\dx11\D3DContext.h" />
     <ClInclude Include="src\DirectXTemplatePCH.h" />
-    <ClInclude Include="src\ExampleScene.h" />
+    <ClInclude Include="src\example-project\ExampleProject.h" />
     <ClInclude Include="src\renderer\ImGuiUtils.h" />
     <ClInclude Include="src\renderer\Light.h" />
     <ClInclude Include="src\renderer\Material.h" />
