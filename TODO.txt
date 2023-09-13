@@ -13,11 +13,13 @@ Short-term:
 - Raycast to determine hex/position clicked
 - Ability to place tracks
 - Keyboard and mouse input
+- Figure out proper event loop setup (WndProc or all in main loop?)
 
 Long-term:
 - Hook up networking code from MMO project
 - Server and client exes
 - Threading
+- Abstract platform-specific code behind platform layer
 
 Done:
 - Loading objects
