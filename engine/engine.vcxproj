@@ -145,6 +145,7 @@
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\debug\ttd.cpp" />
+    <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
     <ClCompile Include="src\DirectXTemplatePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -177,6 +178,7 @@
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\input\Keyboard.h" />
     <ClInclude Include="src\rhi\dx11\D3DContext.h" />
     <ClInclude Include="src\DirectXTemplatePCH.h" />
     <ClInclude Include="src\renderer\ImGuiUtils.h" />
@@ -256,9 +258,6 @@
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_ScreenShader</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">include/generated/ScreenShader.h</HeaderFileOutput>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

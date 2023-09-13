@@ -6,4 +6,6 @@ Keyboard::Key Keyboard::getKey(WPARAM wParam) {
 	} else if (wParam >= 0x41 && wParam <= 0x5A) {
 		return static_cast<Key>(wParam - 0x41 + static_cast<WPARAM>(Key::A));
 	}
+
+	return Key::Unknown;
 }

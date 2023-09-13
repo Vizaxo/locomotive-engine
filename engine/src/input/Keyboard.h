@@ -40,6 +40,7 @@ enum class Key {
 	X,
 	Y,
 	Z,
+	Backtick,
 	Unknown,
 };
 
