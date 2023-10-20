@@ -18,5 +18,5 @@ void Debug::TTD::StartRecordTrace() {
 void Debug::TTD::StopRecordTrace() {
 	// Quit to stop debugging. Debugger can be detatched safely and leave the
 	// program running, so there should be a nicer way to do this.
-	RequestShutdown();
+	//RequestShutdown(); //TODO: put this back
 }

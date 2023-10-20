@@ -4,7 +4,12 @@
 
 using namespace DirectX;
 
-D3DContext::D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync) : hInstance(hInstance), windowHandle(windowHandle), vsync(vSync) {
+D3DContext::D3DContext(WindowsPlatform win) : hInstance(win.hInstance), windowHandle(win.hwnd), vsync(win.vSync) {
+	if (!DirectX::XMVerifyCPUSupport()) {
+		MessageBox(nullptr, TEXT("Failed to verifiy DirectX support"), TEXT("Error"), MB_OK);
+		std::abort();
+	}
+
 	RECT clientRect;
 	GetClientRect(windowHandle, &clientRect);
 

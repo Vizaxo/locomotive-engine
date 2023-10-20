@@ -4,6 +4,7 @@
 
 #include "rhi/RHI.h"
 #include "imgui/imgui.h"
+#include "platform/Platform.h"
 
 #define STR1(x)  #x
 #define STR(x)  STR1(x)
@@ -20,7 +21,7 @@ namespace ImGui {
 
 class ImGuiWrapper {
 public:
-	ImGuiWrapper(D3DContext* d3dContext, HWND hwnd);
+	ImGuiWrapper(D3DContext* d3dContext, PLATFORM_DATA platform);
 	~ImGuiWrapper();
 	void InitFrame();
 };

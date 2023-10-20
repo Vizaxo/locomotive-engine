@@ -10,3 +10,6 @@ public:
 	virtual void cleanup() = 0;
 	virtual Scene& getScene() = 0;
 };
+
+// To be defined by the game
+extern Application* const application;

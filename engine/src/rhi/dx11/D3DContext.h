@@ -2,6 +2,8 @@
 
 #include "DirectXTemplatePCH.h"
 
+#include "platform/Windows.h"
+
 enum GBufferID {
 	DIFFUSE = 0,
 	NORMAL = 1,
@@ -11,7 +13,7 @@ enum GBufferID {
 
 class D3DContext {
 public:
-	D3DContext(HINSTANCE hInstance, HWND windowHandle, bool vSync);
+	D3DContext(WindowsPlatform win);
 	~D3DContext();
 	void Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil);
 	void Present();

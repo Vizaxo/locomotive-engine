@@ -1,7 +1,9 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "platform/Platform.h"
 
-class Application;
-
-int engineWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow, Application& app);
+namespace Engine {
+	int init(PLATFORM_DATA platform);
+	void tick();
+	void cleanup();
+};

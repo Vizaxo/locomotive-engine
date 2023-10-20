@@ -11,7 +11,7 @@ void ImGui::SliderVectorF3(DirectX::XMVECTOR& v, float minBound, float maxBound,
 	v = DirectX::XMVectorSet(floats[0], floats[1], floats[2], 0);
 }
 
-ImGuiWrapper::ImGuiWrapper(D3DContext* d3dContext, HWND hwnd) {
+ImGuiWrapper::ImGuiWrapper(D3DContext* d3dContext, PLATFORM_DATA platform) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -22,9 +22,13 @@ ImGuiWrapper::ImGuiWrapper(D3DContext* d3dContext, HWND hwnd) {
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
 
+#ifdef PLATFORM_WINDOWS
     // Setup Platform/Renderer backends
-    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplWin32_Init(platform.hwnd);
     ImGui_ImplDX11_Init(d3dContext->d3dDevice, d3dContext->d3dDeviceContext);
+#else
+#error "Platform not implemented for imgui"
+#endif
 }
 
 ImGuiWrapper::~ImGuiWrapper() {

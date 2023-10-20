@@ -131,12 +131,7 @@ std::vector<int> hexPrismIndices = {
 
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow) {
-	ExampleApplication app = {};
-
-	engineWinMain(hInstance, prevInstance, cmdLine, cmdShow, app);
-}
-
+Application* const application = new ExampleApplication();
 
 void ExampleApplication::makePlane(D3DContext* d3dContext) {
 	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
