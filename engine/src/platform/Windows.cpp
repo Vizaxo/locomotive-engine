@@ -1,6 +1,6 @@
 #include "platform/Windows.h"
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 #include "debug/ttd.h"
 #include "rhi/RHI.h"

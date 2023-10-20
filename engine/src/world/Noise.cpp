@@ -1,6 +1,6 @@
-#include "Noise.h"
+#include "PCH.h"
 
-#include <cmath>
+#include "Noise.h"
 
 v2 randomGradient(int ix, int iy) {
     const u32 w = 8u * 4u;

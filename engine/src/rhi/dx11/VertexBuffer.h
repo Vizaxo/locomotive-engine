@@ -1,11 +1,9 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 #include "D3DContext.h"
 #include "Utils.h"
-
-#include <vector>
 
 class VertexBuffer {
 public:

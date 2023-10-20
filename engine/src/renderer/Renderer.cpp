@@ -1,11 +1,9 @@
+#include "PCH.h"
 #include "Renderer.h"
 
 #include "GBufferComposite.h"
 #include "ScreenShader.h"
 #include "ImGuiUtils.h"
-#include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
 #include "Utils.h"
 #include "Light.h"
 #include "Object.h"

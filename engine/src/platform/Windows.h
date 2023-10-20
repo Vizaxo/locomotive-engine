@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 struct WindowsPlatform  {
 	HINSTANCE hInstance;

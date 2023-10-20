@@ -78,6 +78,9 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,6 +96,9 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,9 +113,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/include;$(ProjectDir)/include/imgui;$(ProjectDir)/include/generated;$(ProjectDir)/include/stb;$(ProjectDir)include/imgui/backends</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>DirectXTemplatePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -126,9 +132,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/include;$(ProjectDir)/include/imgui;$(ProjectDir)/include/generated;$(ProjectDir)/include/stb;$(ProjectDir)include/imgui/backends</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>DirectXTemplatePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +148,6 @@
     <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
-    <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
@@ -151,9 +156,11 @@
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\platform\Windows.cpp" />
     <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
-    <ClCompile Include="src\DirectXTemplatePCH.cpp">
+    <ClCompile Include="src\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\renderer\ImGuiUtils.cpp" />
     <ClCompile Include="src\renderer\Material.cpp" />
@@ -164,6 +171,7 @@
     <ClCompile Include="src\rhi\dx11\Shader.cpp" />
     <ClCompile Include="src\rhi\dx11\Texture2D.cpp" />
     <ClCompile Include="src\rhi\dx11\VertexBuffer.cpp" />
+    <ClCompile Include="src\stbi_impl.cpp" />
     <ClCompile Include="src\world\Noise.cpp" />
     <ClCompile Include="src\world\World.cpp" />
   </ItemGroup>
@@ -185,7 +193,7 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\input\Keyboard.h" />
     <ClInclude Include="src\rhi\dx11\D3DContext.h" />
-    <ClInclude Include="src\DirectXTemplatePCH.h" />
+    <ClInclude Include="src\PCH.h" />
     <ClInclude Include="src\renderer\ImGuiUtils.h" />
     <ClInclude Include="src\renderer\Light.h" />
     <ClInclude Include="src\renderer\Material.h" />

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Vector.h"
-#include <cmath>
 
 // Axial hex coordinate system
 // Maintains constraint q + r + s = 0

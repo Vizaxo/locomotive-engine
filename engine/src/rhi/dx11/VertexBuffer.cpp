@@ -1,3 +1,4 @@
+#include "PCH.h"
 #include "VertexBuffer.h"
 
 VertexBuffer::VertexBuffer(std::vector<uint8_t> verts, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, uint32_t stride, uint32_t slot, uint32_t offset0)

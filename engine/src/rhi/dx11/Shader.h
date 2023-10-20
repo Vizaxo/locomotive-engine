@@ -1,10 +1,8 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 #include "D3DContext.h"
-
-#include <vector>
 
 struct Shader {
 	const void* bytecode;

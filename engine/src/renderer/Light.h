@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 #define MAX_LIGHTS 32
 

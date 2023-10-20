@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-
 template <typename T>
 struct Vector2 {
 	T x;

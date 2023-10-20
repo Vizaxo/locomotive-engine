@@ -1,10 +1,6 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
-
-#include <variant>
-#include <fstream>
-#include <vector>
+#include "PCH.h"
 
 #include "renderer/Mesh.h"
 

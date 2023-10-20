@@ -1,10 +1,9 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 #include "Object.h"
 #include "Light.h"
-#include <vector>
 
 class Scene {
 public:

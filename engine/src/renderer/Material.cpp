@@ -1,5 +1,5 @@
+#include "PCH.h"
 #include "Material.h"
-#include <vector>
 
 Material::Material(PixelShader& pixelShader)
 	: pixelShader(pixelShader)

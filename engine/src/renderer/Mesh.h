@@ -1,10 +1,8 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 #include "rhi/RHI.h"
-
-#include <vector>
 
 class MeshData {
 public:

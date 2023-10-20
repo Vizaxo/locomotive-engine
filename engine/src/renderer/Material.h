@@ -1,7 +1,6 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
-#include <vector>
+#include "PCH.h"
 
 #include "rhi/RHI.h"
 

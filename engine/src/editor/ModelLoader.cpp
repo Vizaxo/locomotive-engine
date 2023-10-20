@@ -1,9 +1,6 @@
-#include "ModelLoader.h"
+#include "PCH.h"
 
-#include <fstream>
-#include <string>
-#include <vector>
-#include <tuple>
+#include "ModelLoader.h"
 
 #define ERR(t) {DebugBreak(); return std::variant<MeshData, std::string>(std::string(t));}
 

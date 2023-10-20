@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 /* Record a trace with the WinDbg time travel debugger (TTD) */
 

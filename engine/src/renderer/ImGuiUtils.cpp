@@ -1,10 +1,6 @@
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 
 #include "ImGuiUtils.h"
-
-#include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
 
 void ImGui::SliderVectorF3(DirectX::XMVECTOR& v, float minBound, float maxBound, float floats[], const char* label) {
 	ImGui::SliderFloat3(label, floats, minBound, maxBound, "%.3f");

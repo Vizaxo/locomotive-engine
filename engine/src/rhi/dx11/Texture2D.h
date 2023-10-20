@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DirectXTemplatePCH.h"
+#include "PCH.h"
 #include "D3DContext.h"
 
 class Texture2D {

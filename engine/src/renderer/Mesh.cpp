@@ -1,6 +1,5 @@
+#include "PCH.h"
 #include "Mesh.h"
-
-#include <set>
 
 MeshData::MeshData(std::vector<VertexBuffer> vertexBuffers, std::vector<int> inIndices)
 	: vertexBuffers(vertexBuffers), indices(inIndices)
