@@ -13,6 +13,7 @@
 #include "world/World.h"
 #include "Application.h"
 #include "EngineMain.h"
+#include "input/Keyboard.h"
 
 #include "generated/BaseColourVertexShader.h"
 #include "generated/BaseColourPixelShader.h"
@@ -204,7 +205,7 @@ void ExampleApplication::setupLighting() {
 
 void ExampleApplication::setupCamera() {
 	scene.eyePosition = XMVectorSet(0, 10, -10, 1);
-	scene.focusPoint = XMVectorSet(0, 0, 0, 1);
+	scene.lookDirection = XMVectorSet(0, -0.2, 1, 0);
 }
 
 void ExampleApplication::init(D3DContext* d3dContext) {
@@ -254,6 +255,21 @@ void ExampleApplication::tick(float deltaTime) {
 			MkSliderV3("Dragon", scene.objects[3].GetPos(), -5.0f, 5.0f);
 		ImGui::End();
 	}
+
+	DirectX::XMVECTOR localDirection = XMVectorSet(0,0,0,0);
+	if (Keyboard::keysDown.find(Keyboard::Key::W) != Keyboard::keysDown.end())
+		localDirection += XMVectorSet(0,0,1,0);
+	if (Keyboard::keysDown.find(Keyboard::Key::A) != Keyboard::keysDown.end())
+		localDirection += XMVectorSet(1,0,0,0);
+	if (Keyboard::keysDown.find(Keyboard::Key::S) != Keyboard::keysDown.end())
+		localDirection += XMVectorSet(-1,0,0,0);
+	if (Keyboard::keysDown.find(Keyboard::Key::D) != Keyboard::keysDown.end())
+		localDirection += XMVectorSet(0,0,-1,0);
+
+	DirectX::XMVECTOR worldDirection = DirectX::XMVector3Transform(localDirection, scene.localToWorld());
+
+	const float movementSpeed = 1.0f;
+	scene.eyePosition += movementSpeed * deltaTime * worldDirection;
 }
 
 Scene& ExampleApplication::getScene() {

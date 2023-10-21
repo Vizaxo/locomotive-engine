@@ -44,6 +44,10 @@ enum class Key {
 	Unknown,
 };
 
+extern std::set<Keyboard::Key> keysDown;
+
 std::string toString(Key k);
+void keyDown(Keyboard::Key k);
+void keyUp(Keyboard::Key k);
 
 }

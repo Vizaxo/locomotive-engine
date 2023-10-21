@@ -10,5 +10,6 @@ public:
 	std::vector<Object> objects;
 	LightData lightData;
 	DirectX::XMVECTOR eyePosition;
-	DirectX::XMVECTOR focusPoint;
+	DirectX::XMVECTOR lookDirection;
+	DirectX::XMMATRIX localToWorld();
 };

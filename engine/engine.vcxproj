@@ -156,6 +156,7 @@
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\platform\windows\WinInput.cpp" />
     <ClCompile Include="src\platform\windows\WinMain.cpp" />
+    <ClCompile Include="src\renderer\Source.cpp" />
     <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
     <ClCompile Include="src\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

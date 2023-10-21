@@ -2,6 +2,9 @@
 #include "Keyboard.h"
 
 namespace Keyboard {
+
+std::set<Keyboard::Key> keysDown = {};
+
 std::string toString(Key k) {
 	std::string s;
 	char c[2];
@@ -13,4 +16,13 @@ std::string toString(Key k) {
 	c[1] = '\0';
 	return s.append(c);
 }
+
+void keyDown(Keyboard::Key k) {
+	keysDown.insert(k);
+}
+
+void keyUp(Keyboard::Key k) {
+	keysDown.erase(k);
+}
+
 }

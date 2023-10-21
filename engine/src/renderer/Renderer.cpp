@@ -94,8 +94,8 @@ Renderer::Renderer(D3DContext* d3dContext)
 }
 
 void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime) {
-	XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
-	ViewMatrix = XMMatrixLookAtLH(scene.eyePosition, scene.focusPoint, upDirection);
+	XMVECTOR upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
+	ViewMatrix = XMMatrixLookToLH(scene.eyePosition, DirectX::XMVector3Normalize(scene.lookDirection), upDirection);
 	d3dContext->d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Frame], 0, nullptr, &ViewMatrix, 0, 0);
 
 	{
