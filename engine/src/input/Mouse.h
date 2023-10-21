@@ -32,5 +32,6 @@ void buttonDown(Button b);
 void buttonUp(Button b);
 void unlockCursorFromWindow(PAL::WindowHandle* h);
 void lockCursorToWindow(PAL::WindowHandle* h);
+void endTick();
 
 }

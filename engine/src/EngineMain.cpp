@@ -61,6 +61,7 @@ void tick() {
 	imgui->InitFrame();
 	application->tick(deltaTime);
 	renderer->RenderScene(d3dContext, application->getScene(), deltaTime);
+	Mouse::endTick();
 
 	if (debug) {
 		Debug::TTD::StopRecordTrace();

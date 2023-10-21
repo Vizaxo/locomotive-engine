@@ -132,6 +132,12 @@ std::vector<int> hexPrismIndices = {
 	8,13,7,
 };
 
+enum MouseMode {
+	Nop,
+	MoveCamera,
+};
+MouseMode mouseMode = Nop;
+
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
 Application* const application = new ExampleApplication();
@@ -259,6 +265,14 @@ void ExampleApplication::tick(float deltaTime) {
 		ImGui::End();
 	}
 
+	if (mouseMode == MoveCamera) {
+		float mouseSensitivity = 0.001;
+		float yaw = Mouse::dx * mouseSensitivity;
+		float pitch = Mouse::dy * mouseSensitivity;
+		scene.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldUp, yaw));
+		scene.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldRight(), -pitch));
+	}
+
 	DirectX::XMVECTOR localDirection = XMVectorSet(0,0,0,0);
 	if (Keyboard::keysDown.find(Keyboard::Key::W) != Keyboard::keysDown.end())
 		localDirection += XMVectorSet(0,0,1,0);
@@ -271,7 +285,7 @@ void ExampleApplication::tick(float deltaTime) {
 
 	DirectX::XMVECTOR worldDirection = DirectX::XMVector3Transform(localDirection, scene.localToWorld());
 
-	const float movementSpeed = 1.0f;
+	const float movementSpeed = 5.0f;
 	scene.eyePosition += movementSpeed * deltaTime * worldDirection;
 }
 
@@ -283,10 +297,12 @@ void ExampleApplication::mouseButtonDown(Mouse::Button b) {
 	if (b == Mouse::Button::M2) {
 		Mouse::lockCursorToWindow(windowHandle);
 	}
+	mouseMode = MoveCamera;
 }
 
 void ExampleApplication::mouseButtonUp(Mouse::Button b) {
 	if (b == Mouse::Button::M2) {
 		Mouse::unlockCursorFromWindow(windowHandle);
 	}
+	mouseMode = Nop;
 }

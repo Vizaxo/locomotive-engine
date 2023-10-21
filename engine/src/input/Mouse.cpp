@@ -16,14 +16,10 @@ MouseState mouseState = Free;
 Mouse::Button buttonState = Mouse::Button::NONE;
 
 void setMousePos(int _x, int _y) {
-	dx = _x - x;
-	dy = _y - y;
+	dx += _x - x;
+	dy += _y - y;
 	x = _x;
 	y = _y;
-
-	if (mouseState == LockedToWindow) {
-		PAL::setCursorPosition(savedCursorPos);
-	}
 }
 
 void setMouseButtonState(Mouse::Button newState) {
@@ -49,6 +45,11 @@ void unlockCursorFromWindow(PAL::WindowHandle* h) {
 	PAL::setCursorPosition(savedCursorPos);
 
 	mouseState = Free;
+}
+
+void endTick() {
+	dx = 0;
+	dy = 0;
 }
 
 }
