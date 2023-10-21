@@ -2,7 +2,10 @@
 
 #include "WinInput.h"
 
-Keyboard::Key Platform::Windows::getKey(WPARAM wParam) {
+namespace Platform {
+namespace Windows {
+
+Keyboard::Key getKey(WPARAM wParam) {
 	if (wParam >= 0x30 && wParam <= 0x39) {
 		return static_cast<Keyboard::Key>(wParam - 0x30 + static_cast<WPARAM>(Keyboard::Key::NUM0));
 	} else if (wParam >= 0x41 && wParam <= 0x5A) {
@@ -10,4 +13,17 @@ Keyboard::Key Platform::Windows::getKey(WPARAM wParam) {
 	}
 
 	return Keyboard::Key::Unknown;
+}
+
+Mouse::Button getMouseButton(WPARAM wParam) {
+	int b = Mouse::Button::NONE;
+	if (wParam & MK_LBUTTON) b = b | Mouse::M1;
+	if (wParam & MK_RBUTTON) b = b | Mouse::M2;
+	if (wParam & MK_MBUTTON) b = b | Mouse::M3;
+	if (wParam & MK_XBUTTON1) b = b | Mouse::M4;
+	if (wParam & MK_XBUTTON2) b = b | Mouse::M5;
+	return (Mouse::Button)b;
+}
+
+}
 }

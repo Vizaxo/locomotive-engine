@@ -82,13 +82,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	case WM_KEYUP:
 		Engine::keyUp(getKey(wParam));
 		break;
+	case WM_LBUTTONUP:
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_RBUTTONDOWN:
 	case WM_MBUTTONUP:
-		goto mousemove;
 	case WM_MBUTTONDOWN:
-		goto mousemove;
-	mousemove:
+	case WM_XBUTTONUP:
+	case WM_XBUTTONDOWN:
 	case WM_MOUSEMOVE:
 	{
+		Mouse::setMouseButtonState(getMouseButton(wParam));
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 		Mouse::setMousePos(x, y);

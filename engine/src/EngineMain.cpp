@@ -55,6 +55,9 @@ void tick() {
 	DEBUG_PRINT(std::to_string(Mouse::y).c_str());
 	DEBUG_PRINT("\n");
 
+	DEBUG_PRINT(std::to_string((int)Mouse::buttonState).c_str());
+	DEBUG_PRINT("\n");
+
 	imgui->InitFrame();
 	application->tick(deltaTime);
 	renderer->RenderScene(d3dContext, application->getScene(), deltaTime);
