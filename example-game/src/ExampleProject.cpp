@@ -9,7 +9,7 @@
 #include "renderer/Material.h"
 #include "editor/ModelLoader.h"
 #include "renderer/Mesh.h"
-#include "HexCoord.h"
+#include "types/HexCoord.h"
 #include "world/World.h"
 #include "Application.h"
 #include "input/Keyboard.h"

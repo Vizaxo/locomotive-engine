@@ -176,13 +176,13 @@
     <ClInclude Include="src\debug\ttd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\HexCoord.h">
+    <ClInclude Include="src\types\HexCoord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Types.h">
+    <ClInclude Include="src\types\Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vector.h">
+    <ClInclude Include="src\types\Vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\world\Noise.h">

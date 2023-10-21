@@ -2,7 +2,7 @@
 
 #include "PCH.h"
 
-#include "HexCoord.h"
+#include "types/HexCoord.h"
 
 namespace World {
 float getHeight(HexCoord c);
