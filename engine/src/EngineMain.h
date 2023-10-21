@@ -4,7 +4,7 @@
 #include "input/Keyboard.h"
 
 namespace Engine {
-	int init(PLATFORM_DATA platform);
+	int init(PAL::WindowHandle* h, bool vsync);
 	void tick();
 	void cleanup();
 	void keyDown(Keyboard::Key k);

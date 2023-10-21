@@ -2,12 +2,16 @@
 
 #include "ImGuiUtils.h"
 
+#ifdef PLATFORM_WINDOWS
+#include "platform/windows/Windows.h"
+#endif
+
 void ImGui::SliderVectorF3(DirectX::XMVECTOR& v, float minBound, float maxBound, float floats[], const char* label) {
 	ImGui::SliderFloat3(label, floats, minBound, maxBound, "%.3f");
 	v = DirectX::XMVectorSet(floats[0], floats[1], floats[2], 0);
 }
 
-ImGuiWrapper::ImGuiWrapper(D3DContext* d3dContext, PLATFORM_DATA platform) {
+ImGuiWrapper::ImGuiWrapper(D3DContext* d3dContext, PAL::WindowHandle* h) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -20,7 +24,7 @@ ImGuiWrapper::ImGuiWrapper(D3DContext* d3dContext, PLATFORM_DATA platform) {
 
 #ifdef PLATFORM_WINDOWS
     // Setup Platform/Renderer backends
-    ImGui_ImplWin32_Init(platform.hwnd);
+    ImGui_ImplWin32_Init(h->hwnd);
     ImGui_ImplDX11_Init(d3dContext->d3dDevice, d3dContext->d3dDeviceContext);
 #else
 #error "Platform not implemented for imgui"

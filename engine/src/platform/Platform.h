@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Windows/Windows.h"
-
 #define WINDOWS 0
 #define LINUX 1
 
@@ -9,7 +7,17 @@
 
 #if PLATFORM == WINDOWS
 #define PLATFORM_WINDOWS
-#define PLATFORM_DATA WindowsPlatform
+#define WINDOWS_ONLY
 #else
 #error "Platform not implemented"
+#define WINDOWS_ONLY #error "This header can only be imported on Windows platforms"
 #endif
+
+namespace PAL {
+
+class WindowHandle;
+
+void mouseSetCapture(WindowHandle* h);
+void mouseReleaseCapture(WindowHandle* h);
+
+}

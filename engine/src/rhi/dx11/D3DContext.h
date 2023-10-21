@@ -13,7 +13,7 @@ enum GBufferID {
 
 class D3DContext {
 public:
-	D3DContext(WindowsPlatform win);
+	D3DContext(PAL::WindowHandle* h, bool vSync);
 	~D3DContext();
 	void Clear(const float clearColor[4], float clearDepth, uint8_t clearStencil);
 	void Present();
@@ -36,9 +36,8 @@ public:
 private:
 	bool vsync;
 	HWND windowHandle;
-	HINSTANCE hInstance;
 
-	int InitDirectX(HINSTANCE hInstance, HWND windowHandle);
+	int InitDirectX();
 	int CreateDeviceAndSwapchain();
 	int CreateRenderTargetView();
 	int CreateDepthStencilView();

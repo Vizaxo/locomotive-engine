@@ -1,10 +1,15 @@
 #include "PCH.h"
 #include "D3DContext.h"
-
+#include "platform/Platform.h"
+#include "platform/Windows/Windows.h"
 
 using namespace DirectX;
 
-D3DContext::D3DContext(WindowsPlatform win) : hInstance(win.hInstance), windowHandle(win.hwnd), vsync(win.vSync) {
+#ifndef PLATFORM_WINDOWS
+#error "DX11 only supported on Windows"
+#endif
+
+D3DContext::D3DContext(PAL::WindowHandle* h, bool vSync) : windowHandle(h->hwnd), vsync(vSync) {
 	if (!DirectX::XMVerifyCPUSupport()) {
 		MessageBox(nullptr, TEXT("Failed to verifiy DirectX support"), TEXT("Error"), MB_OK);
 		std::abort();
@@ -16,7 +21,7 @@ D3DContext::D3DContext(WindowsPlatform win) : hInstance(win.hInstance), windowHa
 	clientWidth = static_cast<float>(clientRect.right - clientRect.left);
 	clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
 
-	if (InitDirectX(hInstance, windowHandle) != 0) {
+	if (InitDirectX() != 0) {
 		MessageBox(nullptr, TEXT("Failed to create DirectXDevice"), TEXT("Error"), MB_OK);
 	}
 }
@@ -147,7 +152,7 @@ int D3DContext::CreateRasterizerState() {
 	return 0;
 }
 
-int D3DContext::InitDirectX(HINSTANCE hInstance, HWND windowHandle) {
+int D3DContext::InitDirectX() {
 #define check(f) do {if (f != 0) return -1;} while(0);
 	check(CreateDeviceAndSwapchain());
 	check(CreateRenderTargetView());

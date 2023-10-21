@@ -1,5 +1,7 @@
 #include "PCH.h"
 
+#include "platform/Platform.h"
+#ifdef PLATFORM_WINDOWS
 #include "platform/Windows/Windows.h"
 
 #include "debug/ttd.h"
@@ -14,7 +16,7 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-namespace Platform {
+namespace PAL {
 namespace Windows {
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
@@ -114,13 +116,14 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, 
 	UNREFERENCED_PARAMETER(prevInstance);
 	UNREFERENCED_PARAMETER(cmdLine);
 
-	if (Platform::Windows::InitWindow(hInstance, cmdShow) != 0) {
+	if (PAL::Windows::InitWindow(hInstance, cmdShow) != 0) {
 		MessageBox(nullptr, TEXT("Failed to create window"), TEXT("Error"), MB_OK);
 		return -1;
 	}
 
 	int ret;
-	if (!(ret = Engine::init({hInstance, Platform::Windows::g_WindowHandle, true}))) {
+	PAL::WindowHandle h = {PAL::Windows::g_WindowHandle};
+	if (!(ret = Engine::init(&h, true))) {
 		return ret;
 	}
 
@@ -139,3 +142,5 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, 
 
 	return static_cast<int>(msg.wParam);
 }
+
+#endif

@@ -1,8 +1,13 @@
 #include "PCH.h"
 
+// Windows-specific input code
+
+#include "platform/Platform.h"
+#ifdef PLATFORM_WINDOWS
+
 #include "WinInput.h"
 
-namespace Platform {
+namespace PAL {
 namespace Windows {
 
 Keyboard::Key getKey(WPARAM wParam) {
@@ -27,3 +32,5 @@ Mouse::Button getMouseButton(WPARAM wParam) {
 
 }
 }
+
+#endif

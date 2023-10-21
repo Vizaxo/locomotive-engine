@@ -18,14 +18,14 @@ DWORD previousTime;
 const float targetFramerate = 30.0f;
 const float maxTimeStep = 1.0f / targetFramerate;
 
-int init(PLATFORM_DATA platform) {
-	d3dContext = new D3DContext(platform);
+int init(PAL::WindowHandle* h, bool vSync) {
+	d3dContext = new D3DContext(h, vSync);
 	if (d3dContext->d3dDevice == nullptr || d3dContext->d3dDeviceContext == nullptr) {
 		MessageBox(nullptr, TEXT("Failed to create D3DContext"), TEXT("Error"), MB_OK);
 		return -1;
 	}
 
-	imgui = new ImGuiWrapper(d3dContext, platform);
+	imgui = new ImGuiWrapper(d3dContext, h);
 	renderer = new Renderer(d3dContext);
 	previousTime = timeGetTime();
 

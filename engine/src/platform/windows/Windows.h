@@ -2,8 +2,13 @@
 
 #include "PCH.h"
 
-struct WindowsPlatform  {
-	HINSTANCE hInstance;
+#include "platform/Platform.h"
+WINDOWS_ONLY
+
+namespace PAL {
+
+struct WindowHandle {
 	HWND hwnd;
-	bool vSync;
 };
+
+}
