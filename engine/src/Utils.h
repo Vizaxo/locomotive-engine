@@ -10,3 +10,5 @@ std::vector<uint8_t> toByteVector(std::vector<T> v) {
 	std::vector<uint8_t> out = std::vector((uint8_t*)v.data(), (uint8_t*)v.data() + v.size() * sizeof(T));
 	return std::move(out);
 }
+
+#define DEBUG_PRINT OutputDebugStringA

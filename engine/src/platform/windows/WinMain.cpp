@@ -9,12 +9,14 @@
 #include "renderer/Renderer.h"
 #include "renderer/ImGuiUtils.h"
 #include "EngineMain.h"
+#include "WinInput.h"
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Platform {
 namespace Windows {
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lparam);
 
 const LONG g_WindowWidth = 1280;
 const LONG g_WindowHeight = 720;
@@ -57,9 +59,6 @@ int InitWindow(HINSTANCE hInstance, int cmdShow) {
 	return 0;
 }
 
-}
-}
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	, WPARAM wParam, LPARAM lParam) {
 	PAINTSTRUCT paintStruct;
@@ -76,11 +75,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+	case WM_KEYDOWN:
+		Engine::keyDown(getKey(wParam));
+		break;
+	case WM_KEYUP:
+		Engine::keyUp(getKey(wParam));
+		break;
 	default:
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 
 	return 0;
+}
+
+}
 }
 
 int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _In_ LPSTR cmdLine, _In_ int cmdShow) {

@@ -44,6 +44,6 @@ enum class Key {
 	Unknown,
 };
 
-Key getKey(WPARAM wParam);
+std::string toString(Key k);
 
 }

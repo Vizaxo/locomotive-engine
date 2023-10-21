@@ -154,7 +154,8 @@
     <ClCompile Include="src\debug\ttd.cpp" />
     <ClCompile Include="src\EngineMain.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
-    <ClCompile Include="src\platform\Windows.cpp" />
+    <ClCompile Include="src\platform\windows\WinInput.cpp" />
+    <ClCompile Include="src\platform\windows\WinMain.cpp" />
     <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
     <ClCompile Include="src\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -180,7 +181,7 @@
     <ClInclude Include="src\debug\ttd.h" />
     <ClInclude Include="src\EngineMain.h" />
     <ClInclude Include="src\platform\Platform.h" />
-    <ClInclude Include="src\platform\Windows.h" />
+    <ClInclude Include="src\platform\windows\Windows.h" />
     <ClInclude Include="src\HexCoord.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\input\Keyboard.h" />
+    <ClInclude Include="src\platform\windows\WinInput.h" />
     <ClInclude Include="src\rhi\dx11\D3DContext.h" />
     <ClInclude Include="src\PCH.h" />
     <ClInclude Include="src\renderer\ImGuiUtils.h" />

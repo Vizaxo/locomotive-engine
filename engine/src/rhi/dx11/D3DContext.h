@@ -2,7 +2,7 @@
 
 #include "PCH.h"
 
-#include "platform/Windows.h"
+#include "platform/Windows/Windows.h"
 
 enum GBufferID {
 	DIFFUSE = 0,

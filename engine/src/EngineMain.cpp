@@ -14,6 +14,8 @@ Renderer* renderer;
 D3DContext* d3dContext;
 DWORD previousTime;
 
+std::set<Keyboard::Key> keysDown = {};
+
 const float targetFramerate = 30.0f;
 const float maxTimeStep = 1.0f / targetFramerate;
 
@@ -44,6 +46,11 @@ void tick() {
 
 	deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
+	for (Keyboard::Key k : keysDown)
+		DEBUG_PRINT(Keyboard::toString(k).c_str());
+	if (!keysDown.empty())
+		DEBUG_PRINT("\n");
+
 	imgui->InitFrame();
 	application->tick(deltaTime);
 	renderer->RenderScene(d3dContext, application->getScene(), deltaTime);
@@ -58,6 +65,14 @@ void cleanup() {
 	delete renderer;
 	delete imgui;
 	delete d3dContext;
+}
+
+void keyDown(Keyboard::Key k) {
+	keysDown.insert(k);
+}
+
+void keyUp(Keyboard::Key k) {
+	keysDown.erase(k);
 }
 
 }

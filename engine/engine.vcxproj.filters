@@ -81,10 +81,13 @@
     <ClCompile Include="src\EngineMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\platform\Windows.cpp">
+    <ClCompile Include="src\platform\windows\WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\stbi_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\windows\WinInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,10 +191,13 @@
     <ClInclude Include="src\EngineMain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\platform\Windows.h">
+    <ClInclude Include="src\platform\windows\Windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\platform\Platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\windows\WinInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

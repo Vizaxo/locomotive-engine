@@ -1,6 +1,6 @@
 #pragma once
 
-#include "platform/Windows.h"
+#include "Windows/Windows.h"
 
 #define WINDOWS 0
 #define LINUX 1
