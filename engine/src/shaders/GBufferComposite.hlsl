@@ -100,7 +100,7 @@ float4 main(float4 uv : SV_POSITION) : SV_TARGET
 
 	colour = colour / (1 + colour);
 
-	colour = normal;
+	//colour = normal;
 
 	float gamma = 2.2f;
 	return float4(pow(colour, 1.0/gamma), 0.0f);

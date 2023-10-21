@@ -227,7 +227,7 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 	makePlane(d3dContext);
 	createHexMesh(d3dContext);
 
-	int width = 30;
+	int width = 100;
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < width; j++) {
 			HexCoord c = {i-width/2, j-width/2};
