@@ -22,6 +22,18 @@
 
 using namespace DirectX;
 
+namespace Application {
+
+Material* baseColourMaterial = nullptr;
+PixelShader* baseColourPixelShader = nullptr;
+VertexShader* baseColourVertexShader = nullptr;
+
+MeshData* planeMeshData;
+Mesh* planeMesh;
+
+MeshData* hexMeshData;
+Mesh* hexMesh;
+
 std::vector<DirectX::XMFLOAT3> cubePositions = {
 	{XMFLOAT3(-1.0f, -1.0f, -1.0f)},
 	{XMFLOAT3(-1.0f, 1.0f, -1.0f)},
@@ -140,11 +152,9 @@ MouseMode mouseMode = Nop;
 
 std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
-Application* const application = new ExampleApplication();
-
 PAL::WindowHandle* windowHandle = nullptr;
 
-void ExampleApplication::makePlane(D3DContext* d3dContext) {
+void makePlane(D3DContext* d3dContext) {
 	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
 	for (int i = 0; i < planePositions.size(); i++) {
 		planeNormals.push_back(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
@@ -166,7 +176,7 @@ void ExampleApplication::makePlane(D3DContext* d3dContext) {
 	scene.objects.push_back(plane);
 }
 
-void ExampleApplication::createHexMesh(D3DContext* d3dContext) {
+void createHexMesh(D3DContext* d3dContext) {
 	VertexBuffer hexPrismPosVB = CreateVertexBuffer(hexPrismPositions,
 		{  {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
 		0);
@@ -201,7 +211,7 @@ void ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 	hexMesh = new Mesh(d3dContext, *hexMeshData, *baseColourVertexShader);
 }
 
-void ExampleApplication::setupLighting() {
+void setupLighting() {
 	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].radius = 20.0f;
@@ -211,12 +221,12 @@ void ExampleApplication::setupLighting() {
 	scene.lightData.directionalLight.colour = DirectX::XMFLOAT3(100.0f, 98.0f, 98.0f);
 }
 
-void ExampleApplication::setupCamera() {
+void setupCamera() {
 	scene.eyePosition = XMVectorSet(0, 10, -10, 1);
 	scene.lookDirection = XMVectorSet(0, -0.2, 1, 0);
 }
 
-void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
+void init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 	windowHandle = h;
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 
@@ -239,7 +249,7 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 	setupCamera();
 }
 
-void ExampleApplication::cleanup() {
+void cleanup() {
 	delete baseColourMaterial;
 	delete baseColourPixelShader;
 	delete baseColourVertexShader;
@@ -251,7 +261,7 @@ void ExampleApplication::cleanup() {
 	delete hexMesh;
 }
 
-void ExampleApplication::tick(float deltaTime) {
+void tick(float deltaTime) {
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
 		if (scene.objects.size() >= 1)
@@ -289,20 +299,22 @@ void ExampleApplication::tick(float deltaTime) {
 	scene.eyePosition += movementSpeed * deltaTime * worldDirection;
 }
 
-Scene& ExampleApplication::getScene() {
+Scene& getScene() {
 	return scene;
 }
 
-void ExampleApplication::mouseButtonDown(Mouse::Button b) {
+void mouseButtonDown(Mouse::Button b) {
 	if (b == Mouse::Button::M2) {
 		Mouse::lockCursorToWindow(windowHandle);
 	}
 	mouseMode = MoveCamera;
 }
 
-void ExampleApplication::mouseButtonUp(Mouse::Button b) {
+void mouseButtonUp(Mouse::Button b) {
 	if (b == Mouse::Button::M2) {
 		Mouse::unlockCursorFromWindow(windowHandle);
 	}
 	mouseMode = Nop;
+}
+
 }

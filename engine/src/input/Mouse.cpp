@@ -26,8 +26,8 @@ void setMouseButtonState(Mouse::Button newState) {
 	buttonState = newState;
 }
 
-void buttonDown(Button b) { application->mouseButtonDown(b); }
-void buttonUp(Button b)   { application->mouseButtonUp(b);   }
+void buttonDown(Button b) { Application::mouseButtonDown(b); }
+void buttonUp(Button b)   { Application::mouseButtonUp(b);   }
 
 void lockCursorToWindow(PAL::WindowHandle* h) {
 	assert(mouseState == Free);

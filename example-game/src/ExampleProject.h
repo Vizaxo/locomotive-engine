@@ -10,33 +10,14 @@
 #include "Application.h"
 #include "input/Mouse.h"
 
-class ExampleApplication : public Application {
-	void init(D3DContext* d3dContext, PAL::WindowHandle* h);
-	void tick(float deltaTime);
-	void cleanup();
-	Scene& getScene();
+namespace Application {
 
-	void makePlane(D3DContext* d3dContext);
-	void createHexMesh(D3DContext* d3dContext);
-	void setupLighting();
-	void setupCamera();
-	void mouseButtonDown(Mouse::Button b);
-	void mouseButtonUp(Mouse::Button b);
+void makePlane(D3DContext* d3dContext);
+void createHexMesh(D3DContext* d3dContext);
+void setupLighting();
+void setupCamera();
 
-	Scene scene;
-
-private:
-	Material* baseColourMaterial = nullptr;
-	PixelShader* baseColourPixelShader = nullptr;
-	VertexShader* baseColourVertexShader = nullptr;
-
-	MeshData* planeMeshData;
-	Mesh* planeMesh;
-
-	MeshData* hexMeshData;
-	Mesh* hexMesh;
-};
-
+Scene scene;
 
 struct VertexPosColor {
 	DirectX::XMFLOAT3 Position;
@@ -46,4 +27,6 @@ struct VertexPosColor {
 struct VertexPosUV {
 	DirectX::XMFLOAT3 Position;
 	DirectX::XMFLOAT2 UV;
+};
+
 };

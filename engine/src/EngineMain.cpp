@@ -29,7 +29,7 @@ int init(PAL::WindowHandle* h, bool vSync) {
 	renderer = new Renderer(d3dContext);
 	previousTime = timeGetTime();
 
-	application->init(d3dContext, h);
+	Application::init(d3dContext, h);
 }
 
 void tick() {
@@ -59,8 +59,8 @@ void tick() {
 	DEBUG_PRINT("\n");
 
 	imgui->InitFrame();
-	application->tick(deltaTime);
-	renderer->RenderScene(d3dContext, application->getScene(), deltaTime);
+	Application::tick(deltaTime);
+	renderer->RenderScene(d3dContext, Application::getScene(), deltaTime);
 	Mouse::endTick();
 
 	if (debug) {
@@ -69,7 +69,6 @@ void tick() {
 }
 
 void cleanup() {
-	delete application;
 	delete renderer;
 	delete imgui;
 	delete d3dContext;

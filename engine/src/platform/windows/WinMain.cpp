@@ -86,10 +86,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 		Engine::keyUp(getKey(wParam));
 		break;
 	case WM_RBUTTONUP:
-		application->mouseButtonUp(Mouse::Button::M2);
+		Application::mouseButtonUp(Mouse::Button::M2);
 		goto mouseevent;
 	case WM_RBUTTONDOWN:
-		application->mouseButtonDown(Mouse::Button::M2);
+		Application::mouseButtonDown(Mouse::Button::M2);
 		goto mouseevent;
 	case WM_LBUTTONUP:
 	case WM_LBUTTONDOWN:

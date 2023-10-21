@@ -7,15 +7,13 @@
 class Scene;
 class D3DContext;
 
-class Application {
-public:
-	virtual void init(D3DContext* d3dContext, PAL::WindowHandle* h) = 0;
-	virtual void tick(float deltaTime) = 0;
-	virtual void cleanup() = 0;
-	virtual Scene& getScene() = 0;
-	virtual void mouseButtonDown(Mouse::Button b) = 0;
-	virtual void mouseButtonUp(Mouse::Button b) = 0;
-};
+namespace Application {
 
-// To be defined by the game
-extern Application* const application;
+void init(D3DContext* d3dContext, PAL::WindowHandle* h);
+void tick(float deltaTime);
+void cleanup();
+Scene& getScene();
+void mouseButtonDown(Mouse::Button b);
+void mouseButtonUp(Mouse::Button b);
+
+};
