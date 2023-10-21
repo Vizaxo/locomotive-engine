@@ -90,6 +90,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	case WM_MBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_XBUTTONDOWN:
+	case WM_NCXBUTTONUP:
+	case WM_NCXBUTTONDOWN:
 	case WM_MOUSEMOVE:
 	{
 		Mouse::setMouseButtonState(getMouseButton(wParam));
