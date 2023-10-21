@@ -6,6 +6,7 @@
 #include "renderer/ImGuiUtils.h"
 #include "renderer/Renderer.h"
 #include "Application.h"
+#include "input/Mouse.h"
 
 namespace Engine {
 
@@ -48,6 +49,11 @@ void tick() {
 		DEBUG_PRINT(Keyboard::toString(k).c_str());
 	if (!Keyboard::keysDown.empty())
 		DEBUG_PRINT("\n");
+
+	DEBUG_PRINT(std::to_string(Mouse::x).c_str());
+	DEBUG_PRINT(", ");
+	DEBUG_PRINT(std::to_string(Mouse::y).c_str());
+	DEBUG_PRINT("\n");
 
 	imgui->InitFrame();
 	application->tick(deltaTime);

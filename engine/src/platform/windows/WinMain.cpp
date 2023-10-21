@@ -1,6 +1,6 @@
-#include "platform/Windows.h"
-
 #include "PCH.h"
+
+#include "platform/Windows/Windows.h"
 
 #include "debug/ttd.h"
 #include "rhi/RHI.h"
@@ -10,6 +10,7 @@
 #include "renderer/ImGuiUtils.h"
 #include "EngineMain.h"
 #include "WinInput.h"
+#include "input/Mouse.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -81,6 +82,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	case WM_KEYUP:
 		Engine::keyUp(getKey(wParam));
 		break;
+	case WM_MBUTTONUP:
+		goto mousemove;
+	case WM_MBUTTONDOWN:
+		goto mousemove;
+	mousemove:
+	case WM_MOUSEMOVE:
+	{
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+		Mouse::setMousePos(x, y);
+		break;
+	}
 	default:
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}

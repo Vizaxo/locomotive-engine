@@ -154,6 +154,7 @@
     <ClCompile Include="src\debug\ttd.cpp" />
     <ClCompile Include="src\EngineMain.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
+    <ClCompile Include="src\input\Mouse.cpp" />
     <ClCompile Include="src\platform\windows\WinInput.cpp" />
     <ClCompile Include="src\platform\windows\WinMain.cpp" />
     <ClCompile Include="src\renderer\Source.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\debug\ttd.h" />
     <ClInclude Include="src\EngineMain.h" />
+    <ClInclude Include="src\input\Mouse.h" />
     <ClInclude Include="src\platform\Platform.h" />
     <ClInclude Include="src\platform\windows\Windows.h" />
     <ClInclude Include="src\HexCoord.h" />
