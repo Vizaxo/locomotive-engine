@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector.h"
+
 #define WINDOWS 0
 #define LINUX 1
 
@@ -15,9 +17,12 @@
 
 namespace PAL {
 
-class WindowHandle;
+struct WindowHandle;
 
 void mouseSetCapture(WindowHandle* h);
 void mouseReleaseCapture(WindowHandle* h);
+void setCursorPosition(v2i p);
+void showCursor(bool show);
+v2i getCursorPos();
 
 }

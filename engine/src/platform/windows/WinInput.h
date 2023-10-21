@@ -7,6 +7,7 @@ WINDOWS_ONLY
 
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
+#include "platform/windows/Windows.h"
 
 namespace PAL {
 namespace Windows {

@@ -8,9 +8,10 @@
 #include "renderer/Mesh.h"
 #include "renderer/Object.h"
 #include "Application.h"
+#include "input/Mouse.h"
 
 class ExampleApplication : public Application {
-	void init(D3DContext* d3dContext);
+	void init(D3DContext* d3dContext, PAL::WindowHandle* h);
 	void tick(float deltaTime);
 	void cleanup();
 	Scene& getScene();
@@ -19,6 +20,8 @@ class ExampleApplication : public Application {
 	void createHexMesh(D3DContext* d3dContext);
 	void setupLighting();
 	void setupCamera();
+	void mouseButtonDown(Mouse::Button b);
+	void mouseButtonUp(Mouse::Button b);
 
 	Scene scene;
 

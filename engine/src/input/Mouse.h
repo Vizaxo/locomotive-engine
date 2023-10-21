@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "platform/Platform.h"
+
 namespace Mouse {
 
 enum Button {
@@ -13,11 +15,22 @@ enum Button {
 	M5 = 0x10,
 };
 
+enum MouseState {
+	LockedToWindow,
+	Free,
+};
+
 extern int x;
 extern int y;
+extern int dx;
+extern int dy;
 extern Button buttonState;
 
 void setMousePos(int x, int y);
 void setMouseButtonState(Mouse::Button newState);
+void buttonDown(Button b);
+void buttonUp(Button b);
+void unlockCursorFromWindow(PAL::WindowHandle* h);
+void lockCursorToWindow(PAL::WindowHandle* h);
 
 }

@@ -29,7 +29,7 @@ int init(PAL::WindowHandle* h, bool vSync) {
 	renderer = new Renderer(d3dContext);
 	previousTime = timeGetTime();
 
-	application->init(d3dContext);
+	application->init(d3dContext, h);
 }
 
 void tick() {
@@ -50,9 +50,9 @@ void tick() {
 	if (!Keyboard::keysDown.empty())
 		DEBUG_PRINT("\n");
 
-	DEBUG_PRINT(std::to_string(Mouse::x).c_str());
+	DEBUG_PRINT(std::to_string(Mouse::dx).c_str());
 	DEBUG_PRINT(", ");
-	DEBUG_PRINT(std::to_string(Mouse::y).c_str());
+	DEBUG_PRINT(std::to_string(Mouse::dy).c_str());
 	DEBUG_PRINT("\n");
 
 	DEBUG_PRINT(std::to_string((int)Mouse::buttonState).c_str());

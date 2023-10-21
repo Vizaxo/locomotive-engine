@@ -12,8 +12,8 @@
 #include "HexCoord.h"
 #include "world/World.h"
 #include "Application.h"
-#include "EngineMain.h"
 #include "input/Keyboard.h"
+#include "input/Mouse.h"
 
 #include "generated/BaseColourVertexShader.h"
 #include "generated/BaseColourPixelShader.h"
@@ -136,6 +136,8 @@ std::vector<int> triangleIndices = { 0,1,2,5,4,3 };
 
 Application* const application = new ExampleApplication();
 
+PAL::WindowHandle* windowHandle = nullptr;
+
 void ExampleApplication::makePlane(D3DContext* d3dContext) {
 	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
 	for (int i = 0; i < planePositions.size(); i++) {
@@ -208,7 +210,8 @@ void ExampleApplication::setupCamera() {
 	scene.lookDirection = XMVectorSet(0, -0.2, 1, 0);
 }
 
-void ExampleApplication::init(D3DContext* d3dContext) {
+void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
+	windowHandle = h;
 	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 
 	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
@@ -274,4 +277,16 @@ void ExampleApplication::tick(float deltaTime) {
 
 Scene& ExampleApplication::getScene() {
 	return scene;
+}
+
+void ExampleApplication::mouseButtonDown(Mouse::Button b) {
+	if (b == Mouse::Button::M2) {
+		Mouse::lockCursorToWindow(windowHandle);
+	}
+}
+
+void ExampleApplication::mouseButtonUp(Mouse::Button b) {
+	if (b == Mouse::Button::M2) {
+		Mouse::unlockCursorFromWindow(windowHandle);
+	}
 }

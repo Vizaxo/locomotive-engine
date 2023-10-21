@@ -13,6 +13,7 @@
 #include "EngineMain.h"
 #include "WinInput.h"
 #include "input/Mouse.h"
+#include "Application.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -84,10 +85,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	case WM_KEYUP:
 		Engine::keyUp(getKey(wParam));
 		break;
+	case WM_RBUTTONUP:
+		application->mouseButtonUp(Mouse::Button::M2);
+		goto mouseevent;
+	case WM_RBUTTONDOWN:
+		application->mouseButtonDown(Mouse::Button::M2);
+		goto mouseevent;
 	case WM_LBUTTONUP:
 	case WM_LBUTTONDOWN:
-	case WM_RBUTTONUP:
-	case WM_RBUTTONDOWN:
 	case WM_MBUTTONUP:
 	case WM_MBUTTONDOWN:
 	case WM_XBUTTONUP:
@@ -95,6 +100,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	case WM_NCXBUTTONUP:
 	case WM_NCXBUTTONDOWN:
 	case WM_MOUSEMOVE:
+	mouseevent:
 	{
 		Mouse::setMouseButtonState(getMouseButton(wParam));
 		int x = GET_X_LPARAM(lParam);

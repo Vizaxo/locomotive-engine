@@ -81,7 +81,7 @@
     <ClCompile Include="src\EngineMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\platform\windows\WinMain.cpp">
+    <ClCompile Include="src\platform\Windows\WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\stbi_impl.cpp">
