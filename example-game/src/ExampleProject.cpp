@@ -161,15 +161,15 @@ void ExampleApplication::makePlane(D3DContext* d3dContext) {
 		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		2);
 
-	planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, planeIndices);
-	planeMesh = new Mesh(d3dContext, *planeMeshData, *baseColourVertexShader);
+	OwningPtr<MeshData> planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, planeIndices);
+	OwningPtr<Mesh> planeMesh = new Mesh(d3dContext, planeMeshData, *baseColourVertexShader);
 
-	RefPtr<Mesh> planeMeshRef = meshManager.registerResource(internStringId("plane_mesh"), takeOwnership(planeMesh));
+	RefPtr<Mesh> planeMeshRef = meshManager.registerResource(internStringId("plane_mesh"), planeMesh);
 	Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMeshRef, baseColourMaterial);
 	scene.objects.push_back(plane);
 }
 
-void ExampleApplication::createHexMesh(D3DContext* d3dContext) {
+RefPtr<Mesh> ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 	VertexBuffer hexPrismPosVB = CreateVertexBuffer(hexPrismPositions,
 		{  {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
 		0);
@@ -200,8 +200,10 @@ void ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 	VertexBuffer hexPrismNormalsVB = CreateVertexBuffer(hexPrismNormals,
 		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		2);
-	hexMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, hexPrismIndices);
-	hexMesh = new Mesh(d3dContext, *hexMeshData, *baseColourVertexShader);
+	OwningPtr<MeshData> hexMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, hexPrismIndices);
+	OwningPtr<Mesh> hexMesh = new Mesh(d3dContext, hexMeshData, *baseColourVertexShader);
+
+	return meshManager.registerResource(internStringId("hex_mesh"), hexMesh);
 }
 
 void ExampleApplication::setupLighting() {
@@ -228,7 +230,7 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 	baseColourMaterial = new Material(*baseColourPixelShader);
 
 	makePlane(d3dContext);
-	createHexMesh(d3dContext);
+	RefPtr<Mesh> hexMesh = createHexMesh(d3dContext);
 
 	int width = 100;
 	for (int i = 0; i < width; i++) {
@@ -246,12 +248,6 @@ void ExampleApplication::cleanup() {
 	delete baseColourMaterial;
 	delete baseColourPixelShader;
 	delete baseColourVertexShader;
-
-	delete planeMeshData;
-	delete planeMesh;
-
-	delete hexMeshData;
-	delete hexMesh;
 }
 
 void ExampleApplication::tick(float deltaTime) {

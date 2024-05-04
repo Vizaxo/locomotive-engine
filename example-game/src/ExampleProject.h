@@ -17,7 +17,7 @@ class ExampleApplication : public Application {
 	Scene& getScene();
 
 	void makePlane(D3DContext* d3dContext);
-	void createHexMesh(D3DContext* d3dContext);
+	RefPtr<Mesh> createHexMesh(D3DContext* d3dContext);
 	void setupLighting();
 	void setupCamera();
 	void mouseButtonDown(Mouse::Button b);
@@ -29,12 +29,6 @@ private:
 	Material* baseColourMaterial = nullptr;
 	PixelShader* baseColourPixelShader = nullptr;
 	VertexShader* baseColourVertexShader = nullptr;
-
-	MeshData* planeMeshData;
-	Mesh* planeMesh;
-
-	MeshData* hexMeshData;
-	Mesh* hexMesh;
 };
 
 

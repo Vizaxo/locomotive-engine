@@ -174,7 +174,7 @@ void Renderer::RenderScene(D3DContext* d3dContext, Scene& scene, float deltaTime
 void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj) {
 	ID3D11DeviceContext* d3dDeviceContext = d3dContext->d3dDeviceContext;
 
-	for (VertexBuffer& vertexBuffer : obj.mesh.meshData.vertexBuffers)
+	for (VertexBuffer& vertexBuffer : obj.mesh.meshData->vertexBuffers)
 		vertexBuffer.Bind(d3dContext);
 
 	d3dDeviceContext->IASetIndexBuffer(obj.mesh.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
@@ -194,7 +194,7 @@ void Renderer::RenderObject(D3DContext* d3dContext, float deltaTime, Object& obj
 	DirectX::XMMATRIX modelMatrixRotated = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(obj.angle)), modelMatrix);
 	d3dDeviceContext->UpdateSubresource(d3dConstantBuffers[CB_Object], 0, nullptr, &modelMatrixRotated, 0, 0);
 
-	d3dDeviceContext->DrawIndexed(obj.mesh.meshData.indices.size(), 0, 0);
+	d3dDeviceContext->DrawIndexed(obj.mesh.meshData->indices.size(), 0, 0);
 }
 
 Renderer::~Renderer() {
