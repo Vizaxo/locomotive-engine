@@ -9,7 +9,12 @@ struct StringId {
 	OwningPtr<const char> s;
 #endif
 	u64 id;
+#if _DEBUG
 	StringId(OwningPtr<const char> s, u64 id) :s(s), id(id) {}
+#else
+	StringId(u64 id) :id(id) {}
+	StringId(OwningPtr<const char> s, u64 id) :id(id) {}
+#endif
 
 	bool operator==(const StringId& other) const { return this->id == other.id; }
 };
