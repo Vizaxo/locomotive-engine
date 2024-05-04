@@ -2,7 +2,7 @@
 
 #include "ModelLoader.h"
 
-#define ERR(t) {DebugBreak(); return std::variant<MeshData, std::string>(std::string(t));}
+#define ERR(t) {DebugBreak(); return std::variant<OwningPtr<MeshData>, std::string>(std::string(t));}
 
 bool ModelLoader::Consume(std::string& a, const char* b) {
 	int i = 0;
@@ -47,7 +47,7 @@ void ParseLine(std::ifstream& file, std::string& line) {
 	}
 }
 
-std::variant<MeshData, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
+std::variant<OwningPtr<MeshData>, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
 	std::ifstream file(filepath, std::ios_base::in);
 	std::string line;
 	std::vector<std::string> properties;
@@ -132,5 +132,5 @@ std::variant<MeshData, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
 		sizeof(DirectX::XMFLOAT3),
 		0);
 
-	return MeshData({ std::move(vertexBuffer) }, std::move(indices));
+	return new MeshData({vertexBuffer}, std::move(indices));
 }

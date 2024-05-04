@@ -3,8 +3,8 @@
 
 ResourceManager<Mesh> meshManager;
 
-MeshData::MeshData(std::vector<VertexBuffer> vertexBuffers, std::vector<int> inIndices)
-	: vertexBuffers(vertexBuffers), indices(inIndices)
+MeshData::MeshData(std::vector<VertexBuffer>&& vertexBuffers, std::vector<int>&& inIndices)
+	: vertexBuffers(std::move(vertexBuffers)), indices(std::move(inIndices))
 {}
 
 MeshData::MeshData(MeshData& other)

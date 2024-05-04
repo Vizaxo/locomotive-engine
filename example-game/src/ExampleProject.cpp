@@ -161,7 +161,7 @@ void ExampleApplication::makePlane(D3DContext* d3dContext) {
 		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		2);
 
-	OwningPtr<MeshData> planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, planeIndices);
+	OwningPtr<MeshData> planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, std::move(planeIndices));
 	OwningPtr<Mesh> planeMesh = new Mesh(d3dContext, planeMeshData, *baseColourVertexShader);
 
 	RefPtr<Mesh> planeMeshRef = meshManager.registerResource(internStringId("plane_mesh"), planeMesh);
@@ -200,7 +200,7 @@ RefPtr<Mesh> ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 	VertexBuffer hexPrismNormalsVB = CreateVertexBuffer(hexPrismNormals,
 		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		2);
-	OwningPtr<MeshData> hexMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, hexPrismIndices);
+	OwningPtr<MeshData> hexMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, std::move(hexPrismIndices));
 	OwningPtr<Mesh> hexMesh = new Mesh(d3dContext, hexMeshData, *baseColourVertexShader);
 
 	return meshManager.registerResource(internStringId("hex_mesh"), hexMesh);
