@@ -2,18 +2,30 @@
 
 #include "Utils.h"
 #include "platform/Platform.h"
+#include "EngineMain.h"
 
 #if _DEBUG
 static bool debugPrintAllocationStacks = false;
 static bool debugPrintAllocations = true;
 static bool debugPrintDeallocationStacks = false;
 static bool debugPrintDeallocations = true;
+
+struct AllocationInfo {
+	int numAllocations, numDeallocations;
+	size_t totalAllocated, totalDeallocated, currentUsage;
+};
+
+AllocationInfo allocInfos[Engine::NUM_ENGINE_STATES];
 #endif
 
 void* operator new(size_t n) {
 	void* addr = malloc(n);
 
 #if _DEBUG
+	AllocationInfo& allocInfo = allocInfos[Engine::engineState];
+	allocInfo.numAllocations++;
+	allocInfo.totalAllocated += n;
+	allocInfo.currentUsage += n;
 	char buf[50];
 
 	if (debugPrintAllocations) {
@@ -31,6 +43,10 @@ void* operator new(size_t n) {
 
 void operator delete(void* p, size_t n) {
 #if _DEBUG
+	AllocationInfo& allocInfo = allocInfos[Engine::engineState];
+	allocInfo.numDeallocations++;
+	allocInfo.totalDeallocated += n;
+	allocInfo.currentUsage -= n;
 	char buf[50];
 
 	if (debugPrintDeallocations) {

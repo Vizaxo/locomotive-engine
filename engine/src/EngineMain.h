@@ -23,6 +23,8 @@ enum EngineState {
 	ENGINE_TICKING,
 	ENGINE_CLEANUP,
 	ENGINE_POST_CLEANUP,
+
+	NUM_ENGINE_STATES
 };
 
 extern EngineState engineState;
