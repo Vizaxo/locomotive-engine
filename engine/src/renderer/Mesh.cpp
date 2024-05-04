@@ -15,8 +15,8 @@ MeshData::MeshData(MeshData&& other)
 	: vertexBuffers(std::move(other.vertexBuffers)), indices(std::move(other.indices))
 {}
 
-Mesh::Mesh(D3DContext* d3dContext, OwningPtr<MeshData> meshData, VertexShader& vs)
-	: meshData(meshData), vertexShader(vs)
+Mesh::Mesh(D3DContext* d3dContext, OwningPtr<MeshData>&& meshData, VertexShader& vs)
+	: meshData(std::move(meshData)), vertexShader(vs)
 {
 	InitialiseVertexBuffers(d3dContext);
 	CreateIndexBuffer(d3dContext);

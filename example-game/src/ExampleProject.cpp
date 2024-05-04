@@ -162,11 +162,16 @@ void ExampleApplication::makePlane(D3DContext* d3dContext) {
 		2);
 
 	OwningPtr<MeshData> planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, std::move(planeIndices));
-	OwningPtr<Mesh> planeMesh = new Mesh(d3dContext, planeMeshData, *baseColourVertexShader);
+	OwningPtr<Mesh> planeMesh = new Mesh(d3dContext, std::move(planeMeshData), *baseColourVertexShader);
 
-	RefPtr<Mesh> planeMeshRef = meshManager.registerResource(internStringId("plane_mesh"), planeMesh);
-	Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  planeMeshRef, materialManager.get(internStringId("base_colour_material")));
-	scene.objects.push_back(plane);
+	RefPtr<Mesh> planeMeshRef = meshManager.registerResource(internStringId("plane_mesh"), std::move(planeMesh)).getNonNull();
+	RefPtr<Material, true> baseColourMaterial = materialManager.get(internStringId("base_colour_material"));
+	if (baseColourMaterial) {
+		Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f, planeMeshRef, baseColourMaterial.getNonNull());
+		scene.objects.push_back(plane);
+	} else {
+		assert(false, "Could not find base_colour_material");
+	}
 }
 
 RefPtr<Mesh> ExampleApplication::createHexMesh(D3DContext* d3dContext) {
@@ -201,9 +206,9 @@ RefPtr<Mesh> ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 		{ {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0} },
 		2);
 	OwningPtr<MeshData> hexMeshData = new MeshData({hexPrismPosVB, hexPrismColoursVB, hexPrismNormalsVB}, std::move(hexPrismIndices));
-	OwningPtr<Mesh> hexMesh = new Mesh(d3dContext, hexMeshData, *baseColourVertexShader);
+	OwningPtr<Mesh> hexMesh = new Mesh(d3dContext, std::move(hexMeshData), *baseColourVertexShader);
 
-	return meshManager.registerResource(internStringId("hex_mesh"), hexMesh);
+	return meshManager.registerResource(internStringId("hex_mesh"), std::move(hexMesh)).getNonNull();
 }
 
 void ExampleApplication::setupLighting() {
@@ -227,7 +232,7 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 
 	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
 	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
-	RefPtr<Material> baseColourMaterial = materialManager.registerResource(internStringId("base_colour_material"), new Material(*baseColourPixelShader));
+	RefPtr<Material> baseColourMaterial = materialManager.registerResource(internStringId("base_colour_material"), new Material(*baseColourPixelShader)).getNonNull();
 
 	makePlane(d3dContext);
 	RefPtr<Mesh> hexMesh = createHexMesh(d3dContext);

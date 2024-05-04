@@ -11,22 +11,22 @@ template<typename T>
 struct ResourceManager {
 	std::unordered_map<StringId, OwningPtr<T>> resources;
 
-	RefPtr<T> get(StringId name);
-	RefPtr<T> registerResource(StringId key, OwningPtr<T> res);
+	RefPtr<T, true> get(StringId name);
+	RefPtr<T, true> registerResource(StringId key, OwningPtr<T> res);
 };
 
 template<typename T>
-RefPtr<T> ResourceManager<T>::get(StringId key) {
+RefPtr<T, true> ResourceManager<T>::get(StringId key) {
 	if (auto it = resources.find(key); it != resources.end())
-		return it->second.getRef();
+		return it->second.getRef().getNullable();
 	else
 		return nullRef<T>;
 }
 
 template<typename T>
-RefPtr<T> ResourceManager<T>::registerResource(StringId key, OwningPtr<T> res) {
+RefPtr<T, true> ResourceManager<T>::registerResource(StringId key, OwningPtr<T> res) {
 	if (get(key))
 		return nullRef<T>;
-	resources.emplace(key, res);
-	return res.getRef();
+	resources.emplace(key, std::move(res));
+	return get(key);
 }

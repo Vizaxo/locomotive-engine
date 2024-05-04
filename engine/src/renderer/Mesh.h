@@ -16,7 +16,7 @@ public:
 
 class Mesh {
 public:
-	Mesh(D3DContext* d3dContext, OwningPtr<MeshData> meshData, VertexShader& vs);
+	Mesh(D3DContext* d3dContext, OwningPtr<MeshData>&& meshData, VertexShader& vs);
 
 	void InitialiseVertexBuffers(D3DContext* d3dContext);
 	void CreateIndexBuffer(D3DContext* d3dContext);

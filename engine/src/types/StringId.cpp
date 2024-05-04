@@ -7,10 +7,10 @@
 
 std::vector<StringId> stringIdManager;
 
-StringId& internStringId(const char* s) {
+StringId internStringId(const char* s) {
 	return stringIdManager.emplace_back(
 #if _DEBUG
-		takeOwnership(s),
+		s,
 #endif
 		hashString(s)
 	);
