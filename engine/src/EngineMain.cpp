@@ -10,6 +10,8 @@
 
 namespace Engine {
 
+EngineState engineState = EngineState::ENGINE_PRE_INIT;
+
 ImGuiWrapper* imgui;
 Renderer* renderer;
 D3DContext* d3dContext;
@@ -19,20 +21,30 @@ const float targetFramerate = 30.0f;
 const float maxTimeStep = 1.0f / targetFramerate;
 
 int init(PAL::WindowHandle* h, bool vSync) {
+	engineState = ENGINE_INIT;
 	d3dContext = new D3DContext(h, vSync);
+	engineState = ENGINE_INIT_POST_D3D;
+
 	if (d3dContext->d3dDevice == nullptr || d3dContext->d3dDeviceContext == nullptr) {
 		MessageBox(nullptr, TEXT("Failed to create D3DContext"), TEXT("Error"), MB_OK);
 		return -1;
 	}
 
 	imgui = new ImGuiWrapper(d3dContext, h);
+	engineState = ENGINE_INIT_POST_IMGUI;
 	renderer = new Renderer(d3dContext);
+	engineState = ENGINE_INIT_POST_RENDERER;
 	previousTime = timeGetTime();
 
+	engineState = ENGINE_POST_INIT;
+
+	engineState = APP_PRE_INIT;
 	application->init(d3dContext, h);
+	engineState = APP_POST_INIT;
 }
 
 void tick() {
+	engineState = ENGINE_TICKING;
 	volatile bool debug = false;
 
 	if (debug) {
@@ -71,10 +83,12 @@ void tick() {
 }
 
 void cleanup() {
+	engineState = ENGINE_CLEANUP;
 	delete application;
 	delete renderer;
 	delete imgui;
 	delete d3dContext;
+	engineState = ENGINE_POST_CLEANUP;
 }
 
 void keyDown(Keyboard::Key k) {
