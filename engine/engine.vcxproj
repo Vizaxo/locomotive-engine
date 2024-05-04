@@ -173,6 +173,7 @@
     <ClCompile Include="src\platform\Windows\WinMain.cpp" />
     <ClCompile Include="src\platform\windows\WinPlatform.cpp" />
     <ClCompile Include="src\renderer\Source.cpp" />
+    <ClCompile Include="src\resource-manager\ResourceManager.cpp" />
     <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
     <ClCompile Include="src\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -200,6 +201,7 @@
     <ClInclude Include="src\input\Mouse.h" />
     <ClInclude Include="src\platform\Platform.h" />
     <ClInclude Include="src\platform\windows\Windows.h" />
+    <ClInclude Include="src\resource-manager\ResourceManager.h" />
     <ClInclude Include="src\types\HexCoord.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
@@ -225,6 +227,8 @@
     <ClInclude Include="src\rhi\RHI.h" />
     <ClInclude Include="src\rhi\dx11\Shader.h" />
     <ClInclude Include="src\rhi\dx11\Texture2D.h" />
+    <ClInclude Include="src\types\Pointers.h" />
+    <ClInclude Include="src\types\StringID.h" />
     <ClInclude Include="src\types\Types.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\rhi\dx11\VertexBuffer.h" />
