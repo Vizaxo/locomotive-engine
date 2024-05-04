@@ -1,6 +1,8 @@
 #include "PCH.h"
 #include "Mesh.h"
 
+ResourceManager<Mesh> meshManager;
+
 MeshData::MeshData(std::vector<VertexBuffer> vertexBuffers, std::vector<int> inIndices)
 	: vertexBuffers(vertexBuffers), indices(inIndices)
 {}

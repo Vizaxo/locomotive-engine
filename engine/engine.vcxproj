@@ -173,7 +173,6 @@
     <ClCompile Include="src\platform\Windows\WinMain.cpp" />
     <ClCompile Include="src\platform\windows\WinPlatform.cpp" />
     <ClCompile Include="src\renderer\Source.cpp" />
-    <ClCompile Include="src\resource-manager\ResourceManager.cpp" />
     <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
     <ClCompile Include="src\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -191,6 +190,8 @@
     <ClCompile Include="src\rhi\dx11\Texture2D.cpp" />
     <ClCompile Include="src\rhi\dx11\VertexBuffer.cpp" />
     <ClCompile Include="src\stbi_impl.cpp" />
+    <ClCompile Include="src\types\StringId.cpp" />
+    <ClCompile Include="src\utils\Hashing.cpp" />
     <ClCompile Include="src\world\Noise.cpp" />
     <ClCompile Include="src\world\World.cpp" />
   </ItemGroup>
@@ -228,11 +229,12 @@
     <ClInclude Include="src\rhi\dx11\Shader.h" />
     <ClInclude Include="src\rhi\dx11\Texture2D.h" />
     <ClInclude Include="src\types\Pointers.h" />
-    <ClInclude Include="src\types\StringID.h" />
+    <ClInclude Include="src\types\StringId.h" />
     <ClInclude Include="src\types\Types.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\rhi\dx11\VertexBuffer.h" />
     <ClInclude Include="src\types\Vector.h" />
+    <ClInclude Include="src\utils\Hashing.h" />
     <ClInclude Include="src\world\Noise.h" />
     <ClInclude Include="src\world\World.h" />
   </ItemGroup>

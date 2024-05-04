@@ -99,7 +99,10 @@
     <ClCompile Include="src\platform\windows\WinPlatform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\resource-manager\ResourceManager.cpp">
+    <ClCompile Include="src\types\StringId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\Hashing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -218,10 +221,13 @@
     <ClInclude Include="src\resource-manager\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\types\StringID.h">
+    <ClInclude Include="src\types\StringId.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\types\Pointers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Hashing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

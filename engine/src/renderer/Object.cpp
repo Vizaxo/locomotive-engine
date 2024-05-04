@@ -13,3 +13,5 @@ DirectX::XMMATRIX Object::GetModelMatrix() {
 DirectX::XMVECTOR& Object::GetPos() {
 	return pos;
 }
+
+ResourceManager<Object> objectManager;

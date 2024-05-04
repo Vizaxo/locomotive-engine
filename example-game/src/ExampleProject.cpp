@@ -10,6 +10,7 @@
 #include "editor/ModelLoader.h"
 #include "renderer/Mesh.h"
 #include "types/HexCoord.h"
+#include "types/Pointers.h"
 #include "world/World.h"
 #include "Application.h"
 #include "input/Keyboard.h"
@@ -162,7 +163,9 @@ void ExampleApplication::makePlane(D3DContext* d3dContext) {
 
 	planeMeshData = new MeshData({ planePositionsVB, planeColoursVB, planeNormalsVB }, planeIndices);
 	planeMesh = new Mesh(d3dContext, *planeMeshData, *baseColourVertexShader);
-	Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMesh, baseColourMaterial);
+
+	RefPtr<Mesh> planeMeshRef = meshManager.registerResource(internStringId("plane_mesh"), takeOwnership(planeMesh));
+	Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMeshRef, baseColourMaterial);
 	scene.objects.push_back(plane);
 }
 

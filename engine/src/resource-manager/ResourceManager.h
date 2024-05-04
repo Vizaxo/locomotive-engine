@@ -1,16 +1,32 @@
 #pragma once
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <optional>
 
 #include "types/StringID.h" 
 #include "types/Pointers.h" 
 
 template<typename T>
-class ResourceManager {
-	std::map<StringId, OwningPtr<T>> resources;
+struct ResourceManager {
+	std::unordered_map<StringId, OwningPtr<T>> resources;
 
-	std::optional<T> get(StringId name);
-	bool registerResource(StringId name, OwningPtr<T> resource);
+	RefPtr<T> get(StringId name);
+	RefPtr<T> registerResource(StringId key, OwningPtr<T> res);
 };
+
+template<typename T>
+RefPtr<T> ResourceManager<T>::get(StringId key) {
+	if (auto it = resources.find(key); it != resources.end())
+		return it->second.getRef();
+	else
+		return nullRef<T>;
+}
+
+template<typename T>
+RefPtr<T> ResourceManager<T>::registerResource(StringId key, OwningPtr<T> res) {
+	if (get(key))
+		return nullRef<T>;
+	resources.emplace(key, res);
+	return res.getRef();
+}

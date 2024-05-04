@@ -2,6 +2,7 @@
 
 #include "PCH.h"
 
+#include "resource-manager/ResourceManager.h"
 #include "rhi/RHI.h"
 #include "Material.h"
 #include "Mesh.h"
@@ -21,3 +22,4 @@ public:
 	UINT vertexStride;
 };
 
+extern ResourceManager<Object> objectManager;

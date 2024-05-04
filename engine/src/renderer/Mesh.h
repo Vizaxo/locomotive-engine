@@ -2,6 +2,7 @@
 
 #include "PCH.h"
 
+#include "resource-manager/ResourceManager.h"
 #include "rhi/RHI.h"
 
 class MeshData {
@@ -28,3 +29,4 @@ public:
 	ID3D11InputLayout* inputLayout = nullptr;
 };
 
+extern ResourceManager<Mesh> meshManager;
