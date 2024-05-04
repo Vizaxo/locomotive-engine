@@ -169,6 +169,7 @@
     <ClCompile Include="src\EngineMain.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\input\Mouse.cpp" />
+    <ClCompile Include="src\memory\Memory.cpp" />
     <ClCompile Include="src\platform\windows\WinInput.cpp" />
     <ClCompile Include="src\platform\Windows\WinMain.cpp" />
     <ClCompile Include="src\platform\windows\WinPlatform.cpp" />

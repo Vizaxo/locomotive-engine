@@ -24,5 +24,6 @@ void mouseReleaseCapture(WindowHandle* h);
 void setCursorPosition(v2i p);
 void showCursor(bool show);
 v2i getCursorPos();
+void printBacktrace(int stackFramesToPrint, int skipFirstNFrames);
 
 }
