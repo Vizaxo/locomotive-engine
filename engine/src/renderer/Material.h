@@ -3,6 +3,7 @@
 #include "PCH.h"
 
 #include "rhi/RHI.h"
+#include "resource-manager/ResourceManager.h"
 
 class Material {
 public:
@@ -14,3 +15,5 @@ public:
 	ID3D11ShaderResourceView* shaderResourceView = nullptr;
 	ID3D11SamplerState* samplerState = nullptr;
 };
+
+extern ResourceManager<Material> materialManager;

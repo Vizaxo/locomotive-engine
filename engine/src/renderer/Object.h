@@ -13,10 +13,10 @@ class Object {
 public:
 	DirectX::XMVECTOR& GetPos();
 	DirectX::XMMATRIX GetModelMatrix();
-	Object(D3DContext* d3dContext, DirectX::XMVECTOR pos, float angle, Mesh& mesh, Material* material);
+	Object(D3DContext* d3dContext, DirectX::XMVECTOR pos, float angle, RefPtr<Mesh> mesh, RefPtr<Material> material);
 
-	Material* material;
-	Mesh& mesh;
+	RefPtr<Material> material;
+	RefPtr<Mesh> mesh;
 	DirectX::XMVECTOR pos;
 	float angle;
 	UINT vertexStride;

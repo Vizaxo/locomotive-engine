@@ -2,7 +2,7 @@
 #include "Object.h"
 #include "Mesh.h"
 
-Object::Object(D3DContext* d3dContext, DirectX::XMVECTOR pos, float angle, Mesh& mesh, Material* material)
+Object::Object(D3DContext* d3dContext, DirectX::XMVECTOR pos, float angle, RefPtr<Mesh> mesh, RefPtr<Material> material)
 	: pos(pos), angle(angle), mesh(mesh), material(material)
 {}
 

@@ -165,7 +165,7 @@ void ExampleApplication::makePlane(D3DContext* d3dContext) {
 	OwningPtr<Mesh> planeMesh = new Mesh(d3dContext, planeMeshData, *baseColourVertexShader);
 
 	RefPtr<Mesh> planeMeshRef = meshManager.registerResource(internStringId("plane_mesh"), planeMesh);
-	Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  *planeMeshRef, baseColourMaterial);
+	Object plane = Object(d3dContext, XMVectorSet(-2, 0, 0, 0), 0.0f,  planeMeshRef, materialManager.get(internStringId("base_colour_material")));
 	scene.objects.push_back(plane);
 }
 
@@ -227,7 +227,7 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 
 	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
 	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
-	baseColourMaterial = new Material(*baseColourPixelShader);
+	RefPtr<Material> baseColourMaterial = materialManager.registerResource(internStringId("base_colour_material"), new Material(*baseColourPixelShader));
 
 	makePlane(d3dContext);
 	RefPtr<Mesh> hexMesh = createHexMesh(d3dContext);
@@ -236,7 +236,7 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < width; j++) {
 			HexCoord c = {i-width/2, j-width/2};
-			scene.objects.push_back(Object(d3dContext, XMVectorSet(c.cartesian().x, World::getHeight(c), c.cartesian().y, 0.0f), 90.0f, *hexMesh, baseColourMaterial));
+			scene.objects.push_back(Object(d3dContext, XMVectorSet(c.cartesian().x, World::getHeight(c), c.cartesian().y, 0.0f), 90.0f, hexMesh, baseColourMaterial));
 		}
 	}
 
@@ -245,7 +245,6 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 }
 
 void ExampleApplication::cleanup() {
-	delete baseColourMaterial;
 	delete baseColourPixelShader;
 	delete baseColourVertexShader;
 }

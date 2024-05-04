@@ -26,3 +26,5 @@ Material* Material::setTexture(D3DContext* d3dContext, Texture2D* texture) {
 	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &samplerState));
 	return this;
 }
+
+ResourceManager<Material> materialManager;

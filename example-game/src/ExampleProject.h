@@ -26,7 +26,6 @@ class ExampleApplication : public Application {
 	Scene scene;
 
 private:
-	Material* baseColourMaterial = nullptr;
 	PixelShader* baseColourPixelShader = nullptr;
 	VertexShader* baseColourVertexShader = nullptr;
 };
