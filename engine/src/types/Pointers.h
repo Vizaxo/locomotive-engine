@@ -38,18 +38,18 @@ struct RefPtr : Ptr<T, Nullable> {
 	RefPtr<T, true> getNullable() { CHECKNULL; return {this->obj}; }
 };
 
-template<typename T, bool Nullable = false>
+template<typename T, bool Nullable = false, class Deleter = std::default_delete<T>>
 struct OwningPtr : Ptr<T, Nullable> {
 	RefPtr<T, Nullable> getRef() { CHECKNULL; return {this->obj}; }
 	OwningPtr(T*&& ptr) { this->obj = ptr; CHECKNULL; } // Take ownership of rvalue reference from e.g. malloc() or new
-	OwningPtr(OwningPtr<T, Nullable>&& other) {
+	OwningPtr(OwningPtr<T, Nullable, Deleter>&& other) {
 		this->obj = other.obj;
 		CHECKNULL;
 		other.obj = nullptr;
 	}
-	OwningPtr<T, false> getNonNull() { CHECKNULL; return {this->obj}; }
-	OwningPtr<T, true> getNullable() { CHECKNULL; return {this->obj}; }
-	~OwningPtr() { delete this->obj; }
+	OwningPtr<T, false, Deleter> getNonNull() { CHECKNULL; return {this->obj}; }
+	OwningPtr<T, true, Deleter> getNullable() { CHECKNULL; return {this->obj}; }
+	~OwningPtr() { Deleter()(this->obj); }
 };
 
 template<typename T, bool Nullable = false>
