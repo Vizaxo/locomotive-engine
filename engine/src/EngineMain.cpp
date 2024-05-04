@@ -45,6 +45,7 @@ void tick() {
 
 	deltaTime = std::min<float>(deltaTime, maxTimeStep);
 
+#if 0
 	for (Keyboard::Key k : Keyboard::keysDown)
 		DEBUG_PRINT(Keyboard::toString(k).c_str());
 	if (!Keyboard::keysDown.empty())
@@ -57,6 +58,7 @@ void tick() {
 
 	DEBUG_PRINT(std::to_string((int)Mouse::buttonState).c_str());
 	DEBUG_PRINT("\n");
+#endif
 
 	imgui->InitFrame();
 	application->tick(deltaTime);
