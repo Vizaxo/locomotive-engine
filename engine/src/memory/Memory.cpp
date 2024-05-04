@@ -6,6 +6,8 @@
 #if _DEBUG
 static bool debugPrintAllocationStacks = false;
 static bool debugPrintAllocations = true;
+static bool debugPrintDeallocationStacks = false;
+static bool debugPrintDeallocations = true;
 #endif
 
 void* operator new(size_t n) {
@@ -14,17 +16,31 @@ void* operator new(size_t n) {
 #if _DEBUG
 	char buf[50];
 
-	if (debugPrintAllocationStacks) {
-		snprintf(buf, 50, "Allocated %lld bytes\n", n);
-		PAL::printBacktrace(12, 2);
+	if (debugPrintAllocations) {
+		snprintf(buf, 50, "Allocated   %lld bytes at %p\n", n, addr);
 		DEBUG_PRINT(buf);
+	}
+	if (debugPrintAllocationStacks) {
+		PAL::printBacktrace(12, 2);
 	}
 
-	if (debugPrintAllocations) {
-		snprintf(buf, 50, "Allocated %lld bytes at %p\n", n, addr);
-		DEBUG_PRINT(buf);
-	}
 #endif
 
 	return addr;
+}
+
+void operator delete(void* p, size_t n) {
+#if _DEBUG
+	char buf[50];
+
+	if (debugPrintDeallocations) {
+		snprintf(buf, 50, "Deallocated %lld bytes at %p\n", n, p);
+		DEBUG_PRINT(buf);
+	}
+	if (debugPrintDeallocationStacks) {
+		PAL::printBacktrace(12, 2);
+	}
+
+#endif
+	free(p);
 }
