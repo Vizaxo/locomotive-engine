@@ -19,7 +19,22 @@ AllocationInfo allocInfos[Engine::NUM_ENGINE_STATES];
 #endif
 
 void* operator new(size_t n) {
-	void* addr = malloc(n);
+	// Reimplement default operator new behaviour
+	void* addr;
+	while (true) {
+		addr = malloc(n);
+		if (!addr) {
+			std::new_handler h = std::get_new_handler();
+			if (h) {
+				h();
+				continue;
+			} else {
+				std::terminate();
+			}
+		}
+
+		break;
+	}
 
 #if _DEBUG
 	AllocationInfo& allocInfo = allocInfos[Engine::engineState];
