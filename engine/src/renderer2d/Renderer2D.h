@@ -28,8 +28,8 @@ struct Scene2D {
 	Box2D viewport;
 
 	Scene2D() {
-		circles.emplace_back(Circle({{100, 100}, 20, {1, 1, 0}}));
-		circles.emplace_back(Circle({{110, 200}, 20, {1, 1, 0}, {0.0, 5.0}}));
+		circles.emplace_back(Circle({{100, 100}, 20, {1, 1, 0}, 1.0}));
+		circles.emplace_back(Circle({{110, 200}, 20, {1, 1, 0}, {0.0, 5.0}, 1.0}));
 
 		for (int i = 0; i < 20; ++i) {
 			circles.emplace_back(Circle({ {randf()*200 + 400, randf()*200 + 400}, 20, {1, 1, 0}, v2f({(float)(randf()*5.0), (float)(randf()*5.0)}), 1.0 }));

@@ -17,9 +17,9 @@ void Renderer2D::tickPhysics(RefPtr<Scene2D> scene, float deltaTime) {
 				// collision
 
 				// temp
-				const float collisionFactor = 1.0;
-				c1.velocity = normalize(c2.pos - c1.pos) * collisionFactor;
-				c2.velocity = normalize(c1.pos - c2.pos) * collisionFactor;
+				static const float collisionFactor = 1.0;
+				c1.velocity = (normalize(c2.pos - c1.pos) * collisionFactor) / c1.mass;
+				c2.velocity = (normalize(c1.pos - c2.pos) * collisionFactor) / c2.mass;
 			}
 		}
 

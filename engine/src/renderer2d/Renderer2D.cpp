@@ -43,13 +43,21 @@ void Renderer2D::init(HWND hwnd) {
 }
 
 void Renderer2D::renderScene(float delta) {
+	static float accDelta = 0;
+	float prevAccDelta = accDelta;
+	accDelta += delta;
+
+	static const float spawnInterval = 0.1;
+	if (floor(accDelta / spawnInterval) != floor(prevAccDelta / spawnInterval))
+		scene.circles.emplace_back(Circle({ {randf() * 200 + 400, randf() * 200 + 400}, 20, {1, 1, 0}, v2f({(float)(randf() * 5.0), (float)(randf() * 5.0)}), 1.0 }));
+
 	Renderer2D::tickPhysics(&scene, delta);
 	renderTarget->BeginDraw();
 	renderTarget->Clear();
 
-	float strokeWidth = 1.0;
+	float strokeWidth = 10.0;
 	for (Circle& circle : scene.circles) {
-		renderTarget->DrawEllipse(D2D1::Ellipse(circle.pos, circle.radius, circle.radius), blackBrush.getRaw(), strokeWidth);
+		renderTarget->FillEllipse(D2D1::Ellipse(circle.pos, circle.radius, circle.radius), blackBrush.getRaw());
 	}
 
 	HRASSERT(renderTarget->EndDraw());
