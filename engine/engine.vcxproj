@@ -165,6 +165,8 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\renderer2d\Physics2D.cpp" />
+    <ClCompile Include="src\renderer2d\Renderer2D.cpp" />
     <ClCompile Include="src\debug\ttd.cpp" />
     <ClCompile Include="src\EngineMain.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
@@ -197,6 +199,7 @@
     <ClCompile Include="src\world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer2d\Renderer2D.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\debug\ttd.h" />
     <ClInclude Include="src\EngineMain.h" />
@@ -204,6 +207,8 @@
     <ClInclude Include="src\platform\Platform.h" />
     <ClInclude Include="src\platform\windows\Windows.h" />
     <ClInclude Include="src\resource-manager\ResourceManager.h" />
+    <ClInclude Include="src\types\Box.h" />
+    <ClInclude Include="src\types\Colour.h" />
     <ClInclude Include="src\types\HexCoord.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />

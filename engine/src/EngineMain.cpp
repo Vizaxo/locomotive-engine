@@ -5,6 +5,7 @@
 #include "rhi/RHI.h"
 #include "renderer/ImGuiUtils.h"
 #include "renderer/Renderer.h"
+#include "renderer2d/Renderer2D.h"
 #include "Application.h"
 #include "input/Mouse.h"
 
@@ -14,6 +15,13 @@ EngineState engineState = EngineState::ENGINE_PRE_INIT;
 
 ImGuiWrapper* imgui;
 Renderer* renderer;
+
+enum RenderMode {
+	RENDER_3D,
+	RENDER_2D,
+};
+static RenderMode renderMode = RENDER_2D;
+
 D3DContext* d3dContext;
 DWORD previousTime;
 
@@ -32,7 +40,15 @@ int init(PAL::WindowHandle* h, bool vSync) {
 
 	imgui = new ImGuiWrapper(d3dContext, h);
 	engineState = ENGINE_INIT_POST_IMGUI;
-	renderer = new Renderer(d3dContext);
+
+	switch (renderMode) {
+	case RENDER_2D:
+		Renderer2D::init(h->hwnd); //TODO: fix windows-specific code
+		break;
+	case RENDER_3D:
+		renderer = new Renderer(d3dContext);
+		break;
+	}
 	engineState = ENGINE_INIT_POST_RENDERER;
 	previousTime = timeGetTime();
 
@@ -74,7 +90,16 @@ void tick() {
 
 	imgui->InitFrame();
 	application->tick(deltaTime);
-	renderer->RenderScene(d3dContext, application->getScene(), deltaTime);
+
+	switch (renderMode) {
+	case RENDER_2D:
+		Renderer2D::renderScene(deltaTime);
+		break;
+	case RENDER_3D:
+		renderer->RenderScene(d3dContext, application->getScene(), deltaTime);
+		break;
+	}
+
 	Mouse::endTick();
 
 	if (debug) {
@@ -85,7 +110,13 @@ void tick() {
 void cleanup() {
 	engineState = ENGINE_CLEANUP;
 	delete application;
-	delete renderer;
+	switch (renderMode) {
+	case RENDER_2D:
+		break;
+	case RENDER_3D:
+		delete renderer;
+		break;
+	}
 	delete imgui;
 	delete d3dContext;
 	engineState = ENGINE_POST_CLEANUP;
