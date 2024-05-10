@@ -20,7 +20,7 @@ enum RenderMode {
 	RENDER_3D,
 	RENDER_2D,
 };
-static RenderMode renderMode = RENDER_2D;
+static RenderMode renderMode = RENDER_3D;
 
 D3DContext* d3dContext;
 DWORD previousTime;
