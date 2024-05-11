@@ -7,11 +7,6 @@
 
 struct RHI {
 
-	OwningPtr<ID3D11Device, false, ReleaseCOM> device;
-	OwningPtr<ID3D11DeviceContext, false, ReleaseCOM> deviceContext;
-	OwningPtr<IDXGISwapChain, false, ReleaseCOM> swapChain;
-	D3D_FEATURE_LEVEL featureLevel;
-
 	struct Shader {
 		RefPtr<u8> bytecode;
 		size_t size;
@@ -63,6 +58,17 @@ struct RHI {
 	struct IndexBuffer {
 		OwningPtr<ID3D11Buffer> gpu_indexBuffer;
 	};
+
+	struct RenderTargetView {
+		OwningPtr<ID3D11RenderTargetView, false, ReleaseCOM> rtv;
+	};
+
+	OwningPtr<ID3D11Device, false, ReleaseCOM> device;
+	OwningPtr<ID3D11DeviceContext, false, ReleaseCOM> deviceContext;
+	OwningPtr<IDXGISwapChain, false, ReleaseCOM> swapChain;
+	RenderTargetView backBufferRTV;
+	D3D_FEATURE_LEVEL featureLevel;
+
 };
 
 RHI createRHI(RefPtr<PAL::WindowHandle> h);

@@ -24,10 +24,11 @@ RHI createRHI(RefPtr<PAL::WindowHandle> h) {
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
+	static const DXGI_FORMAT BACK_BUFFER_FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDesc.BufferCount = 1;
 	swapChainDesc.BufferDesc.Width = clientWidth;
 	swapChainDesc.BufferDesc.Height = clientHeight;
-	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferDesc.Format = BACK_BUFFER_FORMAT;
 	swapChainDesc.BufferDesc.RefreshRate = { 0, 1 }; // QueryRefreshRate(clientWidth, clientHeight, vSync);
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.OutputWindow = hWnd;
@@ -60,7 +61,17 @@ RHI createRHI(RefPtr<PAL::WindowHandle> h) {
 		D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &d3dDevice, &featureLevel,
 		&d3dDeviceContext));
 
-	return {std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel};
+	ID3D11Texture2D* backBuffer;
+	HRASSERT(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer));
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+	rtvDesc.Format = BACK_BUFFER_FORMAT;
+	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	rtvDesc.Texture2D = {0};
+
+	ID3D11RenderTargetView* backBufferRTV;
+	d3dDevice->CreateRenderTargetView(backBuffer, &rtvDesc, &backBufferRTV);
+
+	return {std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), {std::move(backBufferRTV)}, featureLevel};
 }
 
 RHI::VertexShader RHI::createVertexShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {
