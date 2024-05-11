@@ -2,6 +2,7 @@
 
 #define CVAR_NAME(name) CVar_##name
 #define DEF_CVAR(name, desc, type, init) static inline CVar<type> CVAR_NAME(name) = { TOSTRING2(name), desc, init };
+#define DEF_CVAR_(name, type, init) static inline CVar<type> CVAR_NAME(name) = { TOSTRING2(name), "", init };
 #define CVAR(name) CVAR_NAME(name).val
 
 template <typename T>
