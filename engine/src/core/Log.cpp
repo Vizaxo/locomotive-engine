@@ -33,5 +33,10 @@ void Log::logStr(Level lvl, Channel& chan, int line, const char* file, const cha
 
 	DEBUG_PRINT("\n");
 
+	if (lvl == FATAL) {
+		DEBUG_BREAK();
+		CRASH();
+	}
+
 	va_end(args);
 }

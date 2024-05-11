@@ -35,3 +35,5 @@
 #else
 #error "Define these macros for this platform"
 #endif
+
+#define CRASH() do{int* crash_abcdef = nullptr; *crash_abcdef=1;}while(0);
