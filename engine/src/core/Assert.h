@@ -1,8 +1,5 @@
 #pragma once
 
-// Assertions
-// Errors
-
 #include "Constants.h"
 #include "Log.h"
 
