@@ -37,9 +37,28 @@ struct RHI {
 	InputLayout createInputLayout(RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count, RefPtr<VertexShader> vs);
 
 	struct VertexBuffer {
-		int slot; //do I need to store this here?
 		OwningPtr<ID3D11Buffer> gpu_vertexBuffer;
+		uint stride;
 	};
+	template <typename T>
+	VertexBuffer createVertexBuffer(RefPtr<T> verts, size_t count) {
+		uint stride = sizeof(T);
+		D3D11_BUFFER_DESC vertexBufferDesc = {};
+
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDesc.ByteWidth = count * stride;
+		vertexBufferDesc.CPUAccessFlags = 0;
+		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		D3D11_SUBRESOURCE_DATA resourceData = {};
+		resourceData.pSysMem = verts.getRaw();
+
+		ID3D11Buffer* vertexBuffer;
+		HRASSERT(device->CreateBuffer(&vertexBufferDesc, &resourceData, &vertexBuffer));
+
+		return { std::move(vertexBuffer), stride };
+	}
+	void setVertexBuffer(RefPtr<VertexBuffer> vertexBuffer, uint slot);
 
 	struct IndexBuffer {
 		OwningPtr<ID3D11Buffer> gpu_indexBuffer;

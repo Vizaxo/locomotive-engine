@@ -91,3 +91,7 @@ RHI::InputLayout RHI::createInputLayout(RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, 
 	return { std::move(descsCpy), inputLayout.getNonNull() };
 }
 
+void RHI::setVertexBuffer(RefPtr<RHI::VertexBuffer> vertexBuffer, uint slot) {
+	uint offset = 0;
+	deviceContext->IASetVertexBuffers(slot, 1, &vertexBuffer->gpu_vertexBuffer.getRaw(), &vertexBuffer->stride, &offset);
+}
