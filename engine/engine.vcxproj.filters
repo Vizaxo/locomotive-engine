@@ -260,6 +260,9 @@
     <ClInclude Include="src\core\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\CVar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\BaseColourVertexShader.hlsl" />

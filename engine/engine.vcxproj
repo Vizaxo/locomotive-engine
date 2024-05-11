@@ -202,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Assert.h" />
+    <ClInclude Include="src\core\CVar.h" />
     <ClInclude Include="src\core\Log.h" />
     <ClInclude Include="src\renderer2d\Renderer2D.h" />
     <ClInclude Include="src\Application.h" />
