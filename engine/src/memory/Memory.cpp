@@ -4,8 +4,9 @@
 #include "Utils.h"
 #include "platform/Platform.h"
 #include "EngineMain.h"
+#include "Constants.h"
 
-#if _DEBUG
+#if DEBUG_LOG_ALLOCATIONS
 static bool debugPrintAllocationStacks = false;
 static bool debugPrintAllocations = true;
 static bool debugPrintDeallocationStacks = false;
@@ -39,7 +40,7 @@ void* operator new(size_t n) {
 		break;
 	}
 
-#if _DEBUG
+#if DEBUG_LOG_ALLOCATIONS
 	AllocationInfo& allocInfo = allocInfos[Engine::engineState];
 	allocInfo.numAllocations++;
 	allocInfo.totalAllocated += n;
@@ -58,7 +59,7 @@ void* operator new(size_t n) {
 }
 
 void operator delete(void* p, size_t n) {
-#if _DEBUG
+#if DEBUG_LOG_ALLOCATIONS
 	AllocationInfo& allocInfo = allocInfos[Engine::engineState];
 	allocInfo.numDeallocations++;
 	allocInfo.totalDeallocated += n;
