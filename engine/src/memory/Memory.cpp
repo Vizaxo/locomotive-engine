@@ -1,5 +1,6 @@
 #include "PCH.h"
 
+#include "core/Log.h"
 #include "Utils.h"
 #include "platform/Platform.h"
 #include "EngineMain.h"
@@ -16,6 +17,8 @@ struct AllocationInfo {
 };
 
 AllocationInfo allocInfos[Engine::NUM_ENGINE_STATES];
+
+Log::Channel g_memoryChannel = {"memory"};
 #endif
 
 void* operator new(size_t n) {
@@ -41,11 +44,9 @@ void* operator new(size_t n) {
 	allocInfo.numAllocations++;
 	allocInfo.totalAllocated += n;
 	allocInfo.currentUsage += n;
-	char buf[50];
 
 	if (debugPrintAllocations) {
-		snprintf(buf, 50, "Allocated   %lld bytes at %p\n", n, addr);
-		DEBUG_PRINT(buf);
+		LOG(Log::INFO, g_memoryChannel, "Allocated   %lld bytes at %p", n, addr);
 	}
 	if (debugPrintAllocationStacks) {
 		PAL::printBacktrace(12, 2);
@@ -62,11 +63,9 @@ void operator delete(void* p, size_t n) {
 	allocInfo.numDeallocations++;
 	allocInfo.totalDeallocated += n;
 	allocInfo.currentUsage -= n;
-	char buf[50];
 
 	if (debugPrintDeallocations) {
-		snprintf(buf, 50, "Deallocated %lld bytes at %p\n", n, p);
-		DEBUG_PRINT(buf);
+		LOG(Log::INFO, g_memoryChannel, "Deallocated %lld bytes at %p", n, p);
 	}
 	if (debugPrintDeallocationStacks) {
 		PAL::printBacktrace(12, 2);
