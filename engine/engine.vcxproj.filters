@@ -18,13 +18,13 @@
     <ClCompile Include="src\PCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi_new\DX11\InitDX11.cpp">
+    <ClCompile Include="src\rhi\DX11\InitDX11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi\dx11\Texture2D.cpp">
+    <ClCompile Include="src\rhi_old\dx11\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Material.cpp">
@@ -60,10 +60,10 @@
     <ClCompile Include="src\renderer\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi\dx11\Shader.cpp">
+    <ClCompile Include="src\rhi_old\dx11\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi\dx11\VertexBuffer.cpp">
+    <ClCompile Include="src\rhi_old\dx11\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\debug\ttd.cpp">
@@ -120,7 +120,7 @@
     <ClCompile Include="src\core\Assert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi\dx11\D3DContext.cpp">
+    <ClCompile Include="src\rhi_old\dx11\D3DContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,7 +128,7 @@
     <ClInclude Include="src\PCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi\dx11\D3DContext.h">
+    <ClInclude Include="src\rhi_old\dx11\D3DContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Object.h">
@@ -137,7 +137,7 @@
     <ClInclude Include="src\renderer\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi\dx11\Texture2D.h">
+    <ClInclude Include="src\rhi_old\dx11\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Material.h">
@@ -179,10 +179,10 @@
     <ClInclude Include="src\renderer\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi\dx11\Shader.h">
+    <ClInclude Include="src\rhi_old\dx11\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi\dx11\VertexBuffer.h">
+    <ClInclude Include="src\rhi_old\dx11\VertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils.h">
@@ -191,7 +191,7 @@
     <ClInclude Include="src\renderer\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi\RHI.h">
+    <ClInclude Include="src\rhi_old\RHI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Constants.h">
@@ -266,10 +266,10 @@
     <ClInclude Include="src\core\CVar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi_new\DX11\RHIDX11.h">
+    <ClInclude Include="src\rhi\DX11\RHIDX11.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi_new\RHI.h">
+    <ClInclude Include="src\rhi\RHI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -178,8 +178,8 @@
     <ClCompile Include="src\platform\Windows\WinMain.cpp" />
     <ClCompile Include="src\platform\windows\WinPlatform.cpp" />
     <ClCompile Include="src\renderer\Source.cpp" />
-    <ClCompile Include="src\rhi\dx11\D3DContext.cpp" />
-    <ClCompile Include="src\rhi_new\DX11\InitDX11.cpp" />
+    <ClCompile Include="src\rhi_old\dx11\D3DContext.cpp" />
+    <ClCompile Include="src\rhi\DX11\InitDX11.cpp" />
     <ClCompile Include="src\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -192,9 +192,9 @@
     <ClCompile Include="src\editor\ModelLoader.cpp" />
     <ClCompile Include="src\renderer\Object.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
-    <ClCompile Include="src\rhi\dx11\Shader.cpp" />
-    <ClCompile Include="src\rhi\dx11\Texture2D.cpp" />
-    <ClCompile Include="src\rhi\dx11\VertexBuffer.cpp" />
+    <ClCompile Include="src\rhi_old\dx11\Shader.cpp" />
+    <ClCompile Include="src\rhi_old\dx11\Texture2D.cpp" />
+    <ClCompile Include="src\rhi_old\dx11\VertexBuffer.cpp" />
     <ClCompile Include="src\stbi_impl.cpp" />
     <ClCompile Include="src\types\StringId.cpp" />
     <ClCompile Include="src\utils\Hashing.cpp" />
@@ -212,9 +212,9 @@
     <ClInclude Include="src\input\Mouse.h" />
     <ClInclude Include="src\platform\Platform.h" />
     <ClInclude Include="src\platform\windows\Windows.h" />
-    <ClInclude Include="src\rhi_new\DX11\RHIDX11.h" />
+    <ClInclude Include="src\rhi\DX11\RHIDX11.h" />
     <ClInclude Include="src\resource-manager\ResourceManager.h" />
-    <ClInclude Include="src\rhi_new\RHI.h" />
+    <ClInclude Include="src\rhi\RHI.h" />
     <ClInclude Include="src\types\Box.h" />
     <ClInclude Include="src\types\Colour.h" />
     <ClInclude Include="src\types\HexCoord.h" />
@@ -229,7 +229,7 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\input\Keyboard.h" />
     <ClInclude Include="src\platform\windows\WinInput.h" />
-    <ClInclude Include="src\rhi\dx11\D3DContext.h" />
+    <ClInclude Include="src\rhi_old\dx11\D3DContext.h" />
     <ClInclude Include="src\PCH.h" />
     <ClInclude Include="src\renderer\ImGuiUtils.h" />
     <ClInclude Include="src\renderer\Light.h" />
@@ -239,14 +239,14 @@
     <ClInclude Include="src\renderer\Object.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\Scene.h" />
-    <ClInclude Include="src\rhi\RHI.h" />
-    <ClInclude Include="src\rhi\dx11\Shader.h" />
-    <ClInclude Include="src\rhi\dx11\Texture2D.h" />
+    <ClInclude Include="src\rhi_old\RHI.h" />
+    <ClInclude Include="src\rhi_old\dx11\Shader.h" />
+    <ClInclude Include="src\rhi_old\dx11\Texture2D.h" />
     <ClInclude Include="src\types\Pointers.h" />
     <ClInclude Include="src\types\StringId.h" />
     <ClInclude Include="src\types\Types.h" />
     <ClInclude Include="src\Utils.h" />
-    <ClInclude Include="src\rhi\dx11\VertexBuffer.h" />
+    <ClInclude Include="src\rhi_old\dx11\VertexBuffer.h" />
     <ClInclude Include="src\types\Vector.h" />
     <ClInclude Include="src\utils\Hashing.h" />
     <ClInclude Include="src\world\Noise.h" />

@@ -1,3 +1,4 @@
+/*
 #include "PCH.h"
 #include "Mesh.h"
 
@@ -57,3 +58,4 @@ void Mesh::CreateInputLayout(D3DContext* d3dContext) {
 
 	inputLayout = vertexShader.CreateInputLayout(d3dContext, inputDesc);
 }
+*/

@@ -5,15 +5,10 @@
 #include "rhi/RHI.h"
 #include "resource-manager/ResourceManager.h"
 
-class Material {
-public:
-	Material(PixelShader& pixelShader);
-	Material* setTexture(D3DContext* d3dContext, Texture2D* texture);
-
-	PixelShader& pixelShader;
-	Texture2D* texture = nullptr;
-	ID3D11ShaderResourceView* shaderResourceView = nullptr;
-	ID3D11SamplerState* samplerState = nullptr;
+struct Material {
+	RHI::VertexShader vertexShader;
+	RHI::PixelShader pixelShader;
+	RHI::InputLayout inputLayout;
 };
 
 extern ResourceManager<Material> materialManager;

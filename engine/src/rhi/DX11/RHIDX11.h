@@ -58,6 +58,22 @@ struct RHI {
 	struct IndexBuffer {
 		OwningPtr<ID3D11Buffer> gpu_indexBuffer;
 	};
+	template <typename T>
+	IndexBuffer createIndexBuffer(RefPtr<T> indices, size_t count) {
+		D3D11_BUFFER_DESC indexBufferDesc = {};
+		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		indexBufferDesc.ByteWidth = count * sizeof(T);
+		indexBufferDesc.CPUAccessFlags = 0;
+		indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		D3D11_SUBRESOURCE_DATA resourceData = {};
+		resourceData.pSysMem = indices.getRaw();
+
+		ID3D11IndexBuffer* indexBuffer;
+		HRASSERT(device->CreateBuffer(&indexBufferDesc, &resourceData, &indexBuffer));
+
+		return {std::move(indexBuffer)};
+	}
 
 	struct RenderTargetView {
 		OwningPtr<ID3D11RenderTargetView, false, ReleaseCOM> rtv;

@@ -1,10 +1,7 @@
 #include "PCH.h"
 #include "Material.h"
 
-Material::Material(PixelShader& pixelShader)
-	: pixelShader(pixelShader)
-{}
-
+/*
 Material* Material::setTexture(D3DContext* d3dContext, Texture2D* texture) {
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	srvDesc.Format = texture->DXGIFormat;
@@ -26,5 +23,6 @@ Material* Material::setTexture(D3DContext* d3dContext, Texture2D* texture) {
 	HRASSERT(d3dContext->d3dDevice->CreateSamplerState(&samplerDesc, &samplerState));
 	return this;
 }
+*/
 
 ResourceManager<Material> materialManager;

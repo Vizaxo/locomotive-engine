@@ -21,7 +21,7 @@ namespace ImGui {
 
 class ImGuiWrapper {
 public:
-	ImGuiWrapper(D3DContext* d3dContext, PAL::WindowHandle* h);
+	ImGuiWrapper(RefPtr<RHI> rhi, PAL::WindowHandle* h);
 	~ImGuiWrapper();
 	void InitFrame();
 };

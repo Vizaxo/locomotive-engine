@@ -1,32 +1,17 @@
 #pragma once
 
 #include "PCH.h"
+#include "types/Pointers.h"
 
-#include "resource-manager/ResourceManager.h"
-#include "rhi/RHI.h"
-
-class MeshData {
-public:
-	MeshData(std::vector<VertexBuffer>&& vertexBuffers, std::vector<int>&& inIndices);
-	MeshData(MeshData& other);
-	MeshData(MeshData&& other);
-	std::vector<VertexBuffer> vertexBuffers;
-	std::vector<int> indices;
+struct Mesh {
+	RHI::VertexBuffer vertexBuffer;
+	RHI::IndexBuffer indexBuffer;
+	RefPtr<Material> material;
 };
 
-class Mesh {
-public:
-	Mesh(D3DContext* d3dContext, OwningPtr<MeshData>&& meshData, VertexShader& vs);
-
-	void InitialiseVertexBuffers(D3DContext* d3dContext);
-	void CreateIndexBuffer(D3DContext* d3dContext);
-	void CreateInputLayout(D3DContext* d3dContext);
-
-	OwningPtr<MeshData> meshData;
-	VertexShader& vertexShader;
-
-	ID3D11Buffer* indexBuffer = nullptr;
-	ID3D11InputLayout* inputLayout = nullptr;
-};
-
-extern ResourceManager<Mesh> meshManager;
+template <typename V, typename I>
+Mesh createMesh(RefPtr<V> verts, size_t vert_count, RefPtr<I> indices, size_t index_count, RefPtr<Material> material) {
+	VertexBuffer vertexBuffer = RHI::createVertexBuffer(verts, vert_count);
+	VertexBuffer indexBuffer = RHI::createIndexBuffer(indices, index_count);
+	return {vertexBuffer, indexBuffer, material};
+}
