@@ -60,7 +60,7 @@ struct OwningPtr : Ptr<T, Nullable> {
 		return *this;
 	}
 
-	OwningPtr<T, false, Deleter> getNonNull() { CHECKNULL; return {this->obj}; }
+	OwningPtr<T, false, Deleter> getNonNull() { CHECKNULL; return {std::move(this->obj)}; }
 	OwningPtr<T, true, Deleter> getNullable() 
 	{ 
 		CHECKNULL; 
@@ -82,3 +82,11 @@ OwningPtr<T, Nullable> takeOwnership(T* p) {
 
 template<typename T> RefPtr<T, true> nullRef = {nullptr};
 template<typename T> OwningPtr<T, true> nullOwned = {nullptr};
+
+struct ArrayDelete {
+	void operator()(void* mem) { delete[] mem; }
+};
+
+struct ReleaseCOM {
+	void operator()(IUnknown* obj) { if (obj) obj->Release(); }
+};

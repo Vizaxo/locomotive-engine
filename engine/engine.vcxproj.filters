@@ -18,7 +18,7 @@
     <ClCompile Include="src\PCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi\dx11\D3DContext.cpp">
+    <ClCompile Include="src\rhi_new\DX11\InitDX11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Object.cpp">
@@ -118,6 +118,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Assert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rhi\dx11\D3DContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -261,6 +264,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\CVar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rhi_new\DX11\RHIDX11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rhi_new\RHI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

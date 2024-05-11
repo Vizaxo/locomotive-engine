@@ -2,7 +2,7 @@
 
 #include "Constants.h"
 
-#if RENDER_API == API_DIRECTX_11
+#if API_DIRECTX_11
 #include "dx11/D3DContext.h"
 #include "dx11/Shader.h"
 #include "dx11/Texture2D.h"
