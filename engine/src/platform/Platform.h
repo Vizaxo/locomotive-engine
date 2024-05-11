@@ -8,7 +8,7 @@
 #define PLATFORM WINDOWS
 
 #if PLATFORM == WINDOWS
-#define PLATFORM_WINDOWS
+#define PLATFORM_WINDOWS 1
 #define WINDOWS_ONLY
 #else
 #error "Platform not implemented"

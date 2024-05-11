@@ -8,6 +8,7 @@
 #include "renderer2d/Renderer2D.h"
 #include "Application.h"
 #include "input/Mouse.h"
+#include "core/Log.h"
 
 namespace Engine {
 
@@ -28,7 +29,10 @@ DWORD previousTime;
 const float targetFramerate = 30.0f;
 const float maxTimeStep = 1.0f / targetFramerate;
 
+Log::Channel g_engineLog = {"engine"};
+
 int init(PAL::WindowHandle* h, bool vSync) {
+	LOG(Log::INFO, g_engineLog, "Initialising engine");
 	engineState = ENGINE_INIT;
 	d3dContext = new D3DContext(h, vSync);
 	engineState = ENGINE_INIT_POST_D3D;
