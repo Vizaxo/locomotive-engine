@@ -34,6 +34,9 @@ Log::Channel g_engineLog = {"engine"};
 int init(PAL::WindowHandle* h, bool vSync) {
 	LOG(Log::INFO, g_engineLog, "Initialising engine");
 	engineState = ENGINE_INIT;
+
+	PAL::initialiseConsole();
+
 	d3dContext = new D3DContext(h, vSync);
 	engineState = ENGINE_INIT_POST_D3D;
 

@@ -30,7 +30,6 @@
 
 
 #if PLATFORM_WINDOWS
-#define DEBUG_PRINT OutputDebugStringA
 #define DEBUG_BREAK DebugBreak
 #else
 #error "Define these macros for this platform"

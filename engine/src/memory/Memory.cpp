@@ -51,7 +51,7 @@ void* operator new(size_t n) {
 		LOG(Log::INFO, g_memoryChannel, "Allocated   %lld bytes at %p", n, addr);
 	}
 	if (CVAR(debug_print_allocation_stacks)) {
-		PAL::printBacktrace(12, 2);
+		PAL::printBacktrace(12, 2, g_memoryChannel);
 	}
 
 #endif
@@ -70,7 +70,7 @@ void operator delete(void* p, size_t n) {
 		LOG(Log::INFO, g_memoryChannel, "Deallocated %lld bytes at %p", n, p);
 	}
 	if (CVAR(debug_print_deallocation_stacks)) {
-		PAL::printBacktrace(12, 2);
+		PAL::printBacktrace(12, 2, g_memoryChannel);
 	}
 
 #endif

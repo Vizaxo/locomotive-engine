@@ -4,6 +4,7 @@
 
 #include "platform/Platform.h"
 
+#include "core/Log.h"
 #include "Utils.h"
 #include "types/Types.h"
 
@@ -25,7 +26,7 @@ v2i getCursorPos() {
 	return {p.x, p.y};
 }
 
-void printBacktrace(int stackFramesToPrint, int skipFirstNFrames) {
+void printBacktrace(int stackFramesToPrint, int skipFirstNFrames, Log::Channel& chan) {
 #if _DEBUG
     const int MAX_STACK_FRAMES = 32;
     const int numStackFrames = min(stackFramesToPrint + skipFirstNFrames, MAX_STACK_FRAMES);
@@ -48,23 +49,38 @@ void printBacktrace(int stackFramesToPrint, int skipFirstNFrames) {
         SymFromAddr(process, address, NULL, symbol);
         if (SymGetLineFromAddr64(process, address, &displacement, &line))
         {
-            snprintf(buf, 256, "%s\n", symbol->Name);
-            DEBUG_PRINT(buf);
-            snprintf(buf, 256, "%s(%lu): address 0x%0X\n", line.FileName, line.LineNumber, symbol->Address);
-            DEBUG_PRINT(buf);
+            LOG(Log::INFO, chan, "%s", symbol->Name);
+            LOG(Log::INFO, chan, "%s(%lu): address 0x%0X", line.FileName, line.LineNumber, symbol->Address);
         }
         else
         {
-            snprintf(buf, 256, "\tSymGetLineFromAddr64 error: %lu.\n", GetLastError());
-            DEBUG_PRINT(buf);
-            snprintf(buf, 256, "%s: 0x%0X.\n", symbol->Name, symbol->Address);
-            DEBUG_PRINT(buf);
+            LOG(Log::INFO, chan, "\tSymGetLineFromAddr64 error: %lu.", GetLastError());
+            LOG(Log::INFO, chan, "%s: 0x%0X.", symbol->Name, symbol->Address);
         }
     }
-	DEBUG_PRINT("\n");
 #else
-    DEBUG_PRINT("Backtrace not available in non-debug builds");
+    LOG(Log::INFO, chan, "Backtrace not available in non-debug builds");
 #endif
+}
+
+void initialiseConsole() {
+	AllocConsole();
+
+    FILE* fp = nullptr;
+    freopen_s(&fp, "CONIN$", "r", stdin);
+    setvbuf(stdin, nullptr, _IONBF, 0);
+    freopen_s(&fp, "CONOUT$", "w", stdout);
+    setvbuf(stdout, nullptr, _IONBF, 0);
+    freopen_s(&fp, "CONOUT$", "w", stderr);
+    setvbuf(stderr, nullptr, _IONBF, 0);
+
+	std::ios::sync_with_stdio(true);
+	std::wcout.clear();
+    std::cout.clear();
+    std::wcerr.clear();
+    std::cerr.clear();
+    std::wcin.clear();
+    std::cin.clear();
 }
 
 

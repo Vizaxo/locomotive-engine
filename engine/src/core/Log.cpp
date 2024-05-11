@@ -3,7 +3,7 @@
 #include "platform/Platform.h"
 
 #if PLATFORM_WINDOWS
-#define DEBUG_PRINT OutputDebugStringA
+#define DEBUG_PRINT(s) do{OutputDebugStringA(s);std::cout<<(s);}while(0)
 #else
 #error "Platform unsupported for logging"
 #endif
