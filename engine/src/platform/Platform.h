@@ -2,19 +2,6 @@
 
 #include "types/Vector.h"
 
-#define WINDOWS 0
-#define LINUX 1
-
-#define PLATFORM WINDOWS
-
-#if PLATFORM == WINDOWS
-#define PLATFORM_WINDOWS 1
-#define WINDOWS_ONLY
-#else
-#error "Platform not implemented"
-#define WINDOWS_ONLY #error "This header can only be imported on Windows platforms"
-#endif
-
 namespace PAL {
 
 struct WindowHandle;
@@ -27,3 +14,4 @@ v2i getCursorPos();
 void printBacktrace(int stackFramesToPrint, int skipFirstNFrames);
 
 }
+

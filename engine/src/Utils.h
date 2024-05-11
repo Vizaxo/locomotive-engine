@@ -1,7 +1,5 @@
 #pragma once
 
-#include "PCH.h"
-
 #define ARRAY_AS_BYTE_VECTOR(v) (std::vector((uint8_t*)v, (uint8_t*)v + sizeof(v)))
 //#define VECTOR_TO_BYTE_VECTOR(v) (std::vector((uint8_t*)v.data(), (uint8_t*)v.data() + v.size()*))
 
@@ -11,4 +9,20 @@ std::vector<uint8_t> toByteVector(std::vector<T> v) {
 	return std::move(out);
 }
 
-#define DEBUG_PRINT OutputDebugStringA
+#define TOSTRING2(x) #x
+#define TOSTRING(x) TOSTRING2(x)
+
+
+//Safely release a COM object
+template<typename T>
+inline void SafeRelease(T& ptr) {
+	if (ptr != nullptr) {
+		ptr->Release();
+		ptr = nullptr;
+	}
+}
+
+#define HRASSERT(x) do {\
+	HRESULT hr = x;\
+	assert(!FAILED(hr));\
+	} while(false)

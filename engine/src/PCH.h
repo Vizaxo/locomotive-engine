@@ -41,16 +41,5 @@
 #pragma comment(lib, "d2d1.lib") //TODO: specialise depending on configuration
 #pragma comment(lib, "winmm.lib")
 
-//Safely release a COM object
-template<typename T>
-inline void SafeRelease(T& ptr) {
-	if (ptr != nullptr) {
-		ptr->Release();
-		ptr = nullptr;
-	}
-}
-
-#define HRASSERT(x) do {\
-	HRESULT hr = x;\
-	assert(!FAILED(hr));\
-	} while(false)
+#include "Constants.h"
+#include "Utils.h"
