@@ -96,7 +96,7 @@ void tick() {
 		Renderer2D::renderScene(deltaTime);
 		break;
 	case RENDER_3D:
-		renderer->RenderScene(deltaTime);
+		renderer->RenderScene(deltaTime, application->getScene());
 		break;
 	}
 

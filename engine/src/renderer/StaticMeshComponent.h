@@ -11,4 +11,6 @@ struct StaticMeshComponent {
 
 	//TODO: move this into separate transform component
 	DirectX::XMVECTOR pos;
+
+	StaticMeshComponent(StaticMeshComponent& other) = default;
 };

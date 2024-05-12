@@ -2,7 +2,7 @@
 #include "Renderer.h"
 #include "platform/windows/Windows.h"
 
-void Renderer::RenderScene(float deltaTime) {
+void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	backBufferRTV.clear(Colour::BLACK);
 	backBufferDepthStencilView.clear(1.0f, 0u);
 
@@ -12,14 +12,15 @@ void Renderer::RenderScene(float deltaTime) {
 	rhi.deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), backBufferDepthStencilView.depthStencilView.getRaw());
 	rhi.deviceContext->OMSetDepthStencilState(backBufferDepthStencilState.getRaw(), 0);
 
-	/*for (StaticMeshComponent& meshComponent : scene.objects) {
+	for (int i = 0; i < scene->obj_count; i++) {
+		StaticMeshComponent& meshComponent = scene->objects.getRaw()[i];
 		rhi.setVertexBuffer(&meshComponent.mesh->vertexBuffer, 0);
 		rhi.setIndexBuffer(&meshComponent.mesh->indexBuffer);
 		rhi.setVertexShader(&meshComponent.material->vertexShader);
 		rhi.setPixelShader(&meshComponent.material->pixelShader);
 
 		rhi.deviceContext->DrawIndexed(meshComponent.mesh->indexBuffer.indices, 0, 0);
-	}*/
+	}
 
 	rhi.deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);
 	ImGui::Render();
@@ -32,7 +33,6 @@ void Renderer::RenderScene(float deltaTime) {
 OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	RHI rhi = createRHI(h);
 	RHI::RenderTargetView rtv = rhi.createBackBufferRTV();
-	Scene scene = {};
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
 	depthStencilDesc.DepthEnable = true;
@@ -88,7 +88,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	fullScreenViewport.MinDepth = 0.0f;
 	fullScreenViewport.MaxDepth = 1.0f;
 
-	Renderer* renderer = new Renderer({std::move(rhi), std::move(rtv), std::move(backBufferDepthStencilView), std::move(depthStencilState), std::move(rasterizerState), fullScreenViewport, scene});
+	Renderer* renderer = new Renderer({std::move(rhi), std::move(rtv), std::move(backBufferDepthStencilView), std::move(depthStencilState), std::move(rasterizerState), fullScreenViewport});
 	//TODO: This is nasty. RHI moves so we need to update pointers.
 	renderer->backBufferRTV.rhi = &renderer->rhi;
 	renderer->backBufferDepthStencilView.rhi = &renderer->rhi;

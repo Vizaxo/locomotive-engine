@@ -13,7 +13,7 @@ class ExampleApplication : public Application {
 	void init(RefPtr<Renderer> renderer, PAL::WindowHandle* h);
 	void tick(float deltaTime);
 	void cleanup();
-	Scene& getScene();
+	RefPtr<Scene> getScene();
 
 	//void makePlane(D3DContext* d3dContext);
 	RefPtr<Mesh> createHexMesh(D3DContext* d3dContext);

@@ -6,9 +6,9 @@
 #include "StaticMeshComponent.h"
 #include "Light.h"
 
-class Scene {
-public:
-	//std::vector<StaticMeshComponent> objects;
+struct Scene {
+	OwningPtr<StaticMeshComponent, true, ArrayDelete> objects = nullptr;
+	size_t obj_count;
 	LightData lightData;
 	DirectX::XMVECTOR eyePosition;
 	DirectX::XMVECTOR lookDirection;

@@ -15,3 +15,5 @@ Mesh createMesh(RefPtr<V> verts, size_t vert_count, RefPtr<I> indices, size_t in
 	RHI::VertexBuffer indexBuffer = RHI::createIndexBuffer(indices, index_count);
 	return {vertexBuffer, indexBuffer, material};
 }
+
+inline ResourceManager<Mesh> meshManager;

@@ -233,6 +233,8 @@ void ExampleApplication::setupCamera() {
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	windowHandle = h;
 
+	//scene = new StaticMeshComponent[1]();
+
 	//baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
 	//baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
 	//RefPtr<Material> baseColourMaterial = materialManager.registerResource(internStringId("base_colour_material"), new Material(*baseColourPixelShader)).getNonNull();
@@ -295,8 +297,8 @@ void ExampleApplication::tick(float deltaTime) {
 	*/
 }
 
-Scene& ExampleApplication::getScene() {
-	return scene;
+RefPtr<Scene> ExampleApplication::getScene() {
+	return &scene;
 }
 
 void ExampleApplication::mouseButtonDown(Mouse::Button b) {
