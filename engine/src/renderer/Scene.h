@@ -2,12 +2,13 @@
 
 #include "PCH.h"
 
-#include "Object.h"
+#include <vector>
+#include "StaticMeshComponent.h"
 #include "Light.h"
 
 class Scene {
 public:
-	std::vector<Object> objects;
+	//std::vector<StaticMeshComponent> objects;
 	LightData lightData;
 	DirectX::XMVECTOR eyePosition;
 	DirectX::XMVECTOR lookDirection;

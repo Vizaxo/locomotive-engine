@@ -1,4 +1,5 @@
 #include "PCH.h"
+/*
 #include "Object.h"
 #include "Mesh.h"
 
@@ -15,3 +16,4 @@ DirectX::XMVECTOR& Object::GetPos() {
 }
 
 ResourceManager<Object> objectManager;
+*/

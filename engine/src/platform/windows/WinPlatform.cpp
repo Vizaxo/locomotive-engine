@@ -83,6 +83,13 @@ void initialiseConsole() {
     std::cin.clear();
 }
 
+Box2i getClientRect(RefPtr<WindowHandle> h) {
+	RECT clientRect;
+	GetClientRect(h->hwnd, &clientRect);
+
+    return {{clientRect.left, clientRect.top}, {clientRect.right, clientRect.bottom}};
+}
+
 
 }
 

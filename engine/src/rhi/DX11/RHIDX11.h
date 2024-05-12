@@ -1,12 +1,13 @@
 #pragma once
 
 #include "PCH.h"
+#include "core/Assert.h"
+#include "types/Colour.h"
 #include "types/Pointers.h"
 #include "types/Types.h"
 #include "platform/Platform.h"
 
 struct RHI {
-
 	struct Shader {
 		RefPtr<u8> bytecode;
 		size_t size;
@@ -57,34 +58,56 @@ struct RHI {
 
 	struct IndexBuffer {
 		OwningPtr<ID3D11Buffer> gpu_indexBuffer;
+		size_t indices;
+		DXGI_FORMAT format;
+		D3D11_PRIMITIVE_TOPOLOGY primitiveTopology;
 	};
+	void setIndexBuffer(RefPtr<IndexBuffer> indexBuffer);
+
 	template <typename T>
-	IndexBuffer createIndexBuffer(RefPtr<T> indices, size_t count) {
+	IndexBuffer createIndexBuffer(RefPtr<T> indices, size_t count, D3D11_PRIMITIVE_TOPOLOGY primitiveTopology) {
 		D3D11_BUFFER_DESC indexBufferDesc = {};
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indexBufferDesc.ByteWidth = count * sizeof(T);
 		indexBufferDesc.CPUAccessFlags = 0;
 		indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
+		DXGI_FORMAT format;
+		switch (sizeof(T)) {
+		case 2: format = DXGI_FORMAT_R16_UINT; break;
+		case 4: format = DXGI_FORMAT_R32_UINT; break;
+		default: ASSERT(false, "Index buffer format must be 2 byes or 4 bytes. Got %d bytes.", sizeof(T));
+		}
 		D3D11_SUBRESOURCE_DATA resourceData = {};
 		resourceData.pSysMem = indices.getRaw();
 
-		ID3D11IndexBuffer* indexBuffer;
+		ID3D11Buffer* indexBuffer;
 		HRASSERT(device->CreateBuffer(&indexBufferDesc, &resourceData, &indexBuffer));
 
-		return {std::move(indexBuffer)};
+		return {std::move(indexBuffer), count, format, primitiveTopology};
 	}
 
 	struct RenderTargetView {
 		OwningPtr<ID3D11RenderTargetView, false, ReleaseCOM> rtv;
+		RefPtr<RHI> rhi;
+
+		void clear(Colour clearColour);
+	};
+	RHI::RenderTargetView createBackBufferRTV();
+
+	struct DepthStencilView {
+		OwningPtr<ID3D11DepthStencilView, false, ReleaseCOM> depthStencilView;
+		DXGI_FORMAT format;
+		RefPtr<RHI> rhi;
+
+		void clear(float clearDepth, u8 clearStencil);
 	};
 
+	static const DXGI_FORMAT BACK_BUFFER_FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 	OwningPtr<ID3D11Device, false, ReleaseCOM> device;
 	OwningPtr<ID3D11DeviceContext, false, ReleaseCOM> deviceContext;
 	OwningPtr<IDXGISwapChain, false, ReleaseCOM> swapChain;
-	RenderTargetView backBufferRTV;
 	D3D_FEATURE_LEVEL featureLevel;
-
 };
 
 RHI createRHI(RefPtr<PAL::WindowHandle> h);

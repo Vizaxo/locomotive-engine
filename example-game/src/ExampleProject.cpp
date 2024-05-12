@@ -5,7 +5,7 @@
 #include "Utils.h"
 #include "rhi/RHI.h"
 #include "renderer/ImGuiUtils.h"
-#include "renderer/Object.h"
+#include "renderer/Renderer.h"
 #include "renderer/Material.h"
 #include "editor/ModelLoader.h"
 #include "renderer/Mesh.h"
@@ -145,7 +145,8 @@ Application* const application = new ExampleApplication();
 
 PAL::WindowHandle* windowHandle = nullptr;
 
-void ExampleApplication::makePlane(D3DContext* d3dContext) {
+/*
+void ExampleApplication::makePlane(RefPtr<RHI> rhi) {
 	std::vector<DirectX::XMFLOAT3> planeColours, planeNormals;
 	for (int i = 0; i < planePositions.size(); i++) {
 		planeNormals.push_back(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
@@ -173,7 +174,9 @@ void ExampleApplication::makePlane(D3DContext* d3dContext) {
 		assert(false, "Could not find base_colour_material");
 	}
 }
+*/
 
+	/*
 RefPtr<Mesh> ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 	VertexBuffer hexPrismPosVB = CreateVertexBuffer(hexPrismPositions,
 		{  {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}},
@@ -210,6 +213,7 @@ RefPtr<Mesh> ExampleApplication::createHexMesh(D3DContext* d3dContext) {
 
 	return meshManager.registerResource(internStringId("hex_mesh"), std::move(hexMesh)).getNonNull();
 }
+*/
 
 void ExampleApplication::setupLighting() {
 	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
@@ -226,17 +230,17 @@ void ExampleApplication::setupCamera() {
 	scene.lookDirection = XMVectorSet(0, -0.2, 1, 0);
 }
 
-void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
+void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	windowHandle = h;
-	ID3D11Device* d3dDevice = d3dContext->d3dDevice;
 
-	baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
-	baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
-	RefPtr<Material> baseColourMaterial = materialManager.registerResource(internStringId("base_colour_material"), new Material(*baseColourPixelShader)).getNonNull();
+	//baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));
+	//baseColourPixelShader = new PixelShader(d3dContext, g_ps, sizeof(g_ps));
+	//RefPtr<Material> baseColourMaterial = materialManager.registerResource(internStringId("base_colour_material"), new Material(*baseColourPixelShader)).getNonNull();
 
-	makePlane(d3dContext);
-	RefPtr<Mesh> hexMesh = createHexMesh(d3dContext);
+	//makePlane(d3dContext);
+	//RefPtr<Mesh> hexMesh = createHexMesh(d3dContext);
 
+	/*
 	int width = 100;
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < width; j++) {
@@ -247,14 +251,11 @@ void ExampleApplication::init(D3DContext* d3dContext, PAL::WindowHandle* h) {
 
 	setupLighting();
 	setupCamera();
-}
-
-void ExampleApplication::cleanup() {
-	delete baseColourPixelShader;
-	delete baseColourVertexShader;
+	*/
 }
 
 void ExampleApplication::tick(float deltaTime) {
+	/*
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
 		if (scene.objects.size() >= 1)
@@ -276,6 +277,7 @@ void ExampleApplication::tick(float deltaTime) {
 		scene.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldRight(), -pitch));
 	}
 
+
 	DirectX::XMVECTOR localDirection = XMVectorSet(0,0,0,0);
 	if (Keyboard::keysDown.find(Keyboard::Key::W) != Keyboard::keysDown.end())
 		localDirection += XMVectorSet(0,0,1,0);
@@ -290,6 +292,7 @@ void ExampleApplication::tick(float deltaTime) {
 
 	const float movementSpeed = 5.0f;
 	scene.eyePosition += movementSpeed * deltaTime * worldDirection;
+	*/
 }
 
 Scene& ExampleApplication::getScene() {
@@ -308,4 +311,7 @@ void ExampleApplication::mouseButtonUp(Mouse::Button b) {
 		Mouse::unlockCursorFromWindow(windowHandle);
 	}
 	mouseMode = Nop;
+}
+
+void ExampleApplication::cleanup() {
 }

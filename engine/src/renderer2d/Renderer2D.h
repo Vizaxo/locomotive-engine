@@ -25,7 +25,7 @@ static inline float randf() {
 
 struct Scene2D {
 	std::vector<Circle> circles;
-	Box2D viewport;
+	Box2i viewport;
 
 	Scene2D() {
 		circles.emplace_back(Circle({{100, 100}, 20, {1, 1, 0}, 1.0}));

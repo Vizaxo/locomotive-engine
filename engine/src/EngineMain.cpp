@@ -15,7 +15,7 @@ namespace Engine {
 EngineState engineState = EngineState::ENGINE_PRE_INIT;
 
 ImGuiWrapper* imgui;
-Renderer* renderer;
+OwningPtr<Renderer, true> renderer = nullptr;
 
 enum RenderMode {
 	RENDER_3D,
@@ -23,7 +23,6 @@ enum RenderMode {
 };
 static RenderMode renderMode = RENDER_3D;
 
-D3DContext* d3dContext;
 DWORD previousTime;
 
 const float targetFramerate = 30.0f;
@@ -37,33 +36,27 @@ int init(PAL::WindowHandle* h, bool vSync) {
 
 	PAL::initialiseConsole();
 
-	d3dContext = new D3DContext(h, vSync);
-	engineState = ENGINE_INIT_POST_D3D;
-
-	if (d3dContext->d3dDevice == nullptr || d3dContext->d3dDeviceContext == nullptr) {
-		MessageBox(nullptr, TEXT("Failed to create D3DContext"), TEXT("Error"), MB_OK);
-		return -1;
-	}
-
-	imgui = new ImGuiWrapper(d3dContext, h);
-	engineState = ENGINE_INIT_POST_IMGUI;
-
 	switch (renderMode) {
 	case RENDER_2D:
-		Renderer2D::init(h->hwnd); //TODO: fix windows-specific code
+		//Renderer2D::init(h->hwnd); //TODO: fix windows-specific code
 		break;
 	case RENDER_3D:
-		renderer = new Renderer(d3dContext);
+		renderer = createRenderer(h).getNullable();
 		break;
 	}
 	engineState = ENGINE_INIT_POST_RENDERER;
+	imgui = new ImGuiWrapper(&renderer->rhi, h);
+	engineState = ENGINE_INIT_POST_IMGUI;
+
 	previousTime = timeGetTime();
 
 	engineState = ENGINE_POST_INIT;
 
 	engineState = APP_PRE_INIT;
-	application->init(d3dContext, h);
+	application->init(renderer.getRef().getNonNull(), h);
 	engineState = APP_POST_INIT;
+
+	return 1;
 }
 
 void tick() {
@@ -103,7 +96,7 @@ void tick() {
 		Renderer2D::renderScene(deltaTime);
 		break;
 	case RENDER_3D:
-		renderer->RenderScene(d3dContext, application->getScene(), deltaTime);
+		renderer->RenderScene(deltaTime);
 		break;
 	}
 
@@ -117,15 +110,7 @@ void tick() {
 void cleanup() {
 	engineState = ENGINE_CLEANUP;
 	delete application;
-	switch (renderMode) {
-	case RENDER_2D:
-		break;
-	case RENDER_3D:
-		delete renderer;
-		break;
-	}
 	delete imgui;
-	delete d3dContext;
 	engineState = ENGINE_POST_CLEANUP;
 }
 

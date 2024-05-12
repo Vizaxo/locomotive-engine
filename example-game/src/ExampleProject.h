@@ -6,17 +6,16 @@
 #include "renderer/Scene.h"
 #include "renderer/Material.h"
 #include "renderer/Mesh.h"
-#include "renderer/Object.h"
 #include "Application.h"
 #include "input/Mouse.h"
 
 class ExampleApplication : public Application {
-	void init(D3DContext* d3dContext, PAL::WindowHandle* h);
+	void init(RefPtr<Renderer> renderer, PAL::WindowHandle* h);
 	void tick(float deltaTime);
 	void cleanup();
 	Scene& getScene();
 
-	void makePlane(D3DContext* d3dContext);
+	//void makePlane(D3DContext* d3dContext);
 	RefPtr<Mesh> createHexMesh(D3DContext* d3dContext);
 	void setupLighting();
 	void setupCamera();
@@ -26,8 +25,8 @@ class ExampleApplication : public Application {
 	Scene scene;
 
 private:
-	PixelShader* baseColourPixelShader = nullptr;
-	VertexShader* baseColourVertexShader = nullptr;
+	RHI::PixelShader* baseColourPixelShader = nullptr;
+	RHI::VertexShader* baseColourVertexShader = nullptr;
 };
 
 

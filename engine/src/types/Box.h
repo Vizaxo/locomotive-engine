@@ -1,7 +1,16 @@
 #pragma once
 
 #include "Vector.h"
+#include "Types.h"
 
-struct Box2D {
-	v2d min, max;
+template <typename T>
+struct Box2 {
+	Vector2<T> min, max;
+	T width() { return max.x - min.x; }
+	T height() { return max.y - min.y; }
 };
+
+typedef Box2<float> Box2f;
+typedef Box2<double> Box2d;
+typedef Box2<int> Box2i;
+typedef Box2<uint> Box2u;

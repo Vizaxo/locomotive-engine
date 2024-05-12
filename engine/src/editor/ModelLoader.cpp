@@ -2,7 +2,7 @@
 
 #include "ModelLoader.h"
 
-#define ERR(t) {DebugBreak(); return std::variant<OwningPtr<MeshData>, std::string>(std::string(t));}
+#define ERR(t) {DebugBreak(); return std::variant<OwningPtr<Mesh>, std::string>(std::string(t));}
 
 bool ModelLoader::Consume(std::string& a, const char* b) {
 	int i = 0;
@@ -47,7 +47,7 @@ void ParseLine(std::ifstream& file, std::string& line) {
 	}
 }
 
-std::variant<OwningPtr<MeshData>, std::string> ModelLoader::LoadModel(LPCWSTR filepath) {
+std::variant<OwningPtr<Mesh>, std::string> ModelLoader::LoadModel(RefPtr<RHI> rhi, LPCWSTR filepath) {
 	std::ifstream file(filepath, std::ios_base::in);
 	std::string line;
 	std::vector<std::string> properties;
@@ -125,12 +125,13 @@ std::variant<OwningPtr<MeshData>, std::string> ModelLoader::LoadModel(LPCWSTR fi
 		indices.push_back(atoi(c.c_str()));
 	}
 
-	std::vector<D3D11_INPUT_ELEMENT_DESC> layoutDesc = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
+	//TODO: probably should put this in the model...
+	//std::vector<D3D11_INPUT_ELEMENT_DESC> layoutDesc = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
-	VertexBuffer vertexBuffer = VertexBuffer(std::vector((uint8_t*)verts.data(), (uint8_t*)verts.data() + verts.size() * sizeof(DirectX::XMFLOAT3)),
-		layoutDesc,
-		sizeof(DirectX::XMFLOAT3),
-		0);
+	RHI::VertexBuffer vertexBuffer = rhi->createVertexBuffer<DirectX::XMFLOAT3>(verts.data(), verts.size());
+	RHI::IndexBuffer indexBuffer = rhi->createIndexBuffer<int>(indices.data(), indices.size(), D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	return new MeshData({vertexBuffer}, std::move(indices));
+	OwningPtr<Mesh> mesh = new Mesh({std::move(vertexBuffer), std::move(indexBuffer)});
+
+	return std::move(mesh);
 }

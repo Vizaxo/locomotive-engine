@@ -1,5 +1,7 @@
 #pragma once
 
+#include "types/Box.h"
+#include "types/Pointers.h"
 #include "types/Vector.h"
 #include "core/Log.h"
 
@@ -14,6 +16,7 @@ void showCursor(bool show);
 v2i getCursorPos();
 void printBacktrace(int stackFramesToPrint, int skipFirstNFrames, Log::Channel& chan);
 void initialiseConsole();
+Box2i getClientRect(RefPtr<WindowHandle> h);
 
 }
 

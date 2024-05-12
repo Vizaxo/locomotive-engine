@@ -7,7 +7,6 @@
 #include "debug/ttd.h"
 #include "rhi/RHI.h"
 #include "renderer/Scene.h"
-#include "renderer/Object.h"
 #include "renderer/Renderer.h"
 #include "renderer/ImGuiUtils.h"
 #include "EngineMain.h"

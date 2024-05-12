@@ -24,11 +24,10 @@ RHI createRHI(RefPtr<PAL::WindowHandle> h) {
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	static const DXGI_FORMAT BACK_BUFFER_FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDesc.BufferCount = 1;
 	swapChainDesc.BufferDesc.Width = clientWidth;
 	swapChainDesc.BufferDesc.Height = clientHeight;
-	swapChainDesc.BufferDesc.Format = BACK_BUFFER_FORMAT;
+	swapChainDesc.BufferDesc.Format = RHI::BACK_BUFFER_FORMAT;
 	swapChainDesc.BufferDesc.RefreshRate = { 0, 1 }; // QueryRefreshRate(clientWidth, clientHeight, vSync);
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.OutputWindow = hWnd;
@@ -61,17 +60,7 @@ RHI createRHI(RefPtr<PAL::WindowHandle> h) {
 		D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &d3dDevice, &featureLevel,
 		&d3dDeviceContext));
 
-	ID3D11Texture2D* backBuffer;
-	HRASSERT(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer));
-	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-	rtvDesc.Format = BACK_BUFFER_FORMAT;
-	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	rtvDesc.Texture2D = {0};
-
-	ID3D11RenderTargetView* backBufferRTV;
-	d3dDevice->CreateRenderTargetView(backBuffer, &rtvDesc, &backBufferRTV);
-
-	return {std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), {std::move(backBufferRTV)}, featureLevel};
+	return {std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel};
 }
 
 RHI::VertexShader RHI::createVertexShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {
@@ -105,4 +94,31 @@ RHI::InputLayout RHI::createInputLayout(RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, 
 void RHI::setVertexBuffer(RefPtr<RHI::VertexBuffer> vertexBuffer, uint slot) {
 	uint offset = 0;
 	deviceContext->IASetVertexBuffers(slot, 1, &vertexBuffer->gpu_vertexBuffer.getRaw(), &vertexBuffer->stride, &offset);
+}
+
+void RHI::setIndexBuffer(RefPtr<IndexBuffer> indexBuffer) {
+	deviceContext->IASetIndexBuffer(indexBuffer->gpu_indexBuffer.getRaw(), indexBuffer->format, 0);
+	deviceContext->IASetPrimitiveTopology(indexBuffer->primitiveTopology);
+}
+
+void RHI::RenderTargetView::clear(Colour clearColour) {
+	rhi->deviceContext->ClearRenderTargetView(rtv.getRaw(), (float*)&clearColour);
+}
+
+void RHI::DepthStencilView::clear(float clearDepth, u8 clearStencil) {
+	rhi->deviceContext->ClearDepthStencilView(depthStencilView.getRaw(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, clearDepth, clearStencil);
+}
+
+RHI::RenderTargetView RHI::createBackBufferRTV() {
+	ID3D11Texture2D* backBuffer;
+	HRASSERT(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer));
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+	rtvDesc.Format = BACK_BUFFER_FORMAT;
+	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	rtvDesc.Texture2D = {0};
+
+	ID3D11RenderTargetView* backBufferRTV;
+	device->CreateRenderTargetView(backBuffer, &rtvDesc, &backBufferRTV);
+
+	return {std::move(backBufferRTV), this};
 }
