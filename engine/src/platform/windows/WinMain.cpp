@@ -11,8 +11,9 @@
 #include "renderer/ImGuiUtils.h"
 #include "EngineMain.h"
 #include "WinInput.h"
-#include "input/Mouse.h"
 #include "Application.h"
+#include "events/EventQueue.h"
+#include "types/Vector.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -79,32 +80,50 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
-		Engine::keyDown(getKey(wParam));
+		EventQueue::keyDownEvent(getKey(wParam));
 		break;
 	case WM_KEYUP:
-		Engine::keyUp(getKey(wParam));
+		EventQueue::keyUpEvent(getKey(wParam));
 		break;
+	case WM_LBUTTONUP:
+		EventQueue::mouseButtonUpEvent(Mouse::Button::M1);
+		goto mouseevent;
+	case WM_LBUTTONDOWN:
+		EventQueue::mouseButtonDownEvent(Mouse::Button::M1);
+		goto mouseevent;
 	case WM_RBUTTONUP:
-		application->mouseButtonUp(Mouse::Button::M2);
+		EventQueue::mouseButtonUpEvent(Mouse::Button::M2);
 		goto mouseevent;
 	case WM_RBUTTONDOWN:
-		application->mouseButtonDown(Mouse::Button::M2);
+		EventQueue::mouseButtonDownEvent(Mouse::Button::M2);
 		goto mouseevent;
-	case WM_LBUTTONUP:
-	case WM_LBUTTONDOWN:
 	case WM_MBUTTONUP:
+		EventQueue::mouseButtonUpEvent(Mouse::Button::M3);
+		goto mouseevent;
 	case WM_MBUTTONDOWN:
+		EventQueue::mouseButtonDownEvent(Mouse::Button::M3);
+		goto mouseevent;
 	case WM_XBUTTONUP:
+		EventQueue::mouseButtonUpEvent(Mouse::Button::M4);
+		goto mouseevent;
 	case WM_XBUTTONDOWN:
+		EventQueue::mouseButtonDownEvent(Mouse::Button::M4);
+		goto mouseevent;
 	case WM_NCXBUTTONUP:
+		EventQueue::mouseButtonUpEvent(Mouse::Button::M5);
+		goto mouseevent;
 	case WM_NCXBUTTONDOWN:
+		EventQueue::mouseButtonDownEvent(Mouse::Button::M5);
+		goto mouseevent;
 	case WM_MOUSEMOVE:
 	mouseevent:
 	{
-		Mouse::setMouseButtonState(getMouseButton(wParam));
+		//Do we need to do this too?
+		//Mouse::setMouseButtonState(getMouseButton(wParam));
+
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
-		Mouse::setMousePos(x, y);
+		EventQueue::mouseMoveEvent({x, y});
 		break;
 	}
 	default:

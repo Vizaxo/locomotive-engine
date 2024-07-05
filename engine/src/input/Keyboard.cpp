@@ -2,6 +2,7 @@
 #include "Keyboard.h"
 #include "core/Assert.h"
 #include "types/Types.h"
+#include <queue>
 
 namespace Keyboard {
 
@@ -27,6 +28,19 @@ void keyDown(Keyboard::Key k) {
 
 void keyUp(Keyboard::Key k) {
 	keysDown.erase(k);
+}
+
+void handleKeyboardEvent(EventQueue::Event::KeyboardEvent ev) {
+	switch (ev.type) {
+	case EventQueue::ButtonEventType::Down:
+		keyDown(ev.k);
+		break;
+	case EventQueue::ButtonEventType::Up:
+		keyDown(ev.k);
+		break;
+	default:
+		ASSERT(false, "Invalid keyboard event");
+	}
 }
 
 }

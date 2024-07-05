@@ -23,6 +23,7 @@ void setMousePos(int _x, int _y) {
 }
 
 void setMouseButtonState(Mouse::Button newState) {
+	ASSERT(false, "Deprecated");
 	buttonState = newState;
 }
 
@@ -50,6 +51,23 @@ void unlockCursorFromWindow(PAL::WindowHandle* h) {
 void endTick() {
 	dx = 0;
 	dy = 0;
+}
+
+void handleMouseButtonEvent(EventQueue::Event::MouseButtonEvent ev) {
+	switch (ev.type) {
+	case EventQueue::ButtonEventType::Down:
+		buttonDown(ev.b);
+		break;
+	case EventQueue::ButtonEventType::Up:
+		buttonUp(ev.b);
+		break;
+	default:
+		ASSERT(false, "Invalid mouse event");
+	}
+}
+
+void handleMouseMoveEvent(EventQueue::Event::MouseMoveEvent ev) {
+	setMousePos(ev.pos.x, ev.pos.y);
 }
 
 }

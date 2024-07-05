@@ -22,6 +22,7 @@ Keyboard::Key getKey(WPARAM wParam) {
 	return Keyboard::Key::Unknown;
 }
 
+/*
 Mouse::Button getMouseButton(WPARAM wParam) {
 	int b = Mouse::Button::NONE;
 	if (wParam & MK_LBUTTON) b = b | Mouse::M1;
@@ -31,6 +32,7 @@ Mouse::Button getMouseButton(WPARAM wParam) {
 	if (wParam & MK_XBUTTON2) b = b | Mouse::M5;
 	return (Mouse::Button)b;
 }
+*/
 
 }
 }

@@ -3,10 +3,11 @@
 #pragma once
 
 #include "platform/Platform.h"
+#include "events/EventQueue.h"
 
 namespace Mouse {
 
-enum Button {
+enum class Button : u32 {
 	NONE = 0x0,
 	M1 = 0x1,
 	M2 = 0x2,
@@ -33,5 +34,7 @@ void buttonUp(Button b);
 void unlockCursorFromWindow(PAL::WindowHandle* h);
 void lockCursorToWindow(PAL::WindowHandle* h);
 void endTick();
+void handleMouseButtonEvent(EventQueue::Event::MouseButtonEvent ev);
+void handleMouseMoveEvent(EventQueue::Event::MouseMoveEvent ev);
 
 }

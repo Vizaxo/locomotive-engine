@@ -2,8 +2,11 @@
 
 #include "PCH.h"
 
+#include "types/Types.h"
+#include "events/EventQueue.h"
+
 namespace Keyboard {
-enum class Key {
+enum class Key : u32 {
 	NUM0,
 	NUM1,
 	NUM2,
@@ -73,5 +76,6 @@ extern std::set<Keyboard::Key> keysDown;
 std::string toString(Key k);
 void keyDown(Keyboard::Key k);
 void keyUp(Keyboard::Key k);
+void handleKeyboardEvent(EventQueue::Event::KeyboardEvent ev);
 
 }

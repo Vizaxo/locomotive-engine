@@ -8,7 +8,9 @@
 #include "renderer2d/Renderer2D.h"
 #include "Application.h"
 #include "input/Mouse.h"
+#include "input/Keyboard.h"
 #include "core/Log.h"
+#include "events/EventQueue.h"
 
 namespace Engine {
 
@@ -16,6 +18,7 @@ EngineState engineState = EngineState::ENGINE_PRE_INIT;
 
 ImGuiWrapper* imgui;
 OwningPtr<Renderer, true> renderer = nullptr;
+i32 g_frameNumber = -1;
 
 enum RenderMode {
 	RENDER_3D,
@@ -60,6 +63,26 @@ int init(PAL::WindowHandle* h, bool vSync) {
 }
 
 void tick() {
+	g_frameNumber++;
+	EventQueue::frameBeginEvent(g_frameNumber);
+
+	while (std::optional<EventQueue::Event> ev = EventQueue::popEvent()) {
+		switch (ev->type) {
+		case EventQueue::EventType::Frame:
+			// Ignore; we send these
+			break;
+		case EventQueue::EventType::Keyboard:
+			Keyboard::handleKeyboardEvent(ev->keyboardEvent);
+			break;
+		case EventQueue::EventType::MouseButton:
+			Mouse::handleMouseButtonEvent(ev->mouseButtonEvent);
+			break;
+		case EventQueue::EventType::MouseMove:
+			Mouse::handleMouseMoveEvent(ev->mouseMoveEvent);
+			break;
+		}
+	}
+
 	engineState = ENGINE_TICKING;
 	volatile bool debug = false;
 	debug = debug || (Keyboard::keysDown.find(Keyboard::Key::F11) != Keyboard::keysDown.end());
@@ -107,6 +130,8 @@ void tick() {
 	if (Keyboard::keysDown.find(Keyboard::Key::F9) != Keyboard::keysDown.end()) {
 		Debug::TTD::StopRecordTrace();
 	}
+
+	EventQueue::frameEndEvent(g_frameNumber);
 }
 
 void cleanup() {
