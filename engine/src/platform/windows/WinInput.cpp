@@ -15,6 +15,8 @@ Keyboard::Key getKey(WPARAM wParam) {
 		return static_cast<Keyboard::Key>(wParam - 0x30 + static_cast<WPARAM>(Keyboard::Key::NUM0));
 	} else if (wParam >= 0x41 && wParam <= 0x5A) {
 		return static_cast<Keyboard::Key>(wParam - 0x41 + static_cast<WPARAM>(Keyboard::Key::A));
+	} else if (wParam >= VK_F1 && wParam <= VK_F24) {
+		return static_cast<Keyboard::Key>(wParam - VK_F1 + static_cast<WPARAM>(Keyboard::Key::F1));
 	}
 
 	return Keyboard::Key::Unknown;

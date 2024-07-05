@@ -62,8 +62,10 @@ int init(PAL::WindowHandle* h, bool vSync) {
 void tick() {
 	engineState = ENGINE_TICKING;
 	volatile bool debug = false;
+	debug = debug || (Keyboard::keysDown.find(Keyboard::Key::F11) != Keyboard::keysDown.end());
 
 	if (debug) {
+		LOG(Log::Level::INFO, g_engineLog, "Starting TTD trace");
 		Debug::TTD::StartRecordTrace();
 	}
 
@@ -102,7 +104,7 @@ void tick() {
 
 	Mouse::endTick();
 
-	if (debug) {
+	if (Keyboard::keysDown.find(Keyboard::Key::F9) != Keyboard::keysDown.end()) {
 		Debug::TTD::StopRecordTrace();
 	}
 }

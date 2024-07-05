@@ -1,5 +1,7 @@
 #include "PCH.h"
 #include "Keyboard.h"
+#include "core/Assert.h"
+#include "types/Types.h"
 
 namespace Keyboard {
 
@@ -12,6 +14,8 @@ std::string toString(Key k) {
 		c[0] = (static_cast<char>(k) - static_cast<char>(Keyboard::Key::NUM0) + '0');
 	} else if (k >= Key::A && k <= Key::Z) {
 		c[0] = (static_cast<char>(k) - static_cast<char>(Keyboard::Key::A) + 'A');
+	} else {
+		ASSERT(false, "Unrecognised key %d", (u32)k);
 	}
 	c[1] = '\0';
 	return s.append(c);

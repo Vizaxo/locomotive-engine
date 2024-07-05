@@ -90,6 +90,15 @@ Box2i getClientRect(RefPtr<WindowHandle> h) {
     return {{clientRect.left, clientRect.top}, {clientRect.right, clientRect.bottom}};
 }
 
+std::wstring getWorkingDirectory() {
+    TCHAR cwd[MAX_PATH];
+    GetCurrentDirectory(MAX_PATH, cwd);
+    return std::wstring(cwd);
+}
+
+void createDirectory(std::string path) {
+    CreateDirectoryA(path.c_str(), nullptr);
+}
 
 }
 
