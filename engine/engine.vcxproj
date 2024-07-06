@@ -159,12 +159,66 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
-    <ClCompile Include="include\imgui\imgui.cpp" />
-    <ClCompile Include="include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="include\imgui\imgui_tables.cpp" />
-    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"PCH.h"</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"PCH.h"</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"PCH.h"</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_draw.cpp">
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ForcedUsingFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"PCH.h"</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_tables.cpp">
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ForcedUsingFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"PCH.h"</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_widgets.cpp">
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ForcedUsingFiles>
+      <ForcedUsingFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ForcedUsingFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"PCH.h"</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"PCH.h"</ForcedIncludeFiles>
+    </ClCompile>
     <ClCompile Include="src\core\Assert.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
     <ClCompile Include="src\events\EventQueue.cpp" />
