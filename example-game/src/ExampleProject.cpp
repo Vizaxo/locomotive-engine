@@ -265,6 +265,7 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 
 	// Use placement new to create object in the array
 	scene.objects = (StaticMeshComponent*)operator new[](1 * sizeof (StaticMeshComponent));
+	scene.obj_count = 1;
 	new (&scene.objects.getRaw()[0]) StaticMeshComponent({
 		mesh.getNonNull(),
 		flatColorMatRegistered.getNonNull(),
