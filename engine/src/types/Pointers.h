@@ -44,7 +44,12 @@ struct RefPtr : Ptr<T, Nullable> {
 	T*& getRaw() { CHECKNULL; return {this->obj}; }
 };
 
-template<typename T, bool Nullable = false, class Deleter = std::default_delete<T>>
+template <typename T>
+struct DefaultDelete {
+	void operator()(void** mem) { delete *mem; }
+};
+
+template<typename T, bool Nullable = false, class Deleter = DefaultDelete<T>>
 struct OwningPtr : Ptr<T, Nullable> {
 	OwningPtr(T*&& ptr) { this->obj = ptr; CHECKNULL; } // Take ownership of rvalue reference from e.g. malloc() or new
 	OwningPtr(OwningPtr<T, Nullable, Deleter>&& other) {
@@ -52,11 +57,11 @@ struct OwningPtr : Ptr<T, Nullable> {
 		CHECKNULL;
 		other.obj = nullptr;
 	}
-	~OwningPtr() { Deleter()(this->obj); }
+	~OwningPtr() { Deleter d; d((void**)&this->obj); }
 
 	OwningPtr<T, Nullable, Deleter>& operator=(OwningPtr<T, Nullable, Deleter>&& other) {
 		CHECKNULL;
-		Deleter()(this->obj);
+		Deleter()((void**)&this->obj);
 		this->obj = other.obj;
 		CHECKNULL;
 		other.obj = nullptr;
@@ -87,9 +92,9 @@ template<typename T> RefPtr<T, true> nullRef = {nullptr};
 template<typename T> OwningPtr<T, true> nullOwned = {nullptr};
 
 struct ArrayDelete {
-	void operator()(void* mem) { delete[] mem; }
+	void operator()(void** mem) { delete[] *mem; }
 };
 
 struct ReleaseCOM {
-	void operator()(IUnknown* obj) { if (obj) obj->Release(); }
+	void operator()(void** obj) { if (*obj) (*(IUnknown**)obj)->Release(); obj=nullptr; }
 };

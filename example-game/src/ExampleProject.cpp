@@ -20,6 +20,8 @@
 #include "generated/BaseColourPixelShader.h"
 #include "generated/TexturedPixelShader.h"
 #include "generated/TexturedVertexShader.h"
+#include "generated/FlatColorVS.h"
+#include "generated/FlatColorPS.h"
 
 using namespace DirectX;
 
@@ -232,6 +234,43 @@ void ExampleApplication::setupCamera() {
 
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	windowHandle = h;
+
+	//TODO: make a dynamic array type
+	struct Vert {
+		v3f pos;
+	};
+
+	Vert verts[8] = {};
+	u16 indices[36] = {};
+
+	RHI::VertexShader vs = renderer->rhi.createVertexShaderFromBytecode((u8*)flatColorVSBytecode, sizeof(flatColorVSBytecode));
+	RHI::PixelShader ps = renderer->rhi.createPixelShaderFromBytecode((u8*)flatColorPSBytecode, sizeof(flatColorPSBytecode));
+
+	D3D11_INPUT_ELEMENT_DESC inputLayoutDescs[1];
+	inputLayoutDescs[0].SemanticName = "POSITION";
+	inputLayoutDescs[0].SemanticIndex = 0;
+	inputLayoutDescs[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputLayoutDescs[0].InputSlot = 0;
+	inputLayoutDescs[0].AlignedByteOffset = 0;
+	inputLayoutDescs[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	inputLayoutDescs[0].InstanceDataStepRate = 0;
+	RHI::InputLayout inputLayout = renderer->rhi.createInputLayout(inputLayoutDescs, 1, &vs);
+	OwningPtr<Material> flatColorMat = new Material{
+		std::move(vs),
+		std::move(ps),
+		};
+	RefPtr<Material, true> flatColorMatRegistered = materialManager.registerResource(internStringId("flatColorMat"), std::move(flatColorMat));
+	OwningPtr<Mesh> cubeMesh = createMesh<Vert, u16>(&renderer->rhi, verts, 8, indices, 36, flatColorMatRegistered.getNonNull());
+	RefPtr<Mesh, true> mesh = meshManager.registerResource(internStringId("cube"), std::move(cubeMesh));
+
+	// Use placement new to create object in the array
+	scene.objects = (StaticMeshComponent*)operator new[](1 * sizeof (StaticMeshComponent));
+	new (&scene.objects.getRaw()[0]) StaticMeshComponent({
+		mesh.getNonNull(),
+		flatColorMatRegistered.getNonNull(),
+		std::move(inputLayout),
+		{0.0f, 0.0f, 0.0f},
+	});
 
 	//scene = new StaticMeshComponent[1]();
 

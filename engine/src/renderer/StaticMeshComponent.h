@@ -3,6 +3,7 @@
 #include "types/Pointers.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "types/Vector.h"
 
 struct StaticMeshComponent {
 	RefPtr<Mesh> mesh;
@@ -10,7 +11,5 @@ struct StaticMeshComponent {
 	RHI::InputLayout inputLayout;
 
 	//TODO: move this into separate transform component
-	DirectX::XMVECTOR pos;
-
-	StaticMeshComponent(StaticMeshComponent& other) = default;
+	v3f pos;
 };

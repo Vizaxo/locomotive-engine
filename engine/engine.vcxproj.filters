@@ -286,5 +286,7 @@
     <FxCompile Include="src\shaders\TexturedPixelShader.hlsl" />
     <FxCompile Include="src\shaders\GBufferComposite.hlsl" />
     <FxCompile Include="src\shaders\ScreenShader.hlsl" />
+    <FxCompile Include="src\shaders\FlatColorVS.hlsl" />
+    <FxCompile Include="src\shaders\FlatColorPS.hlsl" />
   </ItemGroup>
 </Project>

@@ -10,10 +10,10 @@ struct Mesh {
 };
 
 template <typename V, typename I>
-Mesh createMesh(RefPtr<V> verts, size_t vert_count, RefPtr<I> indices, size_t index_count, RefPtr<Material> material) {
-	RHI::VertexBuffer vertexBuffer = RHI::createVertexBuffer(verts, vert_count);
-	RHI::VertexBuffer indexBuffer = RHI::createIndexBuffer(indices, index_count);
-	return {vertexBuffer, indexBuffer, material};
+OwningPtr<Mesh> createMesh(RefPtr<RHI> rhi, RefPtr<V> verts, size_t vert_count, RefPtr<I> indices, size_t index_count, RefPtr<Material> material) {
+	RHI::VertexBuffer vertexBuffer(rhi->createVertexBuffer(verts, vert_count));
+	RHI::IndexBuffer indexBuffer(rhi->createIndexBuffer(indices, index_count, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	return new Mesh{std::move(vertexBuffer), std::move(indexBuffer)};
 }
 
 inline ResourceManager<Mesh> meshManager;

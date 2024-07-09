@@ -8,7 +8,7 @@
 #include "d2d1.h"
 
 struct D2DRelease {
-	template <typename T> void operator()(T* resource) { SafeRelease(resource); }
+	void operator()(void** resource) { SafeRelease(*(IUnknown**)resource); }
 };
 
 static OwningPtr<ID2D1Factory, true, D2DRelease> pD2DFactory = nullptr;

@@ -8,7 +8,7 @@
 struct Material {
 	RHI::VertexShader vertexShader;
 	RHI::PixelShader pixelShader;
-	RHI::InputLayout inputLayout;
+	//RHI::InputLayout inputLayout;
 };
 
 extern ResourceManager<Material> materialManager;
