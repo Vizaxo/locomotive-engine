@@ -31,6 +31,7 @@ struct RHI {
 		OwningPtr<ID3D11InputLayout, false, ReleaseCOM> gpu_inputLayout;
 	};
 	InputLayout createInputLayout(RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count, RefPtr<VertexShader> vs);
+	void setInputLayout(RefPtr<InputLayout> inputLayout);
 
 	struct VertexBuffer {
 		OwningPtr<ID3D11Buffer> gpu_vertexBuffer;

@@ -18,6 +18,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		rhi.setIndexBuffer(&meshComponent.mesh->indexBuffer);
 		rhi.setVertexShader(&meshComponent.material->vertexShader);
 		rhi.setPixelShader(&meshComponent.material->pixelShader);
+		rhi.setInputLayout(&meshComponent.inputLayout);
 
 		rhi.deviceContext->DrawIndexed(meshComponent.mesh->indexBuffer.indices, 0, 0);
 	}
@@ -38,7 +39,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.StencilEnable = false;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	ID3D11DepthStencilState* depthStencilState;
 	rhi.device->CreateDepthStencilState(&depthStencilDesc, &depthStencilState);
 
@@ -69,7 +70,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	rasterizerDesc.CullMode = D3D11_CULL_BACK;
 	rasterizerDesc.DepthBias = 0;
 	rasterizerDesc.DepthBiasClamp = 0.0f;
-	rasterizerDesc.DepthClipEnable = TRUE;
+	rasterizerDesc.DepthClipEnable = FALSE;
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	rasterizerDesc.FrontCounterClockwise = FALSE;
 	rasterizerDesc.MultisampleEnable = FALSE;

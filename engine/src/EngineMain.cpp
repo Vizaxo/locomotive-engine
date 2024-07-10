@@ -34,6 +34,12 @@ const float maxTimeStep = 1.0f / targetFramerate;
 Log::Channel g_engineLog = {"engine"};
 
 int init(PAL::WindowHandle* h, bool vSync) {
+	bool traceFromStart = false;
+	if (traceFromStart) {
+		LOG(Log::Level::INFO, g_engineLog, "Starting TTD trace");
+		Debug::TTD::StartRecordTrace();
+	}
+
 	LOG(Log::INFO, g_engineLog, "Initialising engine");
 	engineState = ENGINE_INIT;
 

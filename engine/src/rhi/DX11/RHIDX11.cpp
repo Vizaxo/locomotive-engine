@@ -65,7 +65,7 @@ RHI createRHI(RefPtr<PAL::WindowHandle> h) {
 
 RHI::VertexShader RHI::createVertexShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {
 	ID3D11VertexShader* vertexShader;
-	device->CreateVertexShader(bytecode.getRaw(), size, nullptr, &vertexShader);
+	HRASSERT(device->CreateVertexShader(bytecode.getRaw(), size, nullptr, &vertexShader));
 	return { bytecode, size, nullptr, std::move(vertexShader) };
 }
 
@@ -79,16 +79,20 @@ void RHI::setPixelShader(RefPtr<RHI::PixelShader> ps) {
 
 RHI::PixelShader RHI::createPixelShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {
 	ID3D11PixelShader* pixelShader;
-	device->CreatePixelShader(bytecode.getRaw(), size, nullptr, &pixelShader);
+	HRASSERT(device->CreatePixelShader(bytecode.getRaw(), size, nullptr, &pixelShader));
 	return { bytecode, size, nullptr, std::move(pixelShader) };
 }
 
 RHI::InputLayout RHI::createInputLayout(RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count, RefPtr<VertexShader> vs) {
 	OwningPtr<ID3D11InputLayout, true, ReleaseCOM> inputLayout = nullptr;
-	device->CreateInputLayout(descs.getRaw(), count, vs->bytecode.getRaw(), vs->size, &inputLayout.getRaw());
+	HRASSERT(device->CreateInputLayout(descs.getRaw(), count, vs->bytecode.getRaw(), vs->size, &inputLayout.getRaw()));
 	OwningPtr<D3D11_INPUT_ELEMENT_DESC, false, ArrayDelete> descsCpy = new D3D11_INPUT_ELEMENT_DESC[count]();
 	memcpy(descsCpy.getRaw(), descs.getRaw(), count);
 	return { std::move(descsCpy), inputLayout.getNonNull() };
+}
+
+void RHI::setInputLayout(RefPtr<RHI::InputLayout> inputLayout) {
+	deviceContext->IASetInputLayout(inputLayout->gpu_inputLayout.getRaw());
 }
 
 void RHI::setVertexBuffer(RefPtr<RHI::VertexBuffer> vertexBuffer, uint slot) {

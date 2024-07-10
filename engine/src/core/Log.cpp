@@ -9,6 +9,7 @@
 #endif
 
 Log::Level Log::g_logLevel = Log::INFO;
+Log::Channel Log::g_logTmp = {"TMP"};
 
 void Log::logStr(Level lvl, Channel& chan, int line, const char* file, const char* fmt, ...) {
 	if (lvl < g_logLevel)
