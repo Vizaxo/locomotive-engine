@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/Log.h"
+
 // Owning and non-owning pointer types.
 // Nullable pointers can be nullptr, non-nullable (default) pointers can't. Null errors are only checked in debug builds.
 
@@ -68,10 +70,17 @@ struct OwningPtr : Ptr<T, Nullable> {
 		return *this;
 	}
 
-	OwningPtr<T, false, Deleter> getNonNull() { CHECKNULL; return {std::move(this->obj)}; }
-	OwningPtr<T, true, Deleter> getNullable() 
-	{ 
-		CHECKNULL; 
+	OwningPtr<T, false, Deleter> getNonNull()
+	{
+		CHECKNULL;
+		OwningPtr<T, false, Deleter> ret = std::move(this->obj);
+		this->obj = nullptr;
+		return std::move(ret);
+	}
+
+	OwningPtr<T, true, Deleter> getNullable()
+	{
+		CHECKNULL;
 		OwningPtr<T, true, Deleter> ret = {std::move(this->obj)};
 		this->obj = nullptr;
 		return std::move(ret);
@@ -97,4 +106,14 @@ struct ArrayDelete {
 
 struct ReleaseCOM {
 	void operator()(void** obj) { if (*obj) (*(IUnknown**)obj)->Release(); obj=nullptr; }
+};
+
+struct Break {
+	void operator()(void** obj) {
+		//if (*obj) { (*(IUnknown**)obj)->Release(); }
+		if (*obj) {
+			LOG(Log::Level::INFO, Log::g_logTmp, "Releasing COM object at %p", *obj);
+		}
+		obj = nullptr;
+	}
 };
