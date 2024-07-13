@@ -102,6 +102,8 @@ void tick() {
 		Debug::TTD::StartRecordTrace();
 	}
 
+	if (renderdoc) renderdoc->tick();
+
 	DWORD currentTime = timeGetTime();
 	float deltaTime = (currentTime - previousTime) / 1000.0f;
 	previousTime = currentTime;

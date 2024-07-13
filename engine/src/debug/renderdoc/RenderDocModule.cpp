@@ -40,3 +40,34 @@ RefPtr<RenderDoc, true> RenderDoc::loadRenderDoc() {
 
 	return nullptr;
 }
+
+void RenderDoc::beginCapture() {
+	api->StartFrameCapture(nullptr, nullptr);
+}
+
+void RenderDoc::endCapture() {
+	api->EndFrameCapture(nullptr, nullptr);
+}
+
+RenderDoc::FrameCaptureState RenderDoc::frameCaptureState = NoCapture;
+
+void RenderDoc::captureFrame() {
+	frameCaptureState = CaptureNext;
+}
+
+void RenderDoc::tick() {
+	if (!api) return;
+
+	switch (frameCaptureState) {
+	case CaptureNext:
+		beginCapture();
+		frameCaptureState = Capturing;
+		break;
+	case Capturing:
+		endCapture();
+		frameCaptureState = NoCapture;
+		break;
+	case NoCapture:
+		break;
+	}
+}

@@ -1,4 +1,6 @@
 #include "PCH.h"
+
+#include "EngineMain.h"
 #include "Keyboard.h"
 #include "core/Assert.h"
 #include "types/Types.h"
@@ -30,10 +32,19 @@ void keyUp(Keyboard::Key k) {
 	keysDown.erase(k);
 }
 
+void onButtonPress(Keyboard::Key k) {
+	switch (k) {
+	case Keyboard::Key::R:
+		if (Engine::renderdoc) Engine::renderdoc->captureFrame();
+		break;
+	}
+}
+
 void handleKeyboardEvent(EventQueue::Event::KeyboardEvent ev) {
 	switch (ev.type) {
 	case EventQueue::ButtonEventType::Down:
 		keyDown(ev.k);
+		onButtonPress(ev.k);
 		break;
 	case EventQueue::ButtonEventType::Up:
 		keyDown(ev.k);
