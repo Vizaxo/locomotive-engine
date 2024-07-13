@@ -34,7 +34,7 @@ struct RHI {
 	void setInputLayout(RefPtr<InputLayout> inputLayout);
 
 	struct VertexBuffer {
-		OwningPtr<ID3D11Buffer> gpu_vertexBuffer;
+		OwningPtr<ID3D11Buffer, false, ReleaseCOM> gpu_vertexBuffer;
 		uint stride;
 	};
 	template <typename T>
@@ -58,7 +58,7 @@ struct RHI {
 	void setVertexBuffer(RefPtr<VertexBuffer> vertexBuffer, uint slot);
 
 	struct IndexBuffer {
-		OwningPtr<ID3D11Buffer> gpu_indexBuffer;
+		OwningPtr<ID3D11Buffer, false, ReleaseCOM> gpu_indexBuffer;
 		size_t indices;
 		DXGI_FORMAT format;
 		D3D11_PRIMITIVE_TOPOLOGY primitiveTopology;
