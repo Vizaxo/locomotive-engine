@@ -221,6 +221,7 @@
     </ClCompile>
     <ClCompile Include="src\core\Assert.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
+    <ClCompile Include="src\debug\renderdoc\RenderDocModule.cpp" />
     <ClCompile Include="src\events\EventQueue.cpp" />
     <ClCompile Include="src\renderer2d\Physics2D.cpp" />
     <ClCompile Include="src\renderer2d\Renderer2D.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="src\core\Assert.h" />
     <ClInclude Include="src\core\CVar.h" />
     <ClInclude Include="src\core\Log.h" />
+    <ClInclude Include="src\debug\renderdoc\RenderDocModule.h" />
     <ClInclude Include="src\events\EventQueue.h" />
     <ClInclude Include="src\renderer2d\Renderer2D.h" />
     <ClInclude Include="src\Application.h" />
@@ -276,6 +278,7 @@
     <ClInclude Include="src\rhi\RHI.h" />
     <ClInclude Include="src\types\Box.h" />
     <ClInclude Include="src\types\Colour.h" />
+    <ClInclude Include="src\types\Either.h" />
     <ClInclude Include="src\types\HexCoord.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
