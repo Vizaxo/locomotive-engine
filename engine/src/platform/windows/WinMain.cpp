@@ -46,7 +46,7 @@ int InitWindow(HINSTANCE hInstance, int cmdShow) {
 	RECT windowRect = { 0, 0, g_WindowWidth, g_WindowHeight };
 	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
 
-	g_WindowHandle = CreateWindowW(g_WindowClassName, g_WindowName,
+	g_WindowHandle = CreateWindowW(g_WindowClassName, application->windowTitle,
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 		windowRect.right - windowRect.left,
 		windowRect.bottom - windowRect.top,

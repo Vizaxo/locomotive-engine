@@ -11,6 +11,8 @@ class D3DContext;
 
 class Application {
 public:
+	Application(LPCWSTR title) : windowTitle(title) {};
+	const LPCWSTR windowTitle;
 	virtual void init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) = 0;
 	virtual void tick(float deltaTime) = 0;
 	virtual void cleanup() = 0;

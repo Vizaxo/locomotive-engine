@@ -10,6 +10,9 @@
 #include "input/Mouse.h"
 
 class ExampleApplication : public Application {
+public:
+	ExampleApplication() : Application(L"Example Game") {};
+
 	void init(RefPtr<Renderer> renderer, PAL::WindowHandle* h);
 	void tick(float deltaTime);
 	void cleanup();
