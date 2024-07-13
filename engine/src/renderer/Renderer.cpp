@@ -93,5 +93,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	//TODO: This is nasty. RHI moves so we need to update pointers.
 	renderer->backBufferRTV.rhi = &renderer->rhi;
 	renderer->backBufferDepthStencilView.rhi = &renderer->rhi;
+
+	Mesh::registerSimpleMeshes(&renderer->rhi);
 	return std::move(renderer);
 }

@@ -75,9 +75,10 @@ struct RHI {
 
 		DXGI_FORMAT format;
 		switch (sizeof(T)) {
+		case 1: format = DXGI_FORMAT_R8_UINT; break;
 		case 2: format = DXGI_FORMAT_R16_UINT; break;
 		case 4: format = DXGI_FORMAT_R32_UINT; break;
-		default: ASSERT(false, "Index buffer format must be 2 byes or 4 bytes. Got %d bytes.", sizeof(T));
+		default: ASSERT(false, "Index buffer format must be 1, 2, or 4 bytes. Got %d bytes.", sizeof(T));
 		}
 		D3D11_SUBRESOURCE_DATA resourceData = {};
 		resourceData.pSysMem = indices.getRaw();

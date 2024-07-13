@@ -15,3 +15,7 @@ StringId internStringId(const char* s) {
 		hashString(s)
 	);
 }
+
+StringId sID(const char* s) {
+	return internStringId(s);
+}

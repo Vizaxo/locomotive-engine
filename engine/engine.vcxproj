@@ -233,6 +233,7 @@
     <ClCompile Include="src\platform\windows\WinInput.cpp" />
     <ClCompile Include="src\platform\Windows\WinMain.cpp" />
     <ClCompile Include="src\platform\windows\WinPlatform.cpp" />
+    <ClCompile Include="src\renderer\Mesh.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\renderer\StaticMeshComponent.cpp" />
     <ClCompile Include="src\renderer\Source.cpp" />

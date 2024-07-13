@@ -21,6 +21,7 @@ struct StringId {
 };
 
 StringId internStringId(const char* s);
+StringId sID(const char* s);
 
 namespace std {
 	template <> struct hash<StringId> {

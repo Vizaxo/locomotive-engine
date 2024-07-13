@@ -235,30 +235,6 @@ void ExampleApplication::setupCamera() {
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	windowHandle = h;
 
-	//TODO: make a dynamic array type
-	struct Vert {
-		v3f pos;
-	};
-
-	Vert verts[8] = {
-		{-1.0f, -1.0f, -1.0f},
-		{-1.0f, 1.0f, -1.0f },
-		{1.0f,  1.0f, -1.0f },
-		{1.0f,  -1.0f, -1.0f },
-		{-1.0f, -1.0f,  1.0f },
-		{-1.0f, 1.0f,  1.0f },
-		{1.0f,  1.0f,  1.0f },
-		{1.0f,  -1.0f,  1.0f },
-	};
-	u16 indices[36] = {
-		0,1,2,0,2,3,
-		4,6,5,4,7,6,
-		4,5,1,4,1,0,
-		3,2,6,3,6,7,
-		1,5,6,1,6,2,
-		4,0,3,4,3,7,
-	};
-
 	RHI::VertexShader vs = renderer->rhi.createVertexShaderFromBytecode((u8*)flatColorVSBytecode, sizeof(flatColorVSBytecode));
 	RHI::PixelShader ps = renderer->rhi.createPixelShaderFromBytecode((u8*)flatColorPSBytecode, sizeof(flatColorPSBytecode));
 
@@ -276,14 +252,13 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 		std::move(ps),
 		};
 	RefPtr<Material, true> flatColorMatRegistered = materialManager.registerResource(internStringId("flatColorMat"), std::move(flatColorMat));
-	OwningPtr<Mesh> cubeMesh = createMesh<Vert, u16>(&renderer->rhi, verts, 8, indices, 36, flatColorMatRegistered.getNonNull());
-	RefPtr<Mesh, true> mesh = meshManager.registerResource(internStringId("cube"), std::move(cubeMesh));
+	RefPtr<Mesh> cubeMesh = Mesh::meshManager.get(sID("unitCube")).getNonNull();
 
 	// Use placement new to create object in the array
 	scene.objects = (StaticMeshComponent*)operator new[](1 * sizeof (StaticMeshComponent));
 	scene.obj_count = 1;
 	new (&scene.objects.getRaw()[0]) StaticMeshComponent({
-		mesh.getNonNull(),
+		cubeMesh,
 		flatColorMatRegistered.getNonNull(),
 		std::move(inputLayout),
 		{0.0f, 0.0f, 0.0f},
