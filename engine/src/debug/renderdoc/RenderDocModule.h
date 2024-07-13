@@ -19,10 +19,10 @@ public:
 
 private:
 	RenderDoc(PAL::ModuleHandle h, RDOC_API inApi) : renderdocModule(h), api(inApi) {};
+	static RefPtr<RenderDoc, true> initRenderDoc(PAL::ModuleHandle h);
+	void setCaptureOptions();
 
 	PAL::ModuleHandle renderdocModule;
-
-	static RefPtr<RenderDoc, true> initRenderDoc(PAL::ModuleHandle h);
 
 	static const std::vector<std::string> libraryNames;
 	static OwningPtr<RenderDoc, true> renderDocSingleton;

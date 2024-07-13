@@ -2,10 +2,16 @@
 
 #define API_DIRECTX_11 1
 
+#define RENDERDOC_CAPTURE_CALLSTACKS 0
 
 #if _DEBUG
 #define DEBUG_ENABLE_ASSERTS 1
+#if RENDERDOC_CAPTURE_CALLSTACKS
+// Renderdoc can't capture callstaks if program uses dbghelp.dll. Might be able to dynamically unload it before renderdoc captures.
+#define DEBUG_LOG_ALLOCATIONS 0
+#else
 #define DEBUG_LOG_ALLOCATIONS 1
+#endif
 #endif
 
 

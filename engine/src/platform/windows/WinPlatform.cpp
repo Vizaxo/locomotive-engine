@@ -27,7 +27,7 @@ v2i getCursorPos() {
 }
 
 void printBacktrace(int stackFramesToPrint, int skipFirstNFrames, Log::Channel& chan) {
-#if _DEBUG
+#if DEBUG_LOG_ALLOCATIONS
     const int MAX_STACK_FRAMES = 32;
     const int numStackFrames = min(stackFramesToPrint + skipFirstNFrames, MAX_STACK_FRAMES);
     const size_t maxFuncNameLength = 1024;

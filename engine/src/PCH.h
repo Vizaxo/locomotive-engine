@@ -42,3 +42,7 @@
 
 #include "Constants.h"
 #include "Utils.h"
+
+#if DEBUG_LOG_ALLOCATIONS
+#pragma comment(lib, "dbghelp.lib");
+#endif
