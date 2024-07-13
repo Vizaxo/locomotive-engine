@@ -26,12 +26,13 @@ void printBacktrace(int stackFramesToPrint, int skipFirstNFrames, Log::Channel& 
 void initialiseConsole();
 Box2i getClientRect(RefPtr<WindowHandle> h);
 
-struct LibraryLoadError {
+struct PlatformError {
 	i32 errorCode;
 	std::wstring msg;
 };
 
-Either<ModuleHandle, LibraryLoadError> loadLibrary(std::string libraryName);
+Either<ModuleHandle, PlatformError> getLibrary(std::string libraryName);
+Either<ModuleHandle, PlatformError> loadLibrary(std::string libraryName);
 
 //TODO: figure out engine string handling
 std::wstring getWorkingDirectory();

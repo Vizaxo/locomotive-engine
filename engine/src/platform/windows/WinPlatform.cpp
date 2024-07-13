@@ -100,20 +100,34 @@ void createDirectory(std::string path) {
     CreateDirectoryA(path.c_str(), nullptr);
 }
 
-Either<ModuleHandle, LibraryLoadError> loadLibrary(std::string libraryName) {
+PlatformError getLastError() {
+	PlatformError err;
+	err.errorCode = GetLastError();
+	constexpr int BUFSIZE = 1024;
+	WCHAR buf[BUFSIZE];
+	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, err.errorCode, 0, buf, BUFSIZE, nullptr);
+	err.msg = std::wstring(buf);
+	return { err };
+}
+
+Either<ModuleHandle, PlatformError> loadLibrary(std::string libraryName) {
     HMODULE h = LoadLibraryA(libraryName.c_str());
     if (h) {
         ModuleHandle mh = {reinterpret_cast<Hidden*>(h)};
         return {mh};
     } else {
-        LibraryLoadError err;
-        err.errorCode = GetLastError();
-        constexpr int BUFSIZE = 1024;
-        WCHAR buf[BUFSIZE];
-        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, err.errorCode, 0, buf, BUFSIZE, nullptr);
-        err.msg = std::wstring(buf);
-        return {err};
+        return {getLastError()};
     }
+}
+
+Either<ModuleHandle, PlatformError> getLibrary(std::string libraryName) {
+    if (HMODULE h = GetModuleHandleA(libraryName.c_str())) {
+		ModuleHandle mh = { reinterpret_cast<Hidden*>(h) };
+		return { mh };
+    } else {
+        return {getLastError()};
+    }
+
 }
 
 }
