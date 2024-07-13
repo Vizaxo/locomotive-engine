@@ -371,3 +371,6 @@ imgui.ini
 *.run
 *.run.err
 *.idx
+
+# Renderdoc captures
+*.rdc
