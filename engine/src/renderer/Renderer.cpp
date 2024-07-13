@@ -31,8 +31,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	rhi->swapChain->Present(0, 0);
-
+	rhi->present();
 }
 
 OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {

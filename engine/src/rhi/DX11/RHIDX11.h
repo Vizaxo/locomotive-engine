@@ -130,6 +130,10 @@ struct RHI {
 		return ConstantBuffer{ std::move(buf), size };
 	}
 
+	void present() {
+		swapChain->Present(vsync, 0);
+	}
+
 	void PSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb);
 	void VSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb);
 
@@ -138,6 +142,7 @@ struct RHI {
 	OwningPtr<ID3D11DeviceContext, false, ReleaseCOM> deviceContext;
 	OwningPtr<IDXGISwapChain, false, ReleaseCOM> swapChain;
 	D3D_FEATURE_LEVEL featureLevel;
+	bool vsync = false;
 
 	static const inline u32 CONSTANT_BUFFER_COUNT = D3D11_COMMONSHADER_CONSTANT_BUFFER_HW_SLOT_COUNT;
 };
