@@ -127,7 +127,11 @@ Either<ModuleHandle, PlatformError> getLibrary(std::string libraryName) {
     } else {
         return {getLastError()};
     }
+}
 
+void* getProcAddress(ModuleHandle h, std::string procName) {
+    void* f = GetProcAddress((HMODULE)h.h.getRaw(), procName.c_str());
+    return f;
 }
 
 }

@@ -33,6 +33,7 @@ struct PlatformError {
 
 Either<ModuleHandle, PlatformError> getLibrary(std::string libraryName);
 Either<ModuleHandle, PlatformError> loadLibrary(std::string libraryName);
+void* getProcAddress(ModuleHandle h, std::string procName);
 
 //TODO: figure out engine string handling
 std::wstring getWorkingDirectory();
