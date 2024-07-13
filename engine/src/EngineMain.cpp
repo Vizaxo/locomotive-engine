@@ -58,7 +58,7 @@ int init(PAL::WindowHandle* h, bool vSync) {
 		break;
 	}
 	engineState = ENGINE_INIT_POST_RENDERER;
-	imgui = new ImGuiWrapper(&renderer->rhi, h);
+	imgui = new ImGuiWrapper(renderer->rhi, h);
 	engineState = ENGINE_INIT_POST_IMGUI;
 
 	previousTime = timeGetTime();

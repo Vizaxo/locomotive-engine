@@ -112,4 +112,4 @@ struct RHI {
 	D3D_FEATURE_LEVEL featureLevel;
 };
 
-RHI createRHI(RefPtr<PAL::WindowHandle> h);
+OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h);

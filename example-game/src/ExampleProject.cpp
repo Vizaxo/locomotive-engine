@@ -235,8 +235,8 @@ void ExampleApplication::setupCamera() {
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	windowHandle = h;
 
-	RHI::VertexShader vs = renderer->rhi.createVertexShaderFromBytecode((u8*)flatColorVSBytecode, sizeof(flatColorVSBytecode));
-	RHI::PixelShader ps = renderer->rhi.createPixelShaderFromBytecode((u8*)flatColorPSBytecode, sizeof(flatColorPSBytecode));
+	RHI::VertexShader vs = renderer->rhi->createVertexShaderFromBytecode((u8*)flatColorVSBytecode, sizeof(flatColorVSBytecode));
+	RHI::PixelShader ps = renderer->rhi->createPixelShaderFromBytecode((u8*)flatColorPSBytecode, sizeof(flatColorPSBytecode));
 
 	D3D11_INPUT_ELEMENT_DESC inputLayoutDescs[1];
 	inputLayoutDescs[0].SemanticName = "POSITION";
@@ -246,7 +246,7 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	inputLayoutDescs[0].AlignedByteOffset = 0;
 	inputLayoutDescs[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	inputLayoutDescs[0].InstanceDataStepRate = 0;
-	RHI::InputLayout inputLayout = renderer->rhi.createInputLayout(inputLayoutDescs, 1, &vs);
+	RHI::InputLayout inputLayout = renderer->rhi->createInputLayout(inputLayoutDescs, 1, &vs);
 	OwningPtr<Material> flatColorMat = new Material{
 		std::move(vs),
 		std::move(ps),

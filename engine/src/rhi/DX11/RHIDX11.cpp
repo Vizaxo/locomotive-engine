@@ -11,7 +11,7 @@ using namespace DirectX;
 #error "DX11 only supported on Windows"
 #endif
 
-RHI createRHI(RefPtr<PAL::WindowHandle> h) {
+OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h) {
 	ASSERT(DirectX::XMVerifyCPUSupport(), "Failed to verify CPU DirectX support");
 	HWND hWnd = h->hwnd;
 
@@ -60,7 +60,7 @@ RHI createRHI(RefPtr<PAL::WindowHandle> h) {
 		D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &d3dDevice, &featureLevel,
 		&d3dDeviceContext));
 
-	return {std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel};
+	return new RHI({std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel});
 }
 
 RHI::VertexShader RHI::createVertexShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {

@@ -12,7 +12,7 @@ struct Renderer {
 	StaticMeshComponent createStaticMeshComponent(RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count);
 	void RenderScene(float deltaTime, RefPtr<Scene> scene);
 
-	RHI rhi;
+	OwningPtr<RHI> rhi;
 	RHI::RenderTargetView backBufferRTV;
 	RHI::DepthStencilView backBufferDepthStencilView;
 	OwningPtr<ID3D11DepthStencilState, false, ReleaseCOM> backBufferDepthStencilState;
