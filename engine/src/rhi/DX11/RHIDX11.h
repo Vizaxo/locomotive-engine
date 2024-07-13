@@ -105,11 +105,41 @@ struct RHI {
 		void clear(float clearDepth, u8 clearStencil);
 	};
 
+	struct ConstantBuffer {
+		OwningPtr<ID3D11Buffer, true, ReleaseCOM> gpu_constantBuffer = nullptr;
+		u32 size;
+	};
+	template <typename T> ConstantBuffer createConstantBuffer(T data) {
+		OwningPtr<ID3D11Buffer, true, ReleaseCOM> buf = nullptr;
+		u32 size = alignTo<u32>(sizeof(T), 16);
+
+		D3D11_BUFFER_DESC desc;
+		desc.ByteWidth = size;
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		desc.MiscFlags = 0;
+		desc.StructureByteStride = 0;
+
+		D3D11_SUBRESOURCE_DATA subresourceData;
+		subresourceData.pSysMem = &data;
+		subresourceData.SysMemPitch = 0;
+		subresourceData.SysMemSlicePitch = 0;
+
+		HRASSERT(device->CreateBuffer(&desc, &subresourceData, &buf.getRaw()));
+		return ConstantBuffer{ std::move(buf), size };
+	}
+
+	void PSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb);
+	void VSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb);
+
 	static const DXGI_FORMAT BACK_BUFFER_FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 	OwningPtr<ID3D11Device, false, ReleaseCOM> device;
 	OwningPtr<ID3D11DeviceContext, false, ReleaseCOM> deviceContext;
 	OwningPtr<IDXGISwapChain, false, ReleaseCOM> swapChain;
 	D3D_FEATURE_LEVEL featureLevel;
+
+	static const inline u32 CONSTANT_BUFFER_COUNT = D3D11_COMMONSHADER_CONSTANT_BUFFER_HW_SLOT_COUNT;
 };
 
 OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h);

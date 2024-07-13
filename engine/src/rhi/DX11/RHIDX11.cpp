@@ -126,3 +126,13 @@ RHI::RenderTargetView RHI::createBackBufferRTV() {
 
 	return {std::move(backBufferRTV), this};
 }
+
+void RHI::VSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb) {
+	if (cb->gpu_constantBuffer)
+		deviceContext->VSSetConstantBuffers(slot, 1, &cb->gpu_constantBuffer.getRaw());
+}
+
+void RHI::PSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb) {
+	if (cb->gpu_constantBuffer)
+		deviceContext->PSSetConstantBuffers(slot, 1, &cb->gpu_constantBuffer.getRaw());
+}

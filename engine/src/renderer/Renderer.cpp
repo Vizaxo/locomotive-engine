@@ -14,6 +14,10 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 
 	for (int i = 0; i < scene->obj_count; i++) {
 		StaticMeshComponent& meshComponent = scene->objects.getRaw()[i];
+		for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
+			rhi->VSsetConstantBuffer(i, &meshComponent.material->constantBuffers[i]);
+			rhi->PSsetConstantBuffer(i, &meshComponent.material->constantBuffers[i]);
+		}
 		rhi->setVertexBuffer(&meshComponent.mesh->vertexBuffer, 0);
 		rhi->setIndexBuffer(&meshComponent.mesh->indexBuffer);
 		rhi->setVertexShader(&meshComponent.material->vertexShader);

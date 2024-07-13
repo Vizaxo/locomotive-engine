@@ -249,8 +249,10 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	RHI::InputLayout inputLayout = renderer->rhi->createInputLayout(inputLayoutDescs, 1, &vs);
 	OwningPtr<Material> flatColorMat = new Material{
 		std::move(vs),
-		std::move(ps),
-		};
+		std::move(ps)
+	};
+	v3f color = { 1.0f, 0.5f, 0.2f };
+	flatColorMat->constantBuffers[0] = renderer->rhi->createConstantBuffer(color);
 	RefPtr<Material, true> flatColorMatRegistered = materialManager.registerResource(internStringId("flatColorMat"), std::move(flatColorMat));
 	RefPtr<Mesh> cubeMesh = Mesh::meshManager.get(sID("unitCube")).getNonNull();
 

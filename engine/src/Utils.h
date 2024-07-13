@@ -28,3 +28,7 @@ inline void SafeRelease(T& ptr) {
 	HRESULT hr = x;\
 	assert(!FAILED(hr));\
 	} while(false)
+
+template <typename T> T alignTo(T num, T alignment) {
+	return num + ((alignment - (num % alignment)) % 16);
+}
