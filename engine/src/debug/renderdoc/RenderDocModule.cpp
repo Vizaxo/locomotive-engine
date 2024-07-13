@@ -4,6 +4,9 @@
 #include "RenderDocModule.h"
 #include "types/Either.h"
 #include "RenderDoc/renderdoc_app.h"
+#include <chrono>
+#define __STDC_WANT_LIB_EXT1__ 1
+#include <time.h>
 
 const std::vector<std::string> RenderDoc::libraryNames = 
 #if PLATFORM_WINDOWS
@@ -48,6 +51,17 @@ RefPtr<RenderDoc, true> RenderDoc::loadRenderDoc() {
 }
 
 void RenderDoc::beginCapture() {
+	auto time = std::chrono::system_clock::now();
+	auto timeSinceEpoch = std::chrono::system_clock::to_time_t(time);
+	std::tm tm;
+	localtime_s(&tm, &timeSinceEpoch);
+
+	const int BUFSIZE = 128;
+	char buf[BUFSIZE];
+	std::strftime(buf, BUFSIZE, "captures/%Y.%m.%d_%H.%M.%S", &tm);
+
+	api->SetCaptureFilePathTemplate(buf);
+
 	api->StartFrameCapture(nullptr, nullptr);
 }
 
