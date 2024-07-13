@@ -87,6 +87,8 @@ struct OwningPtr : Ptr<T, Nullable> {
 	}
 	RefPtr<T, Nullable> getRef() { CHECKNULL; return {this->obj}; }
 	T*& getRaw() { CHECKNULL; return {this->obj}; }
+
+	operator RefPtr<T, Nullable>() { return getRef(); }
 };
 
 template<typename T, bool Nullable = false>
