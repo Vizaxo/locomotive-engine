@@ -162,7 +162,9 @@ struct RHI {
 	OwningPtr<ID3D11DeviceContext, false, ReleaseCOM> deviceContext;
 	OwningPtr<IDXGISwapChain, false, ReleaseCOM> swapChain;
 	D3D_FEATURE_LEVEL featureLevel;
+#if _DEBUG
 	OwningPtr<ID3D11Debug, true, ReleaseCOM> debugDevice;
+#endif
 	bool vsync = true;
 
 
