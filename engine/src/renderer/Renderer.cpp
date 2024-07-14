@@ -32,10 +32,13 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		renderMesh(rhi, meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout);
 	}
 
-	RefPtr<Mesh, false> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
+	RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
+	RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
 	for (int i = 0; i < scene->sprite_count; i++) {
 		SpriteComponent& spriteComponent = scene->sprites.getRaw()[i];
-		renderMesh(rhi, unitSquare, materialManager.get(sID("spriteMaterial")).getNonNull(), &spriteComponent.inputLayout);
+		SpriteCB cbData = {spriteComponent.pos, spriteComponent.size, spriteComponent.color};
+		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[1], cbData);
+		renderMesh(rhi, unitSquare, spriteMaterial, &spriteComponent.inputLayout);
 	}
 
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);
@@ -105,6 +108,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 
 	Mesh::registerSimpleMeshes(rhi.getRef());
 
-	RefPtr<Material, true> spriteMaterial = createSpriteMaterial(rhi);
+	v2f windowSize = v2f{(float)clientRect.width(), (float)clientRect.height()};
+	RefPtr<Material, true> spriteMaterial = createSpriteMaterial(rhi, windowSize);
 	return new Renderer({std::move(rhi), std::move(rtv), std::move(backBufferDepthStencilView), std::move(depthStencilState), std::move(rasterizerState), fullScreenViewport, spriteMaterial.getNonNull()});
 }

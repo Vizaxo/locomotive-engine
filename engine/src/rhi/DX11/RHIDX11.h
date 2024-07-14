@@ -130,6 +130,13 @@ struct RHI {
 		return ConstantBuffer{ std::move(buf), size };
 	}
 
+	template <typename T> void updateConstantBuffer(RefPtr<ConstantBuffer> cb, T data) {
+		D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+		deviceContext->Map(cb->gpu_constantBuffer.getRaw(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		memcpy(mappedResource.pData, &data, cb->size);
+		deviceContext->Unmap(cb->gpu_constantBuffer.getRaw(), 0);
+	}
+
 	void present() {
 		swapChain->Present(vsync, 0);
 	}

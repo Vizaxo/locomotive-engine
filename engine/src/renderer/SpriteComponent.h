@@ -12,4 +12,10 @@ struct SpriteComponent {
 	RHI::InputLayout inputLayout;
 };
 
-RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi);
+struct SpriteCB {
+	v2f pos;
+	v2f size;
+	v3f color;
+};
+
+RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize);

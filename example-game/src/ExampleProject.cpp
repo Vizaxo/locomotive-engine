@@ -267,6 +267,9 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 }
 
 void ExampleApplication::tick(float deltaTime) {
+	scene.sprites.getRaw()[0].size.y += 1;
+	scene.sprites.getRaw()[0].pos.x += 1;
+	scene.sprites.getRaw()[0].pos.x = fmod(scene.sprites.getRaw()[0].pos.x, 1000);
 	/*
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
