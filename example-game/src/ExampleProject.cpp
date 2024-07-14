@@ -25,48 +25,6 @@
 
 using namespace DirectX;
 
-std::vector<DirectX::XMFLOAT3> cubePositions = {
-	{XMFLOAT3(-1.0f, -1.0f, -1.0f)},
-	{XMFLOAT3(-1.0f, 1.0f, -1.0f)},
-	{XMFLOAT3(1.0f,  1.0f, -1.0f)},
-	{XMFLOAT3(1.0f,  -1.0f, -1.0f)},
-	{XMFLOAT3(-1.0f, -1.0f,  1.0f)},
-	{XMFLOAT3(-1.0f, 1.0f,  1.0f)},
-	{XMFLOAT3(1.0f,  1.0f,  1.0f)},
-	{XMFLOAT3(1.0f,  -1.0f,  1.0f)},
-};
-
-std::vector<DirectX::XMFLOAT3> cubeColours = {
-	{XMFLOAT3(0.1f, 0.1f, 0.1f)},
-	{XMFLOAT3(1.0f, 0.0f, 0.0f)},
-	{XMFLOAT3(0.0f, 1.0f, 0.0f)},
-	{XMFLOAT3(1.0f, 1.0f, 0.0f)},
-	{XMFLOAT3(0.0f, 0.0f, 1.0f)},
-	{XMFLOAT3(1.0f, 0.0f, 1.0f)},
-	{XMFLOAT3(0.0f, 1.0f, 1.0f)},
-	{XMFLOAT3(1.0f, 1.0f, 1.0f)},
-};
-
-std::vector<DirectX::XMFLOAT2> cubeUVs = {
-	{XMFLOAT2(0.0f, 0.0f)},
-	{XMFLOAT2(1.0f, 0.0f)},
-	{XMFLOAT2(0.0f, 1.0f)},
-	{XMFLOAT2(1.0f, 1.0f)},
-	{XMFLOAT2(0.0f, 1.0f)},
-	{XMFLOAT2(1.0f, 1.0f)},
-	{XMFLOAT2(0.0f, 0.0f)},
-	{XMFLOAT2(1.0f, 0.0f)},
-};
-
-std::vector<int> cubeIndices = {
-	0,1,2,0,2,3,
-	4,6,5,4,7,6,
-	4,5,1,4,1,0,
-	3,2,6,3,6,7,
-	1,5,6,1,6,2,
-	4,0,3,4,3,7,
-};
-
 std::vector<VertexPosColor> triangleVertices = {
 	{XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
 	{XMFLOAT3(-0.5f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
