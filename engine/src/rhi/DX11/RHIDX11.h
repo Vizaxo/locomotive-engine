@@ -158,7 +158,9 @@ struct RHI {
 	OwningPtr<ID3D11DeviceContext, false, ReleaseCOM> deviceContext;
 	OwningPtr<IDXGISwapChain, false, ReleaseCOM> swapChain;
 	D3D_FEATURE_LEVEL featureLevel;
+	OwningPtr<ID3D11Debug, true, ReleaseCOM> debugDevice;
 	bool vsync = true;
+
 
 	static const inline u32 CONSTANT_BUFFER_COUNT = D3D11_COMMONSHADER_CONSTANT_BUFFER_HW_SLOT_COUNT;
 };

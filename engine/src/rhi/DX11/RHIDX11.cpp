@@ -60,7 +60,16 @@ OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h) {
 		D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &d3dDevice, &featureLevel,
 		&d3dDeviceContext));
 
-	return new RHI({std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel});
+#if _DEBUG
+	OwningPtr<ID3D11Debug, true, ReleaseCOM> debugDevice = nullptr;
+	HRASSERT(d3dDevice->QueryInterface(IID_PPV_ARGS(&debugDevice.getRaw())));
+#endif
+
+	return new RHI({std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel
+#if _DEBUG
+		, std::move(debugDevice),
+#endif
+		});
 }
 
 RHI::VertexShader RHI::createVertexShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {
