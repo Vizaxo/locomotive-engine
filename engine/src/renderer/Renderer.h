@@ -18,6 +18,7 @@ struct Renderer {
 	OwningPtr<ID3D11DepthStencilState, false, ReleaseCOM> backBufferDepthStencilState;
 	OwningPtr<ID3D11RasterizerState, false, ReleaseCOM> rasterizerState;
 	D3D11_VIEWPORT fullScreenViewport;
+	RefPtr<Material> spriteMaterial;
 };
 
 OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h);

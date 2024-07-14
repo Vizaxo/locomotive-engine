@@ -235,6 +235,7 @@
     <ClCompile Include="src\platform\windows\WinPlatform.cpp" />
     <ClCompile Include="src\renderer\Mesh.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
+    <ClCompile Include="src\renderer\SpriteComponent.cpp" />
     <ClCompile Include="src\renderer\StaticMeshComponent.cpp" />
     <ClCompile Include="src\renderer\Source.cpp" />
     <ClCompile Include="src\rhi_old\dx11\D3DContext.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="src\platform\windows\Windows.h" />
     <ClInclude Include="src\renderer\Mesh.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
+    <ClInclude Include="src\renderer\SpriteComponent.h" />
     <ClInclude Include="src\renderer\StaticMeshComponent.h" />
     <ClInclude Include="src\rhi\DX11\RHIDX11.h" />
     <ClInclude Include="src\resource-manager\ResourceManager.h" />
@@ -354,6 +356,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">include/generated/GBufferComposite.h</HeaderFileOutput>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_GBufferComposite</VariableName>
+    </FxCompile>
+    <FxCompile Include="src\shaders\SpritePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">spritePS</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/generated/SpritePS.h</HeaderFileOutput>
+    </FxCompile>
+    <FxCompile Include="src\shaders\SpriteVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">spriteVS</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">include/generated/SpriteVS.h</HeaderFileOutput>
     </FxCompile>
     <FxCompile Include="src\shaders\TexturedPixelShader.hlsl">
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_texturedPixelShader</VariableName>

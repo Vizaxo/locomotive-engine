@@ -1,6 +1,21 @@
 #include "PCH.h"
 #include "Renderer.h"
+#include "Mesh.h"
 #include "platform/windows/Windows.h"
+
+void renderMesh(RefPtr<RHI> rhi, RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout) {
+	for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
+		rhi->VSsetConstantBuffer(i, &material->constantBuffers[i]);
+		rhi->PSsetConstantBuffer(i, &material->constantBuffers[i]);
+	}
+	rhi->setVertexBuffer(&mesh->vertexBuffer, 0);
+	rhi->setIndexBuffer(&mesh->indexBuffer);
+	rhi->setVertexShader(&material->vertexShader);
+	rhi->setPixelShader(&material->pixelShader);
+	rhi->setInputLayout(inputLayout);
+
+	rhi->deviceContext->DrawIndexed(mesh->indexBuffer.indices, 0, 0);
+}
 
 void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	backBufferRTV.clear(Colour::BLACK);
@@ -14,17 +29,13 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 
 	for (int i = 0; i < scene->obj_count; i++) {
 		StaticMeshComponent& meshComponent = scene->objects.getRaw()[i];
-		for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
-			rhi->VSsetConstantBuffer(i, &meshComponent.material->constantBuffers[i]);
-			rhi->PSsetConstantBuffer(i, &meshComponent.material->constantBuffers[i]);
-		}
-		rhi->setVertexBuffer(&meshComponent.mesh->vertexBuffer, 0);
-		rhi->setIndexBuffer(&meshComponent.mesh->indexBuffer);
-		rhi->setVertexShader(&meshComponent.material->vertexShader);
-		rhi->setPixelShader(&meshComponent.material->pixelShader);
-		rhi->setInputLayout(&meshComponent.inputLayout);
+		renderMesh(rhi, meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout);
+	}
 
-		rhi->deviceContext->DrawIndexed(meshComponent.mesh->indexBuffer.indices, 0, 0);
+	RefPtr<Mesh, false> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
+	for (int i = 0; i < scene->sprite_count; i++) {
+		SpriteComponent& spriteComponent = scene->sprites.getRaw()[i];
+		renderMesh(rhi, unitSquare, materialManager.get(sID("spriteMaterial")).getNonNull(), &spriteComponent.inputLayout);
 	}
 
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);
@@ -75,7 +86,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	rasterizerDesc.DepthBiasClamp = 0.0f;
 	rasterizerDesc.DepthClipEnable = FALSE;
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerDesc.FrontCounterClockwise = FALSE;
+	rasterizerDesc.FrontCounterClockwise = TRUE;
 	rasterizerDesc.MultisampleEnable = FALSE;
 	rasterizerDesc.ScissorEnable = FALSE;
 	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
@@ -93,5 +104,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	fullScreenViewport.MaxDepth = 1.0f;
 
 	Mesh::registerSimpleMeshes(rhi.getRef());
-	return new Renderer({std::move(rhi), std::move(rtv), std::move(backBufferDepthStencilView), std::move(depthStencilState), std::move(rasterizerState), fullScreenViewport});
+
+	RefPtr<Material, true> spriteMaterial = createSpriteMaterial(rhi);
+	return new Renderer({std::move(rhi), std::move(rtv), std::move(backBufferDepthStencilView), std::move(depthStencilState), std::move(rasterizerState), fullScreenViewport, spriteMaterial.getNonNull()});
 }

@@ -266,6 +266,25 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 		{0.0f, 0.0f, 0.0f},
 	});
 
+	D3D11_INPUT_ELEMENT_DESC spriteInputLayoutDescs[1];
+	spriteInputLayoutDescs[0].SemanticName = "POSITION";
+	spriteInputLayoutDescs[0].SemanticIndex = 0;
+	spriteInputLayoutDescs[0].Format = DXGI_FORMAT_R32G32_FLOAT;
+	spriteInputLayoutDescs[0].InputSlot = 0;
+	spriteInputLayoutDescs[0].AlignedByteOffset = 0;
+	spriteInputLayoutDescs[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	spriteInputLayoutDescs[0].InstanceDataStepRate = 0;
+	RHI::InputLayout spriteInputLayout = renderer->rhi->createInputLayout(spriteInputLayoutDescs, 1, &materialManager.get(sID("spriteMaterial"))->vertexShader);
+	scene.sprite_count = 1;
+	scene.sprites = (SpriteComponent*)operator new[](scene.sprite_count * sizeof(SpriteComponent));
+	new (&scene.sprites.getRaw()[0]) SpriteComponent({
+		{100, 100},
+		{30, 40},
+		{0.0f, 1.0f, 0.0f},
+		std::move(spriteInputLayout),
+	});
+
+
 	//scene = new StaticMeshComponent[1]();
 
 	//baseColourVertexShader = new VertexShader(d3dContext, (const void*)g_BaseColourVertexShader, sizeof(g_BaseColourVertexShader));

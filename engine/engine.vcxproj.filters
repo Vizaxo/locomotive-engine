@@ -132,6 +132,9 @@
     <ClCompile Include="src\renderer\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\SpriteComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\PCH.h">
@@ -290,6 +293,9 @@
     <ClInclude Include="src\types\Either.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\SpriteComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\BaseColourVertexShader.hlsl" />
@@ -300,5 +306,7 @@
     <FxCompile Include="src\shaders\ScreenShader.hlsl" />
     <FxCompile Include="src\shaders\FlatColorVS.hlsl" />
     <FxCompile Include="src\shaders\FlatColorPS.hlsl" />
+    <FxCompile Include="src\shaders\SpriteVS.hlsl" />
+    <FxCompile Include="src\shaders\SpritePS.hlsl" />
   </ItemGroup>
 </Project>

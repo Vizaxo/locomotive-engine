@@ -15,6 +15,7 @@ v3f unitCubeVerts[8] = {
 	{1.0f,  1.0f,  1.0f },
 	{1.0f,  -1.0f,  1.0f },
 };
+
 u8 unitCubeIndices[36] = {
 	0,1,2,0,2,3,
 	4,6,5,4,7,6,
@@ -22,6 +23,17 @@ u8 unitCubeIndices[36] = {
 	3,2,6,3,6,7,
 	1,5,6,1,6,2,
 	4,0,3,4,3,7,
+};
+
+v2f unitSquareVerts[4] = {
+	{-1.0, -1.0},
+	{1.0, -1.0},
+	{-1.0, 1.0},
+	{1.0, 1.0},
+};
+
+u8 unitSquareIndices[6] = {
+	0, 1, 2, 1, 3, 2,
 };
 
 template <typename V, typename I>
@@ -34,4 +46,5 @@ RefPtr<Mesh, true> Mesh::createMesh(RefPtr<RHI> rhi, StringId id, RefPtr<V> vert
 
 void Mesh::registerSimpleMeshes(RefPtr<RHI> rhi) {
 	createMesh<v3f, u8>(rhi, sID("unitCube"), unitCubeVerts, COUNT(unitCubeVerts), unitCubeIndices, COUNT(unitCubeIndices));
+	createMesh<v2f, u8>(rhi, sID("unitSquare"), unitSquareVerts, COUNT(unitSquareVerts), unitSquareIndices, COUNT(unitSquareIndices));
 }
