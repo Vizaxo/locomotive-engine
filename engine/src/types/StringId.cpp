@@ -8,6 +8,7 @@
 std::vector<StringId> stringIdManager;
 
 StringId internStringId(const char* s) {
+	// TODO: this is continuously growing when fetching resources
 	return stringIdManager.emplace_back(
 #if _DEBUG
 		s,
