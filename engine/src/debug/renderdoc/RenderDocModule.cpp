@@ -21,6 +21,9 @@ void RenderDoc::setCaptureOptions() {
 #if RENDERDOC_CAPTURE_CALLSTACKS
 	ASSERT(api->SetCaptureOptionU32(eRENDERDOC_Option_CaptureCallstacks, 1) == 1, "Invalid call setting capture option CaptureCallstacks");
 #endif
+#if _DEBUG
+	ASSERT(api->SetCaptureOptionU32(eRENDERDOC_Option_APIValidation, 1) == 1, "Invalid call setting capture option APIValidation");
+#endif
 }
 
 RefPtr<RenderDoc, true> RenderDoc::initRenderDoc(PAL::ModuleHandle h) {
