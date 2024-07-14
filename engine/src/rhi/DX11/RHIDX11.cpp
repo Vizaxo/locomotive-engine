@@ -146,28 +146,47 @@ void RHI::PSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb) {
 		deviceContext->PSSetConstantBuffers(slot, 1, &cb->gpu_constantBuffer.getRaw());
 }
 
-OwningPtr<RHI::Texture2D> RHI::createTexture(RHICommon::PixelFormat pf, RefPtr<u8> data, v2i size) {
-	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = size.x;
-	desc.Height = size.y;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = RHID3D11::getRHIFormat(pf);
-	desc.SampleDesc = DXGI_SAMPLE_DESC{1, 0};
-	desc.Usage = D3D11_USAGE_DEFAULT; //TODO: parameterise this
-	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE; //TODO: parameterise this
-	desc.CPUAccessFlags = 0; //TODO: parameterise this
-	desc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA subresourceData;
-	subresourceData.pSysMem = data.getRaw();
-	subresourceData.SysMemPitch = 0;
-	subresourceData.SysMemSlicePitch = 0;
-
+OwningPtr<RHI::Texture2D> RHI::createTexture(RHICommon::PixelFormat pf, RefPtr<u8> data, u32 stride, v2i size) {
 	OwningPtr<ID3D11Texture2D, true, ReleaseCOM> texture = nullptr;
-	HRASSERT(device->CreateTexture2D(&desc, nullptr, &texture.getRaw()));
+	{
+		D3D11_TEXTURE2D_DESC desc;
+		desc.Width = size.x;
+		desc.Height = size.y;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = RHID3D11::getRHIFormat(pf);
+		desc.SampleDesc = DXGI_SAMPLE_DESC{ 1, 0 };
+		desc.Usage = D3D11_USAGE_DEFAULT; //TODO: parameterise this
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE; //TODO: parameterise this
+		desc.CPUAccessFlags = 0; //TODO: parameterise this
+		desc.MiscFlags = 0;
 
-	return new RHI::Texture2D{std::move(texture), size, pf, ""};
+		D3D11_SUBRESOURCE_DATA subresourceData;
+		subresourceData.pSysMem = data.getRaw();
+		subresourceData.SysMemPitch = size.x * stride;
+		subresourceData.SysMemSlicePitch = 0;
+
+		HRASSERT(device->CreateTexture2D(&desc, &subresourceData, &texture.getRaw()));
+	}
+
+	OwningPtr<ID3D11ShaderResourceView, true, ReleaseCOM> srv = nullptr;
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+		desc.Format = RHID3D11::getRHIFormat(pf);
+		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		D3D11_TEX2D_SRV srvDesc;
+		srvDesc.MostDetailedMip = 0;
+		srvDesc.MipLevels = -1;
+		desc.Texture2D = srvDesc;
+
+		HRASSERT(device->CreateShaderResourceView(texture.getRaw(), &desc, &srv.getRaw()));
+	}
+
+	return new RHI::Texture2D{std::move(texture), std::move(srv), size, pf, ""};
+}
+
+void RHI::bindSRV(u32 slot, RefPtr<Texture2D> texture) {
+	deviceContext->PSSetShaderResources(slot, 1, &texture->gpu_srv.getRaw());
 }
 
 RHID3D11::RHIFormat RHID3D11::getRHIFormat(PixelFormat pf) {

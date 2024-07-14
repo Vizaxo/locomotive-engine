@@ -20,7 +20,7 @@ RefPtr<RHI::Texture2D, true> Texture::loadTextureFromFile(RefPtr<RHI> rhi, std::
 	default: ASSERT(false, "Unsupported texture stride %d", stride);
 	}
 
-	OwningPtr<RHI::Texture2D> texture = rhi->createTexture(pf, data, size);
+	OwningPtr<RHI::Texture2D> texture = rhi->createTexture(pf, data, stride, size);
 	texture->path = path;
 	return textureManager.registerResource(sID(path.c_str()), std::move(texture));
 }

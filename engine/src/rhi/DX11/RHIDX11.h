@@ -140,11 +140,13 @@ struct RHI {
 
 	struct Texture2D {
 		OwningPtr<ID3D11Texture2D, true, ReleaseCOM> gpu_texture;
+		OwningPtr<ID3D11ShaderResourceView, true, ReleaseCOM> gpu_srv; //TODO: split this out of the texture?
 		v2i size;
 		RHICommon::PixelFormat format;
 		std::string path;
 	};
-	OwningPtr<Texture2D> createTexture(RHICommon::PixelFormat pf, RefPtr<u8> data, v2i size);
+	OwningPtr<Texture2D> createTexture(RHICommon::PixelFormat pf, RefPtr<u8> data, u32 stride, v2i size);
+	void bindSRV(u32 slot, RefPtr<Texture2D> texture);
 
 	void present() {
 		swapChain->Present(vsync, 0);
