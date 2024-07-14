@@ -182,11 +182,26 @@ OwningPtr<RHI::Texture2D> RHI::createTexture(RHICommon::PixelFormat pf, RefPtr<u
 		HRASSERT(device->CreateShaderResourceView(texture.getRaw(), &desc, &srv.getRaw()));
 	}
 
-	return new RHI::Texture2D{std::move(texture), std::move(srv), size, pf, ""};
+	OwningPtr<ID3D11SamplerState, true, ReleaseCOM> sampler = nullptr;
+	{
+		D3D11_SAMPLER_DESC desc = {};
+		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.MipLODBias = 0;
+		HRASSERT(device->CreateSamplerState(&desc, &sampler.getRaw()));
+	}
+
+	return new RHI::Texture2D{std::move(texture), std::move(srv), std::move(sampler), size, pf, ""};
 }
 
 void RHI::bindSRV(u32 slot, RefPtr<Texture2D> texture) {
 	deviceContext->PSSetShaderResources(slot, 1, &texture->gpu_srv.getRaw());
+}
+
+void RHI::bindSampler(u32 slot, RefPtr<Texture2D> texture) {
+	deviceContext->PSSetSamplers(slot, 1, &texture->sampler.getRaw());
 }
 
 RHID3D11::RHIFormat RHID3D11::getRHIFormat(PixelFormat pf) {

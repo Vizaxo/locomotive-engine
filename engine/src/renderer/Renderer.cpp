@@ -39,6 +39,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		SpriteCB cbData = {spriteComponent.pos, spriteComponent.size, spriteComponent.color};
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[1], cbData);
 		rhi->bindSRV(0, spriteComponent.texture);
+		rhi->bindSampler(0, spriteComponent.texture);
 		renderMesh(rhi, unitSquare, spriteMaterial, &spriteComponent.inputLayout);
 	}
 
