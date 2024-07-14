@@ -136,3 +136,37 @@ void RHI::PSsetConstantBuffer(u32 slot, RefPtr<ConstantBuffer> cb) {
 	if (cb->gpu_constantBuffer)
 		deviceContext->PSSetConstantBuffers(slot, 1, &cb->gpu_constantBuffer.getRaw());
 }
+
+OwningPtr<RHI::Texture2D> RHI::createTexture(RHICommon::PixelFormat pf, RefPtr<u8> data, v2i size) {
+	D3D11_TEXTURE2D_DESC desc;
+	desc.Width = size.x;
+	desc.Height = size.y;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = RHID3D11::getRHIFormat(pf);
+	desc.SampleDesc = DXGI_SAMPLE_DESC{1, 0};
+	desc.Usage = D3D11_USAGE_DEFAULT; //TODO: parameterise this
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE; //TODO: parameterise this
+	desc.CPUAccessFlags = 0; //TODO: parameterise this
+	desc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA subresourceData;
+	subresourceData.pSysMem = data.getRaw();
+	subresourceData.SysMemPitch = 0;
+	subresourceData.SysMemSlicePitch = 0;
+
+	OwningPtr<ID3D11Texture2D, true, ReleaseCOM> texture = nullptr;
+	HRASSERT(device->CreateTexture2D(&desc, nullptr, &texture.getRaw()));
+
+	return new RHI::Texture2D{std::move(texture), size, pf, ""};
+}
+
+RHID3D11::RHIFormat RHID3D11::getRHIFormat(PixelFormat pf) {
+	switch (pf) {
+	case R8G8B8A8: return DXGI_FORMAT_R8G8B8A8_UNORM;
+	case R32: return DXGI_FORMAT_R32_FLOAT;
+	case R32G32: return DXGI_FORMAT_R32G32_FLOAT;
+	case R32G32B32: return DXGI_FORMAT_R32G32B32_FLOAT;
+	case R32G32B32A32: return DXGI_FORMAT_R32G32B32A32_FLOAT;
+	}
+}

@@ -6,6 +6,7 @@
 #include "types/Pointers.h"
 #include "types/Types.h"
 #include "platform/Platform.h"
+#include "rhi/RHICommon.h"
 
 struct RHI {
 	struct Shader {
@@ -137,6 +138,14 @@ struct RHI {
 		deviceContext->Unmap(cb->gpu_constantBuffer.getRaw(), 0);
 	}
 
+	struct Texture2D {
+		OwningPtr<ID3D11Texture2D, true, ReleaseCOM> gpu_texture;
+		v2i size;
+		RHICommon::PixelFormat format;
+		std::string path;
+	};
+	OwningPtr<Texture2D> createTexture(RHICommon::PixelFormat pf, RefPtr<u8> data, v2i size);
+
 	void present() {
 		swapChain->Present(vsync, 0);
 	}
@@ -155,3 +164,10 @@ struct RHI {
 };
 
 OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h);
+
+namespace RHID3D11 {
+	using namespace RHICommon;
+	typedef DXGI_FORMAT RHIFormat;
+
+	RHIFormat getRHIFormat(PixelFormat pf);
+}

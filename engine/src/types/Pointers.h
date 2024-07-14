@@ -63,7 +63,7 @@ struct OwningPtr : Ptr<T, Nullable> {
 
 	OwningPtr<T, Nullable, Deleter>& operator=(OwningPtr<T, Nullable, Deleter>&& other) {
 		CHECKNULL;
-		Deleter()((void**)&this->obj);
+		//Deleter()((void**)&this->obj); Should this deleter be called? Yes if the target object is valid, no if it's allocated but uninitialised memory.
 		this->obj = other.obj;
 		CHECKNULL;
 		other.obj = nullptr;
