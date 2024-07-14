@@ -8,6 +8,8 @@
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <time.h>
 
+const bool enableRenderdoc = true;
+
 const std::vector<std::string> RenderDoc::libraryNames = 
 #if PLATFORM_WINDOWS
 { "renderdoc.dll", "C:\\Program Files\\RenderDoc\\renderdoc.dll" };
@@ -40,6 +42,9 @@ RefPtr<RenderDoc, true> RenderDoc::initRenderDoc(PAL::ModuleHandle h) {
 }
 
 RefPtr<RenderDoc, true> RenderDoc::loadRenderDoc() {
+	if (!enableRenderdoc)
+		return nullptr;
+
 	if (auto h = PAL::getLibrary(RenderDoc::libraryNames[0].c_str())) {
 		return initRenderDoc(*h);
 	}
