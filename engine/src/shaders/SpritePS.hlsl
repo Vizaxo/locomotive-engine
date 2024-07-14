@@ -4,7 +4,13 @@ cbuffer Sprite : register(b1) {
 	float3 color;
 }
 
-float4 main() : SV_TARGET
+
+struct VSOut {
+	float4 pos : SV_POSITION;
+	float2 uv : TEXCOORD;
+};
+
+float4 main(VSOut psIn) : SV_TARGET
 {
-	return float4(color, 1.0f);
+	return float4(psIn.uv, 0.0f, 1.0f);
 }

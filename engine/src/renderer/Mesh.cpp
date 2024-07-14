@@ -25,11 +25,16 @@ u8 unitCubeIndices[36] = {
 	4,0,3,4,3,7,
 };
 
-v2f unitSquareVerts[4] = {
-	{-1.0, -1.0},
-	{1.0, -1.0},
-	{-1.0, 1.0},
-	{1.0, 1.0},
+struct vert2dPosUV {
+	v2f pos;
+	v2f uv;
+};
+
+vert2dPosUV unitSquareVerts[4] = {
+	{{-1.0, -1.0},{0.0, 0.0}},
+	{{1.0, -1.0},{1.0, 0.0}},
+	{{-1.0, 1.0},{0.0, 1.0}},
+	{{1.0, 1.0},{1.0, 1.0}},
 };
 
 u8 unitSquareIndices[6] = {
@@ -46,5 +51,5 @@ RefPtr<Mesh, true> Mesh::createMesh(RefPtr<RHI> rhi, StringId id, RefPtr<V> vert
 
 void Mesh::registerSimpleMeshes(RefPtr<RHI> rhi) {
 	createMesh<v3f, u8>(rhi, sID("unitCube"), unitCubeVerts, COUNT(unitCubeVerts), unitCubeIndices, COUNT(unitCubeIndices));
-	createMesh<v2f, u8>(rhi, sID("unitSquare"), unitSquareVerts, COUNT(unitSquareVerts), unitSquareIndices, COUNT(unitSquareIndices));
+	createMesh<vert2dPosUV, u8>(rhi, sID("unitSquare"), unitSquareVerts, COUNT(unitSquareVerts), unitSquareIndices, COUNT(unitSquareIndices));
 }
