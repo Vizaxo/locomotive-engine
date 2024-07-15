@@ -32,6 +32,8 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		renderMesh(rhi, meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout);
 	}
 
+	static RHI::BlendState alphaBlendState = rhi->createBlendState();
+	rhi->setBlendState(&alphaBlendState);
 	RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
 	RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
 	for (int i = 0; i < scene->sprite_count; i++) {

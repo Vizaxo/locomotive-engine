@@ -150,6 +150,12 @@ struct RHI {
 	void bindSRV(u32 slot, RefPtr<Texture2D> texture);
 	void bindSampler(u32 slot, RefPtr<Texture2D> texture);
 
+	struct BlendState {
+		OwningPtr<ID3D11BlendState, true, ReleaseCOM> blendState;
+	};
+	BlendState createBlendState();
+	void setBlendState(RefPtr<RHI::BlendState> bs);
+
 	void present() {
 		swapChain->Present(vsync, 0);
 	}
