@@ -6,12 +6,11 @@
 #include "StaticMeshComponent.h"
 #include "SpriteComponent.h"
 #include "Light.h"
+#include "types/Array.h"
 
 struct Scene {
-	OwningPtr<StaticMeshComponent, true, ArrayDelete> objects = nullptr;
-	size_t obj_count;
-	OwningPtr<SpriteComponent, true, ArrayDelete> sprites = nullptr;
-	size_t sprite_count;
+	Array<StaticMeshComponent> objects;
+	Array<SpriteComponent> sprites;
 
 	LightData lightData;
 	DirectX::XMVECTOR eyePosition;

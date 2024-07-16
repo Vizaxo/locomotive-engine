@@ -27,8 +27,8 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), backBufferDepthStencilView.depthStencilView.getRaw());
 	rhi->deviceContext->OMSetDepthStencilState(backBufferDepthStencilState.getRaw(), 0);
 
-	for (int i = 0; i < scene->obj_count; i++) {
-		StaticMeshComponent& meshComponent = scene->objects.getRaw()[i];
+	for (int i = 0; i < scene->objects.num(); i++) {
+		StaticMeshComponent& meshComponent = scene->objects[i];
 		renderMesh(rhi, meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout);
 	}
 
@@ -36,8 +36,8 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	rhi->setBlendState(&alphaBlendState);
 	RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
 	RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
-	for (int i = 0; i < scene->sprite_count; i++) {
-		SpriteComponent& spriteComponent = scene->sprites.getRaw()[i];
+	for (int i = 0; i < scene->sprites.num(); i++) {
+		SpriteComponent& spriteComponent = scene->sprites[i];
 		SpriteCB cbData = {spriteComponent.pos, spriteComponent.size, spriteComponent.color};
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[1], cbData);
 		rhi->bindSRV(0, spriteComponent.texture);

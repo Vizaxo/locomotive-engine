@@ -215,20 +215,15 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	RefPtr<Material, true> flatColorMatRegistered = materialManager.registerResource(internStringId("flatColorMat"), std::move(flatColorMat));
 	RefPtr<Mesh> cubeMesh = Mesh::meshManager.get(sID("unitCube")).getNonNull();
 
-	// Use placement new to create object in the array
-	scene.objects = (StaticMeshComponent*)operator new[](1 * sizeof (StaticMeshComponent));
-	scene.obj_count = 1;
-	new (&scene.objects.getRaw()[0]) StaticMeshComponent({
+	scene.objects.add(StaticMeshComponent({
 		cubeMesh,
 		flatColorMatRegistered.getNonNull(),
 		std::move(inputLayout),
 		{0.0f, 0.0f, 0.0f},
-	});
+	}));
 
-	scene.sprite_count = 1;
-	scene.sprites = (SpriteComponent*)operator new[](scene.sprite_count * sizeof(SpriteComponent));
 	RefPtr<RHI::Texture2D> texture = Texture::loadTextureFromFile(renderer->rhi, "resources/textures/cube01.png").getNonNull();
-	scene.sprites.getRaw()[0] = SpriteComponent::createSpriteComponent(renderer->rhi, {100, 100}, {30, 40}, texture);
+	scene.sprites.add(SpriteComponent::createSpriteComponent(renderer->rhi, {100, 100}, {30, 40}, texture));
 
 
 	//scene = new StaticMeshComponent[1]();
@@ -255,9 +250,8 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 }
 
 void ExampleApplication::tick(float deltaTime) {
-	scene.sprites.getRaw()[0].size.y += 1;
-	scene.sprites.getRaw()[0].pos.x += 1;
-	scene.sprites.getRaw()[0].pos.x = fmod(scene.sprites.getRaw()[0].pos.x, 1000);
+	scene.sprites[0].pos.x += 1;
+	scene.sprites[0].pos.x = fmod(scene.sprites[0].pos.x, 1000);
 	/*
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.
