@@ -69,7 +69,16 @@ struct Array {
 		used++;
 	}
 
-	T& operator[] (int index);
+	T& operator[] (int index) {
+		return data[index];
+	}
+
+	~Array() {
+		for (int i = 0; i < used; ++i) {
+			data[used].~T();
+		}
+	}
+
 
 private:
 	void allocIfNecessary(u32 desired) {
