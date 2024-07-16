@@ -69,6 +69,10 @@ struct Array {
 		used++;
 	}
 
+	u32 num() {
+		return used;
+	}
+
 	T& operator[] (int index) {
 		return data[index];
 	}
