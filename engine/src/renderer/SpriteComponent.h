@@ -8,7 +8,6 @@
 struct SpriteComponent {
 	v2f pos;
 	v2f size;
-	v3f color; //TODO: replace with texture
 	RefPtr<RHI::Texture2D> texture;
 	RHI::InputLayout inputLayout;
 
@@ -18,7 +17,6 @@ struct SpriteComponent {
 struct SpriteCB {
 	v2f pos;
 	v2f size;
-	v3f color;
 };
 
 RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize);

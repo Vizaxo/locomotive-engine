@@ -38,7 +38,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
 	for (int i = 0; i < scene->sprites.num(); i++) {
 		SpriteComponent& spriteComponent = scene->sprites[i];
-		SpriteCB cbData = {spriteComponent.pos, spriteComponent.size, spriteComponent.color};
+		SpriteCB cbData = {spriteComponent.pos, spriteComponent.size};
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[1], cbData);
 		rhi->bindSRV(0, spriteComponent.texture);
 		rhi->bindSampler(0, spriteComponent.texture);

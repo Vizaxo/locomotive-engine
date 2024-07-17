@@ -41,7 +41,6 @@ SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, v2f pos,
 	return SpriteComponent({
 		pos,
 		size,
-		{0.0f, 1.0f, 0.0f},
 		texture,
 		std::move(spriteInputLayout),
 	});
