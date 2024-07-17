@@ -18,6 +18,7 @@ public:
 	virtual RefPtr<Scene> getScene() = 0;
 	virtual void mouseButtonDown(Mouse::Button b) = 0;
 	virtual void mouseButtonUp(Mouse::Button b) = 0;
+	virtual ~Application() {}
 };
 
 // To be defined by the game
