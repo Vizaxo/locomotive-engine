@@ -5,15 +5,19 @@
 
 namespace Hooks {
 
+std::map<void*, void*> originalFunctions;
+
 void hookFunction(void* original, void* hook) {
 	u8* orig = (u8*)original;
 	DWORD old;
 	// Make code page editable
-	VirtualProtect(orig+1, 4, PAGE_READWRITE, &old);
+	VirtualProtect(orig+1, 4, PAGE_EXECUTE_READWRITE, &old);
 
 	// Function pointers point to a jump table
 	// The first byte is the opcode, the next 4 are the RIP-relative jump
 	i32 jmpOffset = *(u32*)(orig+1);
+	u64 originalAddress = (u64)original + 5 + jmpOffset;
+	originalFunctions.emplace(original, (void*)originalAddress);
 
 	// Calculate the new offset (adding 5 because RIP-relative is relative to _after_ the
 	// instruction has executed.
