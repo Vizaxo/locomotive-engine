@@ -11,6 +11,7 @@ struct Allocator {
 	// Returns pointer to the new memory, and number of elements it has size for
 	AllocResult allocate(size_t stride, u32 elementsRequested) {}
 	void postAlloc() {}
+	void freeMem() {}
 protected:
 	Allocator() {}
 	Allocator(size_t stride);
@@ -36,6 +37,10 @@ struct DoublingAllocator : public Allocator {
 	void postAlloc() {
 		free(prev);
 		prev = cur;
+	}
+
+	void freeMem() {
+		free(prev);
 	}
 
 	DoublingAllocator(size_t stride) {
@@ -79,8 +84,9 @@ struct Array {
 
 	~Array() {
 		for (int i = 0; i < used; ++i) {
-			data[used].~T();
+			data[i].~T();
 		}
+		alloc.freeMem();
 	}
 
 
