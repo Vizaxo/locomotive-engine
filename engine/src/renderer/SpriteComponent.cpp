@@ -43,6 +43,7 @@ SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, v2f pos,
 		size,
 		texture,
 		std::move(spriteInputLayout),
+		true,
 	});
 
 }

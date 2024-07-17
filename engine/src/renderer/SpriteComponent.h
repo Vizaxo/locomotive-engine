@@ -10,6 +10,7 @@ struct SpriteComponent {
 	v2f size;
 	RefPtr<RHI::Texture2D> texture;
 	RHI::InputLayout inputLayout;
+	bool enabled = false;
 
 	static SpriteComponent createSpriteComponent(RefPtr<RHI> rhi, v2f pos, v2f size, RefPtr<RHI::Texture2D> texture);
 };
