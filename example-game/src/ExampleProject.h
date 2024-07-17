@@ -18,8 +18,6 @@ public:
 	void cleanup();
 	RefPtr<Scene> getScene();
 
-	//void makePlane(D3DContext* d3dContext);
-	RefPtr<Mesh> createHexMesh(D3DContext* d3dContext);
 	void setupLighting();
 	void setupCamera();
 	void mouseButtonDown(Mouse::Button b);

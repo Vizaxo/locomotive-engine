@@ -331,7 +331,6 @@
     <ClCompile Include="src\renderer\Source.cpp" />
     <ClCompile Include="src\renderer\Texture.cpp" />
     <ClCompile Include="src\rhi\RHICommon.cpp" />
-    <ClCompile Include="src\rhi_old\dx11\D3DContext.cpp" />
     <ClCompile Include="src\rhi\dx11\RHIDX11.cpp" />
     <ClCompile Include="src\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -344,9 +343,6 @@
     <ClCompile Include="src\renderer\ImGuiUtils.cpp" />
     <ClCompile Include="src\renderer\Material.cpp" />
     <ClCompile Include="src\editor\ModelLoader.cpp" />
-    <ClCompile Include="src\rhi_old\dx11\Shader.cpp" />
-    <ClCompile Include="src\rhi_old\dx11\Texture2D.cpp" />
-    <ClCompile Include="src\rhi_old\dx11\VertexBuffer.cpp" />
     <ClCompile Include="src\stbi_impl.cpp" />
     <ClCompile Include="src\types\Colour.cpp" />
     <ClCompile Include="src\types\StringId.cpp" />
@@ -393,22 +389,17 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\input\Keyboard.h" />
     <ClInclude Include="src\platform\windows\WinInput.h" />
-    <ClInclude Include="src\rhi_old\dx11\D3DContext.h" />
     <ClInclude Include="src\PCH.h" />
     <ClInclude Include="src\renderer\ImGuiUtils.h" />
     <ClInclude Include="src\renderer\Light.h" />
     <ClInclude Include="src\renderer\Material.h" />
     <ClInclude Include="src\editor\ModelLoader.h" />
     <ClInclude Include="src\renderer\Scene.h" />
-    <ClInclude Include="src\rhi_old\RHI.h" />
-    <ClInclude Include="src\rhi_old\dx11\Shader.h" />
-    <ClInclude Include="src\rhi_old\dx11\Texture2D.h" />
     <ClInclude Include="src\types\Pointers.h" />
     <ClInclude Include="src\types\Product.h" />
     <ClInclude Include="src\types\StringId.h" />
     <ClInclude Include="src\types\Types.h" />
     <ClInclude Include="src\Utils.h" />
-    <ClInclude Include="src\rhi_old\dx11\VertexBuffer.h" />
     <ClInclude Include="src\types\Vector.h" />
     <ClInclude Include="src\utils\Hashing.h" />
     <ClInclude Include="src\world\Noise.h" />

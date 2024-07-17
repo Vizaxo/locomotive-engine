@@ -7,7 +7,6 @@
 #include "renderer/Renderer.h"
 
 class Scene;
-class D3DContext;
 
 class Application {
 public:

@@ -21,9 +21,6 @@
     <ClCompile Include="src\rhi\dx11\RHIDX11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi_old\dx11\Texture2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\renderer\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,12 +46,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\ModelLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rhi_old\dx11\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rhi_old\dx11\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\debug\ttd.cpp">
@@ -111,9 +102,6 @@
     <ClCompile Include="src\core\Assert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rhi_old\dx11\D3DContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\renderer\StaticMeshComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -149,13 +137,7 @@
     <ClInclude Include="src\PCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi_old\dx11\D3DContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\renderer\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rhi_old\dx11\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Material.h">
@@ -191,19 +173,10 @@
     <ClInclude Include="src\editor\ModelLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rhi_old\dx11\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rhi_old\dx11\VertexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Light.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rhi_old\RHI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Constants.h">
