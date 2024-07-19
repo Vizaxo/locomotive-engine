@@ -142,7 +142,7 @@ struct RHI {
 		OwningPtr<ID3D11Texture2D, true, ReleaseCOM> gpu_texture;
 		OwningPtr<ID3D11ShaderResourceView, true, ReleaseCOM> gpu_srv; //TODO: split this out of the texture?
 		OwningPtr<ID3D11SamplerState, true, ReleaseCOM> sampler; //TODO: split this out of the texture?
-		v2i size;
+		v2f size;
 		RHICommon::PixelFormat format;
 		std::string path;
 	};

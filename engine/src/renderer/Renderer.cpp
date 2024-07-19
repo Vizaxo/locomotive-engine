@@ -1,5 +1,7 @@
 #include "PCH.h"
 #include "Renderer.h"
+
+#include "ConstantBuffers.h"
 #include "Mesh.h"
 #include "platform/windows/Windows.h"
 
@@ -40,10 +42,10 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		SpriteComponent& spriteComponent = scene->sprites[i];
 		if (!spriteComponent.enabled)
 			continue;
-		SpriteCB cbData = {spriteComponent.pos, spriteComponent.size};
-		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[1], cbData);
-		rhi->bindSRV(0, spriteComponent.texture);
-		rhi->bindSampler(0, spriteComponent.texture);
+		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::Sprite], spriteComponent.cbData); //TODO: ints being copied into floats. marshall or make them the same type
+		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::SpriteSheet], spriteComponent.spriteSheet->cbData);
+		rhi->bindSRV(0, spriteComponent.spriteSheet->texture);
+		rhi->bindSampler(0, spriteComponent.spriteSheet->texture);
 		renderMesh(rhi, unitSquare, spriteMaterial, &spriteComponent.inputLayout);
 	}
 

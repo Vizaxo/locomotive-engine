@@ -1,6 +1,8 @@
 #include "PCH.h"
 
 #include "SpriteComponent.h"
+
+#include "ConstantBuffers.h"
 #include "Material.h"
 #include "types/Pointers.h"
 #include "rhi/RHI.h"
@@ -13,13 +15,14 @@ RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize) {
 	RHI::PixelShader ps = rhi->createPixelShaderFromBytecode((u8*)spritePS, sizeof(spritePS));
 	OwningPtr<Material> mat = new Material({std::move(vs), std::move(ps)});
 
-	mat->constantBuffers[0] = rhi->createConstantBuffer(windowSize);
-	mat->constantBuffers[1] = rhi->createConstantBuffer(SpriteCB{});
+	mat->constantBuffers[CB::WindowSize] = rhi->createConstantBuffer(windowSize);
+	mat->constantBuffers[CB::Sprite] = rhi->createConstantBuffer(SpriteComponentCB{});
+	mat->constantBuffers[CB::SpriteSheet] = rhi->createConstantBuffer(SpriteSheetCB{});
 
 	return materialManager.registerResource(sID("spriteMaterial"), std::move(mat));
 }
 
-SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, v2f pos, v2f size, RefPtr<RHI::Texture2D> texture) {
+SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData, RefPtr<SpriteSheet> spriteSheet) {
 	static const u32 SPRITE_INPUT_DESC_COUNT = 2;
 	D3D11_INPUT_ELEMENT_DESC spriteInputLayoutDescs[SPRITE_INPUT_DESC_COUNT];
 	spriteInputLayoutDescs[0].SemanticName = "POSITION";
@@ -39,9 +42,8 @@ SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, v2f pos,
 	RHI::InputLayout spriteInputLayout = rhi->createInputLayout(spriteInputLayoutDescs, SPRITE_INPUT_DESC_COUNT, &materialManager.get(sID("spriteMaterial"))->vertexShader);
 
 	return SpriteComponent({
-		pos,
-		size,
-		texture,
+		cbData,
+		spriteSheet,
 		std::move(spriteInputLayout),
 		true,
 	});

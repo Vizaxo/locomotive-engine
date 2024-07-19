@@ -115,7 +115,8 @@ void RHI::setIndexBuffer(RefPtr<IndexBuffer> indexBuffer) {
 }
 
 void RHI::RenderTargetView::clear(Colour clearColour) {
-	rhi->deviceContext->ClearRenderTargetView(rtv.getRaw(), (float*)&clearColour);
+	v4f col = v4f(clearColour);
+	rhi->deviceContext->ClearRenderTargetView(rtv.getRaw(), (float*)&col);
 }
 
 void RHI::DepthStencilView::clear(float clearDepth, u8 clearStencil) {
@@ -193,7 +194,7 @@ OwningPtr<RHI::Texture2D> RHI::createTexture(RHICommon::PixelFormat pf, RefPtr<u
 		HRASSERT(device->CreateSamplerState(&desc, &sampler.getRaw()));
 	}
 
-	return new RHI::Texture2D{std::move(texture), std::move(srv), std::move(sampler), size, pf, ""};
+	return new RHI::Texture2D{std::move(texture), std::move(srv), std::move(sampler), {(float)size.x, (float)size.y}, pf, ""};
 }
 
 void RHI::bindSRV(u32 slot, RefPtr<Texture2D> texture) {

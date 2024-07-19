@@ -364,9 +364,11 @@
     <ClInclude Include="src\input\Mouse.h" />
     <ClInclude Include="src\platform\Platform.h" />
     <ClInclude Include="src\platform\windows\Windows.h" />
+    <ClInclude Include="src\renderer\ConstantBuffers.h" />
     <ClInclude Include="src\renderer\Mesh.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\SpriteComponent.h" />
+    <ClInclude Include="src\renderer\SpriteSheet.h" />
     <ClInclude Include="src\renderer\StaticMeshComponent.h" />
     <ClInclude Include="src\renderer\Texture.h" />
     <ClInclude Include="src\rhi\DX11\RHIDX11.h" />

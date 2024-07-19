@@ -2,22 +2,24 @@
 
 #include "types/Vector.h"
 #include "types/Pointers.h"
+#include "SpriteSheet.h"
 #include "Material.h"
 #include "rhi/RHI.h"
 
-struct SpriteComponent {
+struct SpriteComponentCB {
 	v2f pos;
 	v2f size;
-	RefPtr<RHI::Texture2D> texture;
+	v2f index;
+	v2f numTiles = {1, 1};
+};
+
+struct SpriteComponent {
+	SpriteComponentCB cbData;
+	RefPtr<SpriteSheet> spriteSheet;
 	RHI::InputLayout inputLayout;
 	bool enabled = false;
 
-	static SpriteComponent createSpriteComponent(RefPtr<RHI> rhi, v2f pos, v2f size, RefPtr<RHI::Texture2D> texture);
-};
-
-struct SpriteCB {
-	v2f pos;
-	v2f size;
+	static SpriteComponent createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData, RefPtr<SpriteSheet> spriteSheet);
 };
 
 RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize);
