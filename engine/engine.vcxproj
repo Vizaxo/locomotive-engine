@@ -375,6 +375,7 @@
     <ClInclude Include="src\resource-manager\ResourceManager.h" />
     <ClInclude Include="src\rhi\RHI.h" />
     <ClInclude Include="src\rhi\RHICommon.h" />
+    <ClInclude Include="src\tilemap\TileMap.h" />
     <ClInclude Include="src\types\Array.h" />
     <ClInclude Include="src\types\Box.h" />
     <ClInclude Include="src\types\Colour.h" />
@@ -397,6 +398,7 @@
     <ClInclude Include="src\renderer\Material.h" />
     <ClInclude Include="src\editor\ModelLoader.h" />
     <ClInclude Include="src\renderer\Scene.h" />
+    <ClInclude Include="src\types\Map.h" />
     <ClInclude Include="src\types\Pointers.h" />
     <ClInclude Include="src\types\Product.h" />
     <ClInclude Include="src\types\StringId.h" />
