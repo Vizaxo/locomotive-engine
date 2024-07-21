@@ -14,14 +14,14 @@ constexpr ID NULL_ID = UINT32_MAX;
 inline Entity nextId = 0;
 inline Array<Entity> freeList;
 
-Entity generateEntity() {
+inline Entity generateEntity() {
 	if (!freeList.isEmpty())
 		return freeList.pop();
 	else
 		return nextId++;
 }
 
-void freeEntity(Entity e) {
+inline void freeEntity(Entity e) {
 	// Delete components
 	freeList.add(e);
 }
@@ -52,7 +52,7 @@ template <typename C>
 struct ComponentManager : ComponentManagerBase {
 	virtual OwningPtr<Iterator<Entity, C>> getIterator() = 0;
 	virtual ~ComponentManager() {}
-	virtual C& addComponent(Entity e, C& comp) = 0;
+	virtual C& addComponent(Entity e, C&& comp) = 0;
 };
 
 template <typename C>
@@ -75,7 +75,7 @@ struct SparseSetComponentManager : ComponentManager<C> {
 	Array<Entity> sparse;
 	Array<Stored> dense;
 
-	C& addComponent(Entity e, C& comp) override {
+	C& addComponent(Entity e, C&& comp) override {
 		ID index = dense.add({std::move(comp), e});
 		sparse.insertAt(e, index, NULL_ID);
 		return dense[index].comp;
@@ -122,11 +122,20 @@ struct ECSManager {
 		componentManagers.insert(std::type_index(typeid(C)), cm);
 	}
 
+	template <typename C>
+	void addComponent(C&& comp) {
+		ComponentManager<C>* cm = componentManagers.get(std::type_index(typeid(C)));
+		ASSERT(cm, "Component manager for component type '%s' not found", typeid(C).name());
+		cm.addComponent(std::move(comp));
+	}
+
 	System s = System{this};
 
 	//template <typename... Cs> Iterator<Entity, Product<Cs...>> view();
 	template <typename C> OwningPtr<Iterator<Entity, C>> view() {
-		ComponentManager<C>* manager = static_cast<ComponentManager<C>*>(componentManagers.get(std::type_index(typeid(C)))->value);
+		RefPtr<typename HashMap<std::type_index, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(std::type_index(typeid(C)));
+		ASSERT(cm, "Failed to get component manager for component type '%s'", typeid(C).name());
+		ComponentManager<C>* manager = static_cast<ComponentManager<C>*>(cm->value);
 		return manager->getIterator();
 	}
 
@@ -138,10 +147,6 @@ struct ECSManager {
 
 inline void System::init() {
 	auto compManager = static_cast<ComponentManager<TestComponent>*>(manager->componentManagers.get(std::type_index(typeid(TestComponent)))->value);
-	TestComponent c1 = {128};
-	compManager->addComponent(1, c1);
-	compManager->addComponent(0, c1);
-	compManager->addComponent(10000, c1);
 }
 
 inline void System::onUpdate() {
