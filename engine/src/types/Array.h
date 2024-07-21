@@ -60,25 +60,48 @@ typedef DoublingAllocator<0> DefaultAllocator;
 
 template <typename T, typename Alloc = DefaultAllocator>
 struct Array {
-	void add(T& elem) {
+	u32 add(T& elem) {
 		allocIfNecessary(used + 1);
 
 		data[used] = elem;
+		u32 ret = used;
 		used++;
+		return ret;
 	}
 
-	void add(T&& elem) {
+	u32 add(T&& elem) {
 		allocIfNecessary(used + 1);
 
 		data[used] = std::move(elem);
+		u32 ret = used;
 		used++;
+		return ret;
+	}
+
+	void insertAt(u32 index, const T& elem, const T& nullElem) {
+		allocIfNecessary(index+1);
+		data[index] = elem;
+		if (index > used) {
+			for (int i = used; i < index; i++) {
+				data[i] = nullElem;
+			}
+		}
+		used = max(used, index+1);
+	}
+
+	T& pop() {
+		return data[--used];
 	}
 
 	u32 num() {
 		return used;
 	}
 
-	T& operator[] (int index) {
+	bool isEmpty() {
+		return num() == 0;
+	}
+
+	T& operator[] (u32 index) {
 		return data[index];
 	}
 
