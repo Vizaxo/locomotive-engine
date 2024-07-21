@@ -8,7 +8,7 @@
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <time.h>
 
-const bool enableRenderdoc = false;
+const bool enableRenderdoc = true;
 
 const std::vector<std::string> RenderDoc::libraryNames = 
 #if PLATFORM_WINDOWS

@@ -3,6 +3,7 @@
 
 #include "ConstantBuffers.h"
 #include "Mesh.h"
+#include "ecs/ECS.h"
 #include "platform/windows/Windows.h"
 
 void renderMesh(RefPtr<RHI> rhi, RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout) {
@@ -38,8 +39,9 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	rhi->setBlendState(&alphaBlendState);
 	RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
 	RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
-	for (int i = 0; i < scene->sprites.num(); i++) {
-		SpriteComponent& spriteComponent = scene->sprites[i];
+
+	for (auto it = ECS::ecsManager.view<SpriteComponent>(); !it->atEnd(); it->next()) {
+		SpriteComponent& spriteComponent = **it;
 		if (!spriteComponent.enabled)
 			continue;
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::Sprite], spriteComponent.cbData); //TODO: ints being copied into floats. marshall or make them the same type

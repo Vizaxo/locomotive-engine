@@ -10,7 +10,6 @@
 
 struct Scene {
 	Array<StaticMeshComponent> objects;
-	Array<SpriteComponent> sprites;
 
 	LightData lightData;
 	DirectX::XMVECTOR eyePosition;

@@ -14,6 +14,7 @@
 #include "types/Pointers.h"
 #include "world/World.h"
 #include "Application.h"
+#include "ecs/ECS.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 
@@ -225,7 +226,9 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	RefPtr<RHI::Texture2D> texture = Texture::loadTextureFromFile(renderer->rhi, "resources/textures/cube01.png").getNonNull();
 	SpriteSheetCB cb = {{40, 40}, texture->size};
 	static SpriteSheet spriteSheet = SpriteSheet{texture, cb};
-	scene.sprites.add(SpriteComponent::createSpriteComponent(renderer->rhi, {{100, 100}, {30, 40}}, &spriteSheet));
+
+	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<SpriteComponent>());
+	ECS::ecsManager.addComponent(ECS::generateEntity(), SpriteComponent::createSpriteComponent(renderer->rhi, {{100, 100}, {30, 40}}, &spriteSheet));
 
 
 	//scene = new StaticMeshComponent[1]();
@@ -252,8 +255,12 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 }
 
 void ExampleApplication::tick(float deltaTime) {
-	scene.sprites[0].cbData.pos.x += 1;
-	scene.sprites[0].cbData.pos.x = fmod(scene.sprites[0].cbData.pos.x, 1000);
+
+	for (auto it = ECS::ecsManager.view<SpriteComponent>(); !it->atEnd(); it->next()) {
+		SpriteComponent& sp = **it;
+		sp.cbData.pos.x += 1;
+		sp.cbData.pos.x = fmod(sp.cbData.pos.x, 1000);
+	}
 	/*
 	{
 		ImGui::Begin("Objects");                          // Create a window called "Hello, world!" and append into it.

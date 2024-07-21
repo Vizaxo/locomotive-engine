@@ -41,6 +41,7 @@ void HashMap<K, V, H>::resizeIfNeeded() {
 		u32 oldM = m;
 		m = oldM == 0 ? 4 : oldM*2;
 		EntryInternal* newData = (EntryInternal*)calloc(m, sizeof(EntryInternal));
+		n = 0;
 		ASSERT(newData, "Calloc failed");
 		EntryInternal* oldData = data;
 		data = newData;

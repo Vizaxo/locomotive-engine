@@ -126,10 +126,11 @@ struct ECSManager {
 	}
 
 	template <typename C>
-	void addComponent(C&& comp) {
-		ComponentManager<C>* cm = componentManagers.get(std::type_index(typeid(C)));
-		ASSERT(cm, "Component manager for component type '%s' not found", typeid(C).name());
-		cm.addComponent(std::move(comp));
+	void addComponent(Entity e, C&& comp) {
+		RefPtr<typename HashMap<std::type_index, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(std::type_index(typeid(C)));
+		ASSERT(cm, "Failed to get component manager for component type '%s'", typeid(C).name());
+		ComponentManager<C>* manager = static_cast<ComponentManager<C>*>(cm->value);
+		manager->addComponent(e, std::move(comp));
 	}
 
 	System s = System{this};
