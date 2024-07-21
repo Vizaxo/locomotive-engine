@@ -38,20 +38,21 @@ void HashMap<K, V, H>::resizeIfNeeded() {
 	float loadFactor = ((float)n+1)/(float)m;
 
 	if (!data || loadFactor > loadFactorMax) {
-		u32 newM = m == 0 ? 4 : m*2;
-		EntryInternal* newData = (EntryInternal*)calloc(newM, sizeof(EntryInternal));
+		u32 oldM = m;
+		m = oldM == 0 ? 4 : oldM*2;
+		EntryInternal* newData = (EntryInternal*)calloc(m, sizeof(EntryInternal));
 		ASSERT(newData, "Calloc failed");
+		EntryInternal* oldData = data;
+		data = newData;
 
-		for (int i = 0; i < m; ++i) {
-			EntryInternal& e = data[i];
+		for (int i = 0; i < oldM; ++i) {
+			EntryInternal& e = oldData[i];
 			if (e.active) {
 				insertNoResize(std::move(e));
 			}
 		}
 
-		m = newM;
-		free(data); //All objects moved-from. Calling destructors *should* be a waste of time--is this a vaild assumption?
-		data = newData;
+		free(oldData); //All objects moved-from. Calling destructors *should* be a waste of time--is this a vaild assumption?
 	}
 }
 
@@ -81,6 +82,7 @@ template <typename K, typename V, typename H>
 RefPtr<typename HashMap<K, V, H>::Entry> HashMap<K, V, H>::insertNoResize(EntryInternal&& e) {
 	u32 hash = H{}(e.e.key);
 
+	ASSERT(n<m, "Trying to insert into a hashmap with insufficient space");
 	u32 insertIndex = hash % m;
 	ASSERT(m != 0, "");
 	while (data[insertIndex].active) {
