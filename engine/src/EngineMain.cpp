@@ -12,6 +12,7 @@
 #include "input/Keyboard.h"
 #include "core/Log.h"
 #include "events/EventQueue.h"
+#include "ecs/ECS.h"
 
 namespace Engine {
 
@@ -101,6 +102,8 @@ void tick() {
 		LOG(Log::Level::INFO, g_engineLog, "Starting TTD trace");
 		Debug::TTD::StartRecordTrace();
 	}
+
+	ECS::ecsManager.tick();
 
 	if (renderdoc) renderdoc->tick();
 
