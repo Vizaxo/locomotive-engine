@@ -50,7 +50,7 @@ struct ComponentManagerBase {
 
 template <typename C>
 struct ComponentManager : ComponentManagerBase {
-	virtual OwningPtr<Iterator<Entity, C>> getIterator() = 0;
+	virtual RefPtr<Iterator<Entity, C>> getIterator() = 0;
 	virtual ~ComponentManager() {}
 	virtual C& addComponent(Entity e, C&& comp) = 0;
 };
@@ -65,7 +65,9 @@ struct SparseSetComponentManager : ComponentManager<C> {
 		bool atEnd() override { return index >= components->dense.num(); }
 		void next() override { index++; }
 		Entity getIndex() override { return components->dense[index].id; }
+		void reset() { index = 0; };
 	};
+	SparseSetComponentIterator it{this};
 
 	struct Stored {
 		C comp;
@@ -95,8 +97,9 @@ struct SparseSetComponentManager : ComponentManager<C> {
 		sparse[dense[index].id] = index;
 	}
 
-	OwningPtr<Iterator<Entity, C>> getIterator() override {
-		return new SparseSetComponentIterator(this);
+	RefPtr<Iterator<Entity, C>> getIterator() override {
+		it.reset();
+		return &it;
 	}
 };
 
@@ -132,7 +135,7 @@ struct ECSManager {
 	System s = System{this};
 
 	//template <typename... Cs> Iterator<Entity, Product<Cs...>> view();
-	template <typename C> OwningPtr<Iterator<Entity, C>> view() {
+	template <typename C> RefPtr<Iterator<Entity, C>> view() {
 		RefPtr<typename HashMap<std::type_index, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(std::type_index(typeid(C)));
 		ASSERT(cm, "Failed to get component manager for component type '%s'", typeid(C).name());
 		ComponentManager<C>* manager = static_cast<ComponentManager<C>*>(cm->value);
