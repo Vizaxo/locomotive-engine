@@ -8,7 +8,7 @@ u64 hashString(const char* s);
 
 template <typename T>
 struct DefaultHash {
-	u32 operator() (T& x) const { return x.HASH_FUNCTION_NOT_IMPLEMENTED_FOR_TYPE_T(); }
+	u32 operator() (T& x) const { return x.hash(); }
 };
 
 template <>

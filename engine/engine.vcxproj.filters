@@ -299,9 +299,6 @@
     <ClInclude Include="src\renderer\ConstantBuffers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\tilemap\TileMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\types\Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>

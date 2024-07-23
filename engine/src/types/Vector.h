@@ -7,6 +7,8 @@ template <typename T>
 struct Vector2 {
 	T x;
 	T y;
+
+	template <typename Q> operator const Vector2<Q>() { return {(Q)x, (Q)y}; }
 };
 
 template <>
@@ -36,7 +38,9 @@ template <typename T> inline Vector2<T> operator+(Vector2<T> a, Vector2<T> b) { 
 template <typename T> inline Vector2<T> operator-(Vector2<T> a, Vector2<T> b) { return {a.x-b.x, a.y-b.y}; }
 
 template <typename T> inline Vector2<T> operator*(Vector2<T> a, T b) { return {a.x*b, a.y*b}; }
+template <typename T> inline Vector2<T> operator*(Vector2<T> a, Vector2<T> b) { return {a.x*b.x, a.y*b.y}; }
 template <typename T> inline Vector2<T> operator/(Vector2<T> a, T b) { return {a.x/b, a.y/b}; }
+
 
 typedef Vector2<float> v2f;
 typedef Vector2<double> v2d;

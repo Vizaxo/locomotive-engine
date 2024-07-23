@@ -376,7 +376,6 @@
     <ClInclude Include="src\resource-manager\ResourceManager.h" />
     <ClInclude Include="src\rhi\RHI.h" />
     <ClInclude Include="src\rhi\RHICommon.h" />
-    <ClInclude Include="src\tilemap\TileMap.h" />
     <ClInclude Include="src\types\Array.h" />
     <ClInclude Include="src\types\Box.h" />
     <ClInclude Include="src\types\Colour.h" />
