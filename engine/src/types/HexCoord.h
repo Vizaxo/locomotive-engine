@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "types/Vector.h"
+#include "utils/Hashing.h"
 
 // Axial hex coordinate system
 // Maintains constraint q + r + s = 0
@@ -15,7 +16,7 @@ public:
 	int s() const { return -q-r; }
 	static const float root3over2;;
 	v2 cartesian() const { return {root3over2*2*(float)q + (float)r*root3over2, 1.5f * (float)r}; }
-	u32 hash() const { return q ^ r; } //TODO: decent hashing function
+	u32 hash() const { return lowbias32(q) ^ lowbias32(r); }
 
 	bool operator==(const HexCoord& other) const { return other.q == q && other.r == r; }
 	bool operator!=(const HexCoord& other) const { return !(other == *this); }

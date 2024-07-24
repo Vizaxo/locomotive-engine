@@ -11,9 +11,20 @@ struct DefaultHash {
 	u32 operator() (T& x) const { return x.hash(); }
 };
 
+// lowbias32 from Hash Prospector https://github.com/skeeto/hash-prospector
+inline u32 lowbias32(u32 x)
+{
+    x ^= x >> 16;
+    x *= 0x7feb352d;
+    x ^= x >> 15;
+    x *= 0x846ca68b;
+    x ^= x >> 16;
+    return x;
+}
+
 template <>
 struct DefaultHash<u32> {
-	u32 operator() (const u32 x) const { return x; }
+	u32 operator() (const u32 x) const { return lowbias32(x); }
 };
 
 struct CStringHash {
@@ -27,3 +38,5 @@ template <>
 struct DefaultHash<std::type_index> {
 	u32 operator() (const std::type_index x) const { return x.hash_code(); }
 };
+
+//template <typename T, typename H=DefaultHash<T>> inline u32 defaultHash(T& x) { return H()(x); }
