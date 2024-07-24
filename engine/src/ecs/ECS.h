@@ -53,6 +53,7 @@ struct ComponentManager : ComponentManagerBase {
 	virtual RefPtr<Iterator<Entity, C>> getIterator() = 0;
 	virtual ~ComponentManager() {}
 	virtual C& addComponent(Entity e, C&& comp) = 0;
+	virtual C& getComponent(Entity e) = 0;
 };
 
 template <typename C>
@@ -83,8 +84,8 @@ struct SparseSetComponentManager : ComponentManager<C> {
 		return dense[index].comp;
 	}
 
-	C& getComponent(const Entity e) {
-		return dense[sparse[e]];
+	C& getComponent(const Entity e) override {
+		return dense[sparse[e]].comp;
 	}
 
 	void removeComponent(const Entity e) {
@@ -141,6 +142,16 @@ struct ECSManager {
 		ASSERT(cm, "Failed to get component manager for component type '%s'", typeid(C).name());
 		ComponentManager<C>* manager = static_cast<ComponentManager<C>*>(cm->value);
 		return manager->getIterator();
+	}
+
+	template <typename C> RefPtr<ComponentManager<C>> getComponentManager() {
+		RefPtr<typename HashMap<std::type_index, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(std::type_index(typeid(C)));
+		ComponentManager<C>* m = static_cast<ComponentManager<C>*>(cm->value);
+		return m;
+	}
+
+	template <typename C> C& getComponent(Entity e) {
+		return getComponentManager<C>()->getComponent(e);
 	}
 
 	void tick() {
