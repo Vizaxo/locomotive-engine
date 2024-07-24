@@ -3,6 +3,7 @@
 
 #include "ConstantBuffers.h"
 #include "Mesh.h"
+#include "Texture.h"
 #include "ecs/ECS.h"
 #include "platform/windows/Windows.h"
 
@@ -40,6 +41,11 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		// Render sprites
 		static RHI::BlendState alphaBlendState = rhi->createBlendState();
 		static RHI::InputLayout spriteInputLayout = SpriteComponent::createSpriteInputLayout(rhi);
+
+		// TODO: need to find a nice way of setting this in the game, and allowing for multiple atlases
+		RefPtr<RHI::Texture2D> terrainTexture = Texture::loadTextureFromFile(rhi, "resources/textures/terrain-isometric.png").getNonNull();
+		static SpriteSheet terrainSpriteSheet = { terrainTexture, {{17, 21 }, terrainTexture->size } };
+
 		rhi->setBlendState(&alphaBlendState);
 		RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
 		RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
@@ -48,11 +54,11 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		RHI::Buffer spriteBuffer = rhi->createStructuredBuffer<ECS::Stored<SpriteComponent>>(spriteData.data, spriteData.count);
 
 		//TODO: lift these out of individual components
-		RefPtr<SpriteSheet> spriteSheet = spriteData.data.getRaw()[0].comp.spriteSheet;
+		RefPtr<SpriteSheet> spriteSheet = &terrainSpriteSheet;
 		SpriteComponent& spriteComponent = spriteData.data.getRaw()[0].comp;
 
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::Sprite], spriteComponent.cbData); //TODO: ints being copied into floats. marshall or make them the same type
-		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::SpriteSheet], spriteComponent.spriteSheet->cbData);
+		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::SpriteSheet], spriteSheet->cbData);
 		rhi->bindTextureSRV(0, spriteSheet->texture);
 		rhi->bindStructuredBufferSRV(1, &spriteBuffer);
 		rhi->bindSampler(0, spriteSheet->texture);

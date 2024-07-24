@@ -42,11 +42,9 @@ RHI::InputLayout SpriteComponent::createSpriteInputLayout(RefPtr<RHI> rhi) {
 	return rhi->createInputLayout(spriteInputLayoutDescs, SPRITE_INPUT_DESC_COUNT, &materialManager.get(sID("spriteMaterial"))->vertexShader);
 }
 
-SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData, RefPtr<SpriteSheet> spriteSheet) {
-
+SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData) {
 	return SpriteComponent({
 		cbData,
-		spriteSheet,
 		true,
 	});
 

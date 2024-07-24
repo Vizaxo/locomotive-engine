@@ -15,10 +15,9 @@ struct SpriteComponentCB {
 
 struct SpriteComponent {
 	SpriteComponentCB cbData;
-	RefPtr<SpriteSheet> spriteSheet;
 	bool enabled = false;
 
-	static SpriteComponent createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData, RefPtr<SpriteSheet> spriteSheet);
+	static SpriteComponent createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData);
 	static RHI::InputLayout createSpriteInputLayout(RefPtr<RHI> rhi);
 };
 
