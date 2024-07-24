@@ -90,6 +90,51 @@ struct RHI {
 		return {std::move(indexBuffer), count, format, primitiveTopology};
 	}
 
+	struct Buffer {
+		OwningPtr<ID3D11Buffer, false, ReleaseCOM> gpu_buffer;
+		OwningPtr<ID3D11ShaderResourceView, false, ReleaseCOM> srv;
+		size_t count;
+		DXGI_FORMAT format;
+	};
+	template <typename T>
+	Buffer createStructuredBuffer(RefPtr<T> data, size_t count) {
+		D3D11_BUFFER_DESC bufferDesc = {};
+		bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		bufferDesc.ByteWidth = count * sizeof(T);
+		bufferDesc.CPUAccessFlags = 0;
+		bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		bufferDesc.StructureByteStride = sizeof(T);
+		static_assert(sizeof(T) % 4 == 0);
+
+		DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
+		D3D11_SUBRESOURCE_DATA resourceData = {};
+		resourceData.pSysMem = data.getRaw();
+
+		ID3D11Buffer* buffer;
+		HRASSERT(device->CreateBuffer(&bufferDesc, &resourceData, &buffer));
+
+		OwningPtr<ID3D11ShaderResourceView, true, ReleaseCOM> srv = nullptr;
+		{
+			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+			desc.Format = format;
+			desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+			D3D11_BUFFER_SRV srvDesc;
+			srvDesc.FirstElement = 0;
+			srvDesc.NumElements = count;
+			desc.Buffer = srvDesc;
+
+			HRASSERT(device->CreateShaderResourceView(buffer, &desc, &srv.getRaw()));
+		}
+
+		return {std::move(buffer), std::move(srv.getNonNull()), count, format };
+	}
+
+	void bindStructuredBufferSRV(u32 slot, RefPtr<Buffer> sb) {
+		deviceContext->VSSetShaderResources(slot, 1, &sb->srv.getRaw());
+		deviceContext->PSSetShaderResources(slot, 1, &sb->srv.getRaw());
+	}
+
 	struct RenderTargetView {
 		OwningPtr<ID3D11RenderTargetView, false, ReleaseCOM> rtv;
 		RefPtr<RHI> rhi;
@@ -147,7 +192,7 @@ struct RHI {
 		std::string path;
 	};
 	OwningPtr<Texture2D> createTexture(RHICommon::PixelFormat pf, RefPtr<u8> data, u32 stride, v2i size);
-	void bindSRV(u32 slot, RefPtr<Texture2D> texture);
+	void bindTextureSRV(u32 slot, RefPtr<Texture2D> texture);
 	void bindSampler(u32 slot, RefPtr<Texture2D> texture);
 
 	struct BlendState {

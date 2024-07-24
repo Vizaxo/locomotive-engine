@@ -377,6 +377,7 @@
     <ClInclude Include="src\rhi\RHI.h" />
     <ClInclude Include="src\rhi\RHICommon.h" />
     <ClInclude Include="src\types\Array.h" />
+    <ClInclude Include="src\types\ArrayView.h" />
     <ClInclude Include="src\types\Box.h" />
     <ClInclude Include="src\types\Colour.h" />
     <ClInclude Include="src\types\Either.h" />
@@ -478,6 +479,9 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">Pixel</ShaderType>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">include/generated/SpritePS.h</HeaderFileOutput>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">spritePS</VariableName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="src\shaders\SpriteVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -490,6 +494,9 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">include/generated/SpriteVS.h</HeaderFileOutput>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">include/generated/SpriteVS.h</HeaderFileOutput>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">spriteVS</VariableName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="src\shaders\TexturedPixelShader.hlsl">
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_texturedPixelShader</VariableName>

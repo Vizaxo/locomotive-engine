@@ -6,7 +6,7 @@
 #include "ecs/ECS.h"
 #include "platform/windows/Windows.h"
 
-void renderMesh(RefPtr<RHI> rhi, RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout) {
+void renderMesh(RefPtr<RHI> rhi, RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
 	for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
 		rhi->VSsetConstantBuffer(i, &material->constantBuffers[i]);
 		rhi->PSsetConstantBuffer(i, &material->constantBuffers[i]);
@@ -17,7 +17,8 @@ void renderMesh(RefPtr<RHI> rhi, RefPtr<Mesh> mesh, RefPtr<Material> material, R
 	rhi->setPixelShader(&material->pixelShader);
 	rhi->setInputLayout(inputLayout);
 
-	rhi->deviceContext->DrawIndexed(mesh->indexBuffer.indices, 0, 0);
+	//rhi->deviceContext->DrawIndexed(mesh->indexBuffer.indices, 0, 0);
+	rhi->deviceContext->DrawIndexedInstanced(mesh->indexBuffer.indices, instances, 0, 0, 0);
 }
 
 void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
@@ -32,23 +33,29 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 
 	for (int i = 0; i < scene->objects.num(); i++) {
 		StaticMeshComponent& meshComponent = scene->objects[i];
-		renderMesh(rhi, meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout);
+		renderMesh(rhi, meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout, 1);
 	}
 
-	static RHI::BlendState alphaBlendState = rhi->createBlendState();
-	rhi->setBlendState(&alphaBlendState);
-	RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
-	RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
+	{
+		// Render sprites
+		static RHI::BlendState alphaBlendState = rhi->createBlendState();
+		rhi->setBlendState(&alphaBlendState);
+		RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
+		RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
 
-	for (auto it = ECS::ecsManager.view<SpriteComponent>(); !it->atEnd(); it->next()) {
-		SpriteComponent& spriteComponent = **it;
-		if (!spriteComponent.enabled)
-			continue;
+		ArrayView<ECS::Stored<SpriteComponent>> spriteData = ECS::ecsManager.getComponentManager<SpriteComponent>()->getRawBuffer();
+		RHI::Buffer spriteBuffer = rhi->createStructuredBuffer<ECS::Stored<SpriteComponent>>(spriteData.data, spriteData.count);
+
+		//TODO: lift these out of individual components
+		RefPtr<SpriteSheet> spriteSheet = spriteData.data.getRaw()[0].comp.spriteSheet;
+		SpriteComponent& spriteComponent = spriteData.data.getRaw()[0].comp;
+
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::Sprite], spriteComponent.cbData); //TODO: ints being copied into floats. marshall or make them the same type
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::SpriteSheet], spriteComponent.spriteSheet->cbData);
-		rhi->bindSRV(0, spriteComponent.spriteSheet->texture);
-		rhi->bindSampler(0, spriteComponent.spriteSheet->texture);
-		renderMesh(rhi, unitSquare, spriteMaterial, &spriteComponent.inputLayout);
+		rhi->bindTextureSRV(0, spriteSheet->texture);
+		rhi->bindStructuredBufferSRV(1, &spriteBuffer);
+		rhi->bindSampler(0, spriteSheet->texture);
+		renderMesh(rhi, unitSquare, spriteMaterial, &spriteComponent.inputLayout, spriteData.count);
 	}
 
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);

@@ -3,6 +3,7 @@
 
 #include "types/Types.h"
 #include "types/Array.h"
+#include "types/ArrayView.h"
 #include "types/Map.h"
 
 namespace ECS {
@@ -49,8 +50,15 @@ struct ComponentManagerBase {
 };
 
 template <typename C>
+struct Stored {
+	C comp;
+	Entity id;
+};
+
+template <typename C>
 struct ComponentManager : ComponentManagerBase {
 	virtual RefPtr<Iterator<Entity, C>> getIterator() = 0;
+	virtual ArrayView<Stored<C>> getRawBuffer() = 0;
 	virtual ~ComponentManager() {}
 	virtual C& addComponent(Entity e, C&& comp) = 0;
 	virtual C& getComponent(Entity e) = 0;
@@ -70,13 +78,10 @@ struct SparseSetComponentManager : ComponentManager<C> {
 	};
 	SparseSetComponentIterator it{this};
 
-	struct Stored {
-		C comp;
-		Entity id;
-	};
-
 	Array<Entity> sparse;
-	Array<Stored> dense;
+	Array<Stored<C>> dense;
+
+	ArrayView<Stored<C>> getRawBuffer() override { return { dense.data, dense.num() }; }
 
 	C& addComponent(Entity e, C&& comp) override {
 		ID index = dense.add({std::move(comp), e});

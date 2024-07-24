@@ -113,6 +113,7 @@ struct Array {
 	}
 
 
+	T* data = nullptr;
 private:
 	void allocIfNecessary(u32 desired) {
 		if (desired <= size)
@@ -129,7 +130,6 @@ private:
 	}
 
 	Alloc alloc = Alloc(sizeof(T));
-	T* data = nullptr;
 	u32 size = 0;
 	u32 used = 0;
 };

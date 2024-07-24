@@ -197,7 +197,7 @@ OwningPtr<RHI::Texture2D> RHI::createTexture(RHICommon::PixelFormat pf, RefPtr<u
 	return new RHI::Texture2D{std::move(texture), std::move(srv), std::move(sampler), {(float)size.x, (float)size.y}, pf, ""};
 }
 
-void RHI::bindSRV(u32 slot, RefPtr<Texture2D> texture) {
+void RHI::bindTextureSRV(u32 slot, RefPtr<Texture2D> texture) {
 	deviceContext->PSSetShaderResources(slot, 1, &texture->gpu_srv.getRaw());
 }
 
