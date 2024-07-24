@@ -117,7 +117,7 @@ struct System {
 	void init();};
 
 struct ECSManager {
-	HashMap<std::type_index, ComponentManagerBase*> componentManagers;
+	HashMap<u32, ComponentManagerBase*> componentManagers;
 
 	ECSManager() {
 		addComponentManager(new SparseSetComponentManager<TestComponent>);
@@ -127,13 +127,13 @@ struct ECSManager {
 
 	template <typename C>
 	void addComponentManager(ComponentManager<C>* cm) {
-		ASSERT(componentManagers.get(std::type_index(typeid(C))) == false, "Component manager for components of type '%s' already added", typeid(C).name());
-		componentManagers.insert(std::type_index(typeid(C)), cm);
+		ASSERT(componentManagers.get(TypeID<C>::get()) == false, "Component manager for components of type '%s' already added", typeid(C).name());
+		componentManagers.insert(TypeID<C>::get(), cm);
 	}
 
 	template <typename C>
 	void addComponent(Entity e, C&& comp) {
-		RefPtr<typename HashMap<std::type_index, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(std::type_index(typeid(C)));
+		RefPtr<typename HashMap<u32, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(TypeID<C>::get());
 		ASSERT(cm, "Failed to get component manager for component type '%s'", typeid(C).name());
 		ComponentManager<C>* manager = static_cast<ComponentManager<C>*>(cm->value);
 		manager->addComponent(e, std::move(comp));
@@ -143,14 +143,14 @@ struct ECSManager {
 
 	//template <typename... Cs> Iterator<Entity, Product<Cs...>> view();
 	template <typename C> RefPtr<Iterator<Entity, C>> view() {
-		RefPtr<typename HashMap<std::type_index, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(std::type_index(typeid(C)));
+		RefPtr<typename HashMap<u32, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(TypeID<C>::get());
 		ASSERT(cm, "Failed to get component manager for component type '%s'", typeid(C).name());
 		ComponentManager<C>* manager = static_cast<ComponentManager<C>*>(cm->value);
 		return manager->getIterator();
 	}
 
 	template <typename C> RefPtr<ComponentManager<C>> getComponentManager() {
-		RefPtr<typename HashMap<std::type_index, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(std::type_index(typeid(C)));
+		RefPtr<typename HashMap<u32, ECS::ComponentManagerBase*>::Entry, true> cm = componentManagers.get(TypeID<C>::get());
 		ComponentManager<C>* m = static_cast<ComponentManager<C>*>(cm->value);
 		return m;
 	}
@@ -166,7 +166,7 @@ struct ECSManager {
 };
 
 inline void System::init() {
-	auto compManager = static_cast<ComponentManager<TestComponent>*>(manager->componentManagers.get(std::type_index(typeid(TestComponent)))->value);
+	auto compManager = static_cast<ComponentManager<TestComponent>*>(manager->componentManagers.get(TypeID<TestComponent>::get())->value);
 }
 
 inline void System::onUpdate() {

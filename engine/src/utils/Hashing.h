@@ -8,7 +8,7 @@ u64 hashString(const char* s);
 
 template <typename T>
 struct DefaultHash {
-	u32 operator() (T& x) const { return x.hash(); }
+	u32 operator() (const T& x) const { return x.hash(); }
 };
 
 // lowbias32 from Hash Prospector https://github.com/skeeto/hash-prospector
@@ -40,3 +40,14 @@ struct DefaultHash<std::type_index> {
 };
 
 //template <typename T, typename H=DefaultHash<T>> inline u32 defaultHash(T& x) { return H()(x); }
+
+template <typename T>
+struct TypeID {
+};
+
+#define TYPEID_IMPL_STRUCT_NS(NS, T) namespace NS { struct T; } template<> struct TypeID<NS::T> { static constexpr u32 get() { return __LINE__; } };
+#define TYPEID_IMPL_STRUCT(T) struct T; template<> struct TypeID<T> { static constexpr u32 get() { return __LINE__; } };
+
+TYPEID_IMPL_STRUCT_NS(ECS, TestComponent);
+TYPEID_IMPL_STRUCT_NS(ECS, AnotherComponent);
+TYPEID_IMPL_STRUCT(SpriteComponent);

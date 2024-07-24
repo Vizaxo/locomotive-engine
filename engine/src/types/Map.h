@@ -25,8 +25,8 @@ struct HashMap {
 	static constexpr float loadFactorMax = 0.7f;
 
 	RefPtr<Entry> insert(K k, V v);
-	RefPtr<Entry, true> get(K&& k);
-	RefPtr<Entry, true> get(K& k);
+	RefPtr<Entry, true> get(const K&& k);
+	RefPtr<Entry, true> get(const K& k);
 	void resizeIfNeeded();
 
 	RefPtr<Entry> insertNoResize(EntryInternal&& e);
@@ -57,12 +57,12 @@ void HashMap<K, V, H>::resizeIfNeeded() {
 }
 
 template <typename K, typename V, typename H>
-RefPtr<typename HashMap<K, V, H>::Entry, true> HashMap<K, V, H>::get(K&& k) {
+RefPtr<typename HashMap<K, V, H>::Entry, true> HashMap<K, V, H>::get(const K&& k) {
 	return get(k);
 }
 
 template <typename K, typename V, typename H>
-RefPtr<typename HashMap<K, V, H>::Entry, true> HashMap<K, V, H>::get(K& k) {
+RefPtr<typename HashMap<K, V, H>::Entry, true> HashMap<K, V, H>::get(const K& k) {
 	if (m == 0) return nullptr;
 	u32 hash = H{}(k);
 
