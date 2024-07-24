@@ -24,7 +24,6 @@ struct HashMap {
 	float loadFactor() const { return (float)n/(float)m; }
 	static constexpr float loadFactorMax = 0.7f;
 
-	RefPtr<Entry> insert(K& k, V& v);
 	RefPtr<Entry> insert(K k, V v);
 	RefPtr<Entry, true> get(K&& k);
 	RefPtr<Entry, true> get(K& k);
@@ -93,12 +92,6 @@ RefPtr<typename HashMap<K, V, H>::Entry> HashMap<K, V, H>::insertNoResize(EntryI
 	data[insertIndex] = std::move(e);
 	n++;
 	return &data[insertIndex].e;
-}
-
-template <typename K, typename V, typename H>
-RefPtr<typename HashMap<K, V, H>::Entry> HashMap<K, V, H>::insert(K& k, V& v) {
-	resizeIfNeeded();
-	return insertNoResize(Entry{std::move(k), std::move(v), true});
 }
 
 template <typename K, typename V, typename H>
