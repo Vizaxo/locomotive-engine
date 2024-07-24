@@ -380,7 +380,6 @@
     <ClInclude Include="src\types\Box.h" />
     <ClInclude Include="src\types\Colour.h" />
     <ClInclude Include="src\types\Either.h" />
-    <ClInclude Include="src\types\HexCoord.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
