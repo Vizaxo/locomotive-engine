@@ -10,9 +10,7 @@
 #include "renderer/Mesh.h"
 #include "renderer/Texture.h"
 #include "editor/ModelLoader.h"
-#include "types/HexCoord.h"
 #include "types/Pointers.h"
-#include "world/World.h"
 #include "Application.h"
 #include "ecs/ECS.h"
 #include "input/Keyboard.h"
@@ -228,7 +226,7 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	static SpriteSheet spriteSheet = SpriteSheet{texture, cb};
 
 	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<SpriteComponent>());
-	ECS::ecsManager.addComponent(ECS::generateEntity(), SpriteComponent::createSpriteComponent(renderer->rhi, {{100, 100}, {30, 40}}, &spriteSheet));
+	ECS::ecsManager.addComponent(ECS::generateEntity(), SpriteComponent::createSpriteComponent(renderer->rhi, {{100, 100}, {30, 40}}));
 
 
 	//scene = new StaticMeshComponent[1]();
