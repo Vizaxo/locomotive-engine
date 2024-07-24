@@ -9,7 +9,7 @@
 
 #if DEBUG_LOG_ALLOCATIONS
 DEF_CVAR_(debug_print_allocation_stacks, bool, false)
-DEF_CVAR_(debug_print_allocations, bool, true)
+DEF_CVAR_(debug_print_allocations, bool, false)
 DEF_CVAR_(debug_print_deallocation_stacks, bool, false)
 DEF_CVAR_(debug_print_deallocations, bool, false)
 
