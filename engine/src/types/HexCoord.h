@@ -22,4 +22,4 @@ public:
 	bool operator!=(const HexCoord& other) const { return !(other == *this); }
 };
 
-const float HexCoord::root3over2 = std::sqrt(3.0f)/2.0f;
+inline const float HexCoord::root3over2 = std::sqrt(3.0f)/2.0f;

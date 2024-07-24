@@ -348,7 +348,6 @@
     <ClCompile Include="src\types\StringId.cpp" />
     <ClCompile Include="src\utils\Hashing.cpp" />
     <ClCompile Include="src\world\Noise.cpp" />
-    <ClCompile Include="src\world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Assert.h" />
@@ -408,7 +407,6 @@
     <ClInclude Include="src\types\Vector.h" />
     <ClInclude Include="src\utils\Hashing.h" />
     <ClInclude Include="src\world\Noise.h" />
-    <ClInclude Include="src\world\World.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\BaseColourPixelShader.hlsl">
