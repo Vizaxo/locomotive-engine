@@ -22,7 +22,7 @@ RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize) {
 	return materialManager.registerResource(sID("spriteMaterial"), std::move(mat));
 }
 
-SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData, RefPtr<SpriteSheet> spriteSheet) {
+RHI::InputLayout SpriteComponent::createSpriteInputLayout(RefPtr<RHI> rhi) {
 	static const u32 SPRITE_INPUT_DESC_COUNT = 2;
 	D3D11_INPUT_ELEMENT_DESC spriteInputLayoutDescs[SPRITE_INPUT_DESC_COUNT];
 	spriteInputLayoutDescs[0].SemanticName = "POSITION";
@@ -39,12 +39,14 @@ SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, SpriteCo
 	spriteInputLayoutDescs[1].AlignedByteOffset = sizeof(v2f);
 	spriteInputLayoutDescs[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	spriteInputLayoutDescs[1].InstanceDataStepRate = 0;
-	RHI::InputLayout spriteInputLayout = rhi->createInputLayout(spriteInputLayoutDescs, SPRITE_INPUT_DESC_COUNT, &materialManager.get(sID("spriteMaterial"))->vertexShader);
+	return rhi->createInputLayout(spriteInputLayoutDescs, SPRITE_INPUT_DESC_COUNT, &materialManager.get(sID("spriteMaterial"))->vertexShader);
+}
+
+SpriteComponent SpriteComponent::createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData, RefPtr<SpriteSheet> spriteSheet) {
 
 	return SpriteComponent({
 		cbData,
 		spriteSheet,
-		std::move(spriteInputLayout),
 		true,
 	});
 

@@ -3,7 +3,7 @@ struct SpriteComponent {
 	float2 size;
 	float2 index;
 	float2 numTiles;
-	float2x4 PAD;
+	float2x2 PAD;
 	uint entityID;
 	float PAD2;
 };

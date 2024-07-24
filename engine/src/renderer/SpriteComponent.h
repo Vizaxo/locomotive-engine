@@ -16,10 +16,10 @@ struct SpriteComponentCB {
 struct SpriteComponent {
 	SpriteComponentCB cbData;
 	RefPtr<SpriteSheet> spriteSheet;
-	RHI::InputLayout inputLayout;
 	bool enabled = false;
 
 	static SpriteComponent createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData, RefPtr<SpriteSheet> spriteSheet);
+	static RHI::InputLayout createSpriteInputLayout(RefPtr<RHI> rhi);
 };
 
 RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize);

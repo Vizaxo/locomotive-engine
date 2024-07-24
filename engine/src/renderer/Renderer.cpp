@@ -39,6 +39,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	{
 		// Render sprites
 		static RHI::BlendState alphaBlendState = rhi->createBlendState();
+		static RHI::InputLayout spriteInputLayout = SpriteComponent::createSpriteInputLayout(rhi);
 		rhi->setBlendState(&alphaBlendState);
 		RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
 		RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
@@ -55,7 +56,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		rhi->bindTextureSRV(0, spriteSheet->texture);
 		rhi->bindStructuredBufferSRV(1, &spriteBuffer);
 		rhi->bindSampler(0, spriteSheet->texture);
-		renderMesh(rhi, unitSquare, spriteMaterial, &spriteComponent.inputLayout, spriteData.count);
+		renderMesh(rhi, unitSquare, spriteMaterial, &spriteInputLayout, spriteData.count);
 	}
 
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);
