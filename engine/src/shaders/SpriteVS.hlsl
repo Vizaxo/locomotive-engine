@@ -14,7 +14,8 @@ struct VSOut {
 
 VSOut main( float4 vertPos : POSITION, float2 uv : TEXCOORD )
 {
-	float2 posOut = (((vertPos+float2(1, 1))/float2(2,2)) * size + pos) / (windowSize/2) - float2(1,1);
+	//TODO: windowsize should be /2. Add explicit scaling option.
+	float2 posOut = (((vertPos+float2(1, 1))/float2(2,2)) * size + pos) / (windowSize/4) - float2(1,1);
 	VSOut ret;
 	ret.pos = float4(posOut.x, posOut.y, 0.0, 1.0);
 	ret.uv = uv;
