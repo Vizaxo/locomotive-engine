@@ -9,7 +9,7 @@ v2 randomGradient(int ix, int iy) {
     a *= 3284157443u; b ^= a << s | a >> w-s;
     b *= 1911520717u; a ^= b << s | b >> w-s;
     a *= 2048419325u;
-    float random = float(a) * (2.*3.14159265 / pow(2.,32.)); // in [0, 2*Pi]
+    float random = float(a) * (2.*3.14159265 / (float)UINT32_MAX); // in [0, 2*Pi]
     v2 v;
     v.x = std::cos(random);
     v.y = std::sin(random);
