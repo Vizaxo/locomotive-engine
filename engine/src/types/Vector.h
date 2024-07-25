@@ -9,15 +9,8 @@ struct Vector2 {
 	T y;
 
 	template <typename Q> operator const Vector2<Q>() { return {(Q)x, (Q)y}; }
-};
 
-template <>
-struct Vector2<float> {
-	float x;
-	float y;
-	operator const D2D1_POINT_2F() {
-		return {x, y};
-	}
+	Vector2<T> operator+=(Vector2<T> rhs) { x+=rhs.x; y+=rhs.y; return *this; }
 };
 
 template <typename T> inline T lenSquared(Vector2<T> a) {
@@ -40,6 +33,9 @@ template <typename T> inline Vector2<T> operator-(Vector2<T> a, Vector2<T> b) { 
 template <typename T> inline Vector2<T> operator*(Vector2<T> a, T b) { return {a.x*b, a.y*b}; }
 template <typename T> inline Vector2<T> operator*(Vector2<T> a, Vector2<T> b) { return {a.x*b.x, a.y*b.y}; }
 template <typename T> inline Vector2<T> operator/(Vector2<T> a, T b) { return {a.x/b, a.y/b}; }
+
+template <typename T> inline bool operator==(Vector2<T> lhs, Vector2<T> rhs) { return lhs.x == rhs.x && lhs.y == rhs.y; }
+template <typename T> inline bool operator!=(Vector2<T> lhs, Vector2<T> rhs) { return !(lhs == rhs); }
 
 
 typedef Vector2<float> v2f;

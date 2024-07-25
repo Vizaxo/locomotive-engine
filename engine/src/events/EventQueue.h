@@ -5,7 +5,7 @@
 #include <optional>
 
 namespace Keyboard {
-	enum class Key : u32;
+	enum Key : u32;
 }
 
 namespace Mouse {

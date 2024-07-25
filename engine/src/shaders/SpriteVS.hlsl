@@ -1,5 +1,7 @@
 cbuffer View : register(b0) {
 	float2 windowSize;
+	float2 camPos;
+	float camZoom;
 }
 
 struct VSOut {
@@ -23,7 +25,7 @@ VSOut main( float4 vertPos : POSITION, float2 uv : TEXCOORD, uint instanceID : S
 {
 	//TODO: windowsize should be /2. Add explicit scaling option.
 	SpriteComponent sprite = spriteData[instanceID];
-	float2 posOut = (((vertPos+float2(1, 1))/float2(2,2)) * sprite.size + sprite.pos) / (windowSize/2) - float2(1,1);
+	float2 posOut = (((vertPos+float2(1, 1))/float2(2,2)) * sprite.size + sprite.pos - camPos) / ((windowSize/2) * camZoom) - float2(1,1);
 	VSOut ret;
 	ret.pos = float4(posOut.x, posOut.y, 0.0, 1.0);
 	ret.uv = uv;

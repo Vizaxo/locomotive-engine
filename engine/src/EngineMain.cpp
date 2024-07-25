@@ -92,6 +92,7 @@ void tick() {
 			Mouse::handleMouseMoveEvent(ev->mouseMoveEvent);
 			break;
 		}
+		application->handleEvent(*ev);
 	}
 
 	engineState = ENGINE_TICKING;

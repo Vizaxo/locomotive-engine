@@ -216,6 +216,7 @@ struct RHI {
 #if _DEBUG
 	OwningPtr<ID3D11Debug, true, ReleaseCOM> debugDevice;
 #endif
+	RefPtr<PAL::WindowHandle> h;
 	bool vsync = true;
 
 

@@ -15,7 +15,7 @@ RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize) {
 	RHI::PixelShader ps = rhi->createPixelShaderFromBytecode((u8*)spritePS, sizeof(spritePS));
 	OwningPtr<Material> mat = new Material({std::move(vs), std::move(ps)});
 
-	mat->constantBuffers[CB::WindowSize] = rhi->createConstantBuffer(windowSize);
+	mat->constantBuffers[CB::View] = rhi->createConstantBuffer(CB::ViewCB{});
 	mat->constantBuffers[CB::Sprite] = rhi->createConstantBuffer(SpriteComponentCB{});
 	mat->constantBuffers[CB::SpriteSheet] = rhi->createConstantBuffer(SpriteSheetCB{});
 

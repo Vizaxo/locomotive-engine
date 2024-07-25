@@ -10,6 +10,10 @@ namespace Keyboard {
 
 std::set<Keyboard::Key> keysDown = {};
 
+bool Keyboard::isKeyDown(Key k) {
+	return keysDown.find(k) != keysDown.end();
+}
+
 std::string toString(Key k) {
 	std::string s;
 	char c[2];
@@ -47,7 +51,7 @@ void handleKeyboardEvent(EventQueue::Event::KeyboardEvent ev) {
 		onButtonPress(ev.k);
 		break;
 	case EventQueue::ButtonEventType::Up:
-		keyDown(ev.k);
+		keyUp(ev.k);
 		break;
 	default:
 		ASSERT(false, "Invalid keyboard event");

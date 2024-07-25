@@ -65,10 +65,11 @@ OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h) {
 	HRASSERT(d3dDevice->QueryInterface(IID_PPV_ARGS(&debugDevice.getRaw())));
 #endif
 
-	return new RHI({std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel
+	return new RHI({std::move(d3dDevice), std::move(d3dDeviceContext), std::move(swapChain), featureLevel,
 #if _DEBUG
-		, std::move(debugDevice),
+		std::move(debugDevice),
 #endif
+		h,
 		});
 }
 

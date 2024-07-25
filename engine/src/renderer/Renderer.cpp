@@ -7,6 +7,11 @@
 #include "ecs/ECS.h"
 #include "platform/windows/Windows.h"
 
+v2f Renderer::getWindowSize() {
+	Box2i clientRect = PAL::getClientRect(rhi->h);
+	return v2f{(float)clientRect.width(), (float)clientRect.height()};
+}
+
 void renderMesh(RefPtr<RHI> rhi, RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
 	for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
 		rhi->VSsetConstantBuffer(i, &material->constantBuffers[i]);
@@ -57,6 +62,8 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		RefPtr<SpriteSheet> spriteSheet = &terrainSpriteSheet;
 		SpriteComponent& spriteComponent = spriteData.data.getRaw()[0].comp;
 
+		CB::ViewCB viewCB = {getWindowSize(), scene->eyePosition, scene->camZoom};
+		rhi->updateConstantBuffer<CB::ViewCB>(&spriteMaterial->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::Sprite], spriteComponent.cbData); //TODO: ints being copied into floats. marshall or make them the same type
 		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::SpriteSheet], spriteSheet->cbData);
 		rhi->bindTextureSRV(0, spriteSheet->texture);

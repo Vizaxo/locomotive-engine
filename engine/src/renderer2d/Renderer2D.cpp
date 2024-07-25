@@ -57,7 +57,7 @@ void Renderer2D::renderScene(float delta) {
 
 	float strokeWidth = 10.0;
 	for (Circle& circle : scene.circles) {
-		renderTarget->FillEllipse(D2D1::Ellipse(circle.pos, circle.radius, circle.radius), blackBrush.getRaw());
+		renderTarget->FillEllipse(D2D1::Ellipse({circle.pos.x, circle.pos.y }, circle.radius, circle.radius), blackBrush.getRaw());
 	}
 
 	HRASSERT(renderTarget->EndDraw());

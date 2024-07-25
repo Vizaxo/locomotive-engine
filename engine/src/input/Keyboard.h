@@ -6,7 +6,8 @@
 #include "events/EventQueue.h"
 
 namespace Keyboard {
-enum class Key : u32 {
+
+enum Key : u32 {
 	NUM0,
 	NUM1,
 	NUM2,
@@ -44,6 +45,13 @@ enum class Key : u32 {
 	Y,
 	Z,
 	Backtick,
+	SingleQuote,
+	Comma,
+	Period,
+	ArrowUp,
+	ArrowDown,
+	ArrowLeft,
+	ArrowRight,
 	F1,
 	F2,
 	F3,
@@ -70,6 +78,8 @@ enum class Key : u32 {
 	F24,
 	Unknown,
 };
+
+bool isKeyDown(Key k);
 
 extern std::set<Keyboard::Key> keysDown;
 
