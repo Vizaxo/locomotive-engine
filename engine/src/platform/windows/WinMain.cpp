@@ -115,6 +115,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message
 	case WM_NCXBUTTONDOWN:
 		EventQueue::mouseButtonDownEvent(Mouse::Button::M5);
 		goto mouseevent;
+	case WM_MOUSEWHEEL:
+		EventQueue::scrollEvent(i16(wParam >> 16));
+		goto mouseevent;
 	case WM_MOUSEMOVE:
 	mouseevent:
 	{

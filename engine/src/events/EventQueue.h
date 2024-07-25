@@ -17,6 +17,7 @@ namespace EventQueue {
 //TODO: better to have this as closed type or extendible?
 enum class EventType {
 	Keyboard,
+	MouseScroll,
 	MouseButton,
 	MouseMove,
 	Frame,
@@ -30,6 +31,9 @@ struct Event {
 	struct KeyboardEvent {
 		Keyboard::Key k;
 		ButtonEventType type;
+	};
+	struct MouseScrollEvent {
+		i16 distance;
 	};
 	struct MouseButtonEvent {
 		Mouse::Button b;
@@ -45,6 +49,7 @@ struct Event {
 	};
 	union {
 		KeyboardEvent keyboardEvent;
+		MouseScrollEvent mouseScrollEvent;
 		MouseButtonEvent mouseButtonEvent;
 		MouseMoveEvent mouseMoveEvent;
 		FrameEvent frameEvent;
@@ -60,6 +65,7 @@ void mouseButtonDownEvent(Mouse::Button b);
 void mouseButtonUpEvent(Mouse::Button b);
 void keyDownEvent(Keyboard::Key k);
 void keyUpEvent(Keyboard::Key k);
+void scrollEvent(i16 distance);
 
 void a();
 }

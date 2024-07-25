@@ -3,6 +3,8 @@
 #include "EventQueue.h"
 #include <queue>
 
+#include "core/Assert.h"
+
 std::queue<EventQueue::Event> eventQueue;
 
 void EventQueue::pushEvent(EventQueue::Event ev) {
@@ -72,5 +74,12 @@ void EventQueue::keyUpEvent(Keyboard::Key k) {
 	ev.type = EventQueue::EventType::Keyboard;
 	ev.keyboardEvent.k = k;
 	ev.keyboardEvent.type = EventQueue::ButtonEventType::Up;
+	pushEvent(ev);
+}
+
+void EventQueue::scrollEvent(i16 distance) {
+	Event ev;
+	ev.type = EventQueue::EventType::MouseScroll;
+	ev.mouseScrollEvent.distance = distance;
 	pushEvent(ev);
 }
