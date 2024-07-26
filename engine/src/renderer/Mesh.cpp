@@ -36,9 +36,17 @@ vert2dPosUV unitSquareVerts[4] = {
 	{{-1.0, 1.0},{0.0, 0.0}},
 	{{1.0, 1.0},{1.0, 0.0}},
 };
-
 u16 unitSquareIndices[6] = {
 	0, 1, 2, 1, 3, 2,
+};
+
+vert2dPosUV screenPassMeshVerts[3] = {
+	{{-1, -1}, {0, 1}},
+	{{3, -1}, {3, 1}},
+	{{-1, 3}, {0, -2}},
+};
+u16 screenPassMeshIndices[3] = {
+	0, 1, 2,
 };
 
 template <typename V, typename I>
@@ -52,4 +60,5 @@ RefPtr<Mesh, true> Mesh::createMesh(RefPtr<RHI> rhi, StringId id, RefPtr<V> vert
 void Mesh::registerSimpleMeshes(RefPtr<RHI> rhi) {
 	createMesh<v3f, u16>(rhi, sID("unitCube"), unitCubeVerts, COUNT(unitCubeVerts), unitCubeIndices, COUNT(unitCubeIndices));
 	createMesh<vert2dPosUV, u16>(rhi, sID("unitSquare"), unitSquareVerts, COUNT(unitSquareVerts), unitSquareIndices, COUNT(unitSquareIndices));
+	createMesh<vert2dPosUV, u16>(rhi, sID("screenPassMesh"), screenPassMeshVerts, COUNT(screenPassMeshVerts), screenPassMeshIndices, COUNT(screenPassMeshIndices));
 }

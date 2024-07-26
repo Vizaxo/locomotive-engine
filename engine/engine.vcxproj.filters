@@ -311,5 +311,6 @@
     <FxCompile Include="src\shaders\FlatColorPS.hlsl" />
     <FxCompile Include="src\shaders\SpriteVS.hlsl" />
     <FxCompile Include="src\shaders\SpritePS.hlsl" />
+    <FxCompile Include="src\shaders\DrawHeightmap.hlsl" />
   </ItemGroup>
 </Project>
