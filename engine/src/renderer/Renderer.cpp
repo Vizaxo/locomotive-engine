@@ -7,8 +7,6 @@
 #include "Texture.h"
 #include "ecs/ECS.h"
 #include "platform/windows/Windows.h"
-#include "generated/ScreenShader.h"
-#include "generated/DrawHeightmap.h"
 
 v2f Renderer::getWindowSize() {
 	Box2i clientRect = PAL::getClientRect(rhi->h);
