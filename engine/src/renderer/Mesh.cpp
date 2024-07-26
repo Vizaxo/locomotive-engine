@@ -42,8 +42,8 @@ u16 unitSquareIndices[6] = {
 
 vert2dPosUV screenPassMeshVerts[3] = {
 	{{-1, -1}, {0, 1}},
-	{{3, -1}, {3, 1}},
-	{{-1, 3}, {0, -2}},
+	{{3, -1}, {2, 1}},
+	{{-1, 3}, {0, -1}},
 };
 u16 screenPassMeshIndices[3] = {
 	0, 1, 2,

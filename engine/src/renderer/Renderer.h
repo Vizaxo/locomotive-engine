@@ -12,6 +12,7 @@ struct Renderer {
 	StaticMeshComponent createStaticMeshComponent(RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count);
 	void RenderScene(float deltaTime, RefPtr<Scene> scene);
 	v2f getWindowSize();
+	void renderMesh(RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances);
 
 	OwningPtr<RHI> rhi;
 	RHI::RenderTargetView backBufferRTV;

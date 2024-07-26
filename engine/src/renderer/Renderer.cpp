@@ -1,6 +1,7 @@
 #include "PCH.h"
 #include "Renderer.h"
 
+#include "Application.h"
 #include "ConstantBuffers.h"
 #include "Mesh.h"
 #include "Texture.h"
@@ -14,7 +15,7 @@ v2f Renderer::getWindowSize() {
 	return v2f{(float)clientRect.width(), (float)clientRect.height()};
 }
 
-void renderMesh(RefPtr<RHI> rhi, RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
+void Renderer::renderMesh(RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
 	for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
 		rhi->VSsetConstantBuffer(i, &material->constantBuffers[i]);
 		rhi->PSsetConstantBuffer(i, &material->constantBuffers[i]);
@@ -41,7 +42,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 
 	for (int i = 0; i < scene->objects.num(); i++) {
 		StaticMeshComponent& meshComponent = scene->objects[i];
-		renderMesh(rhi, meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout, 1);
+		renderMesh(meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout, 1);
 	}
 
 	CB::ViewCB viewCB = { getWindowSize(), scene->eyePosition, scene->camZoom };
@@ -71,31 +72,10 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		rhi->bindTextureSRV(0, spriteSheet->texture);
 		rhi->bindStructuredBufferSRV(1, &spriteBuffer);
 		rhi->bindSampler(0, spriteSheet->texture);
-		renderMesh(rhi, unitSquare, spriteMaterial, &spriteInputLayout, spriteData.count);
+		renderMesh(unitSquare, spriteMaterial, &spriteInputLayout, spriteData.count);
 	}
 
-	{
-		// Heightmap drawing pass
-		static RHI::VertexShader vs = rhi->createVertexShaderFromBytecode((u8*)g_ScreenShader, sizeof (g_ScreenShader));
-		static RHI::PixelShader ps = rhi->createPixelShaderFromBytecode((u8*)g_DrawHeightmap, sizeof(g_DrawHeightmap));
-		static Material m = {std::move(vs), std::move(ps)};
-		m.constantBuffers[CB::View] = rhi->createConstantBuffer<CB::ViewCB>(viewCB);
-		v2i texSize = viewCB.windowSize;
-		static float* data = (float*)malloc(texSize.x*texSize.y*sizeof(float));
-		for (int x = 0; x < texSize.x; ++x) {
-			for (int y = 0; y < texSize.y; ++y) {
-				// Generate data
-				data[texSize.x * y + x] = 17.f;
-			}
-		}
-		static OwningPtr<RHI::Texture2D> texture = rhi->createTexture(RHICommon::PixelFormat::R32, (u8*)data, 4, texSize);
-		static RefPtr<Mesh> mesh = Mesh::meshManager.get(sID("screenPassMesh")).getNonNull();
-		rhi->bindTextureSRV(0, texture);
-		rhi->bindSampler(0, texture);
-		static RHI::InputLayout posUVInputLayout = SpriteComponent::createSpriteInputLayout(rhi);
-
-		renderMesh(rhi, mesh, &m, &posUVInputLayout, 1);
-	}
+	application->render(this, viewCB);
 
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);
 	ImGui::Render();

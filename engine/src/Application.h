@@ -3,6 +3,7 @@
 #pragma once
 
 #include "input/Mouse.h"
+#include "renderer/ConstantBuffers.h"
 #include "types/Pointers.h"
 #include "renderer/Renderer.h"
 
@@ -14,6 +15,7 @@ public:
 	const LPCWSTR windowTitle;
 	virtual void init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) = 0;
 	virtual void tick(float deltaTime) = 0;
+	virtual void render(RefPtr<Renderer> renderer, CB::ViewCB viewCB) = 0;
 	virtual void cleanup() = 0;
 	virtual RefPtr<Scene> getScene() = 0;
 	virtual void mouseButtonDown(Mouse::Button b) = 0;
