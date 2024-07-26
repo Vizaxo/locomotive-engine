@@ -16,6 +16,8 @@ public:
 	void init(RefPtr<Renderer> renderer, PAL::WindowHandle* h);
 	void tick(float deltaTime);
 	void cleanup();
+	void render(RefPtr<Renderer> renderer, CB::ViewCB viewCB) {}
+	void handleEvent(EventQueue::Event ev) {}
 	RefPtr<Scene> getScene();
 
 	void setupLighting();

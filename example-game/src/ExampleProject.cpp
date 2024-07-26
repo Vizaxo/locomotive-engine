@@ -186,7 +186,6 @@ void ExampleApplication::setupLighting() {
 }
 
 void ExampleApplication::setupCamera() {
-	scene.eyePosition = XMVectorSet(0, 10, -10, 1);
 	scene.lookDirection = XMVectorSet(0, -0.2, 1, 0);
 }
 
