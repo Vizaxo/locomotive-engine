@@ -7,12 +7,11 @@
 #include "types/Pointers.h"
 #include "rhi/RHI.h"
 
-#include "generated/SpriteVS.h"
 #include "generated/SpritePS.h"
 
 RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize) {
-	RHI::VertexShader vs = rhi->createVertexShaderFromBytecode((u8*)spriteVS, sizeof(spriteVS));
-	RHI::PixelShader ps = rhi->createPixelShaderFromBytecode((u8*)spritePS, sizeof(spritePS));
+	RHI::VertexShader vs = rhi->createVertexShaderFromFile(ENGINE_SHADER("SpriteVS"), "main");
+	RHI::PixelShader ps = rhi->createPixelShaderFromFile(ENGINE_SHADER("SpritePS"), "main");
 	OwningPtr<Material> mat = new Material({std::move(vs), std::move(ps)});
 
 	mat->constantBuffers[CB::View] = rhi->createConstantBuffer(CB::ViewCB{});

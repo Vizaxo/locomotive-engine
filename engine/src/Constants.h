@@ -36,3 +36,5 @@
 #endif
 
 #define CRASH() do{int* crash_abcdef = nullptr; *crash_abcdef=1;}while(0);
+
+#define ENGINE_SHADER(s) L"..\\locomotive-engine\\engine\\src\\shaders\\" s ".hlsl"

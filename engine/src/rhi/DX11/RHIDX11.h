@@ -9,22 +9,24 @@
 #include "rhi/RHICommon.h"
 
 struct RHI {
-	struct Shader {
+	struct ShaderBlob {
 		RefPtr<u8> bytecode;
 		size_t size;
-		OwningPtr<ID3DBlob, true, ReleaseCOM> blob;
 	};
+	static ShaderBlob compileShaderFromFile(std::wstring file, std::string entrypoint, std::string target);
 
-	struct VertexShader : Shader {
+	struct VertexShader : ShaderBlob {
 		OwningPtr<ID3D11VertexShader, false, ReleaseCOM> vertexShader;
 	};
 	VertexShader createVertexShaderFromBytecode(RefPtr<u8> bytecode, size_t size);
+	VertexShader createVertexShaderFromFile(std::wstring file, std::string entrypoint);
 	void setVertexShader(RefPtr<VertexShader> vs);
 
-	struct PixelShader : Shader {
+	struct PixelShader : ShaderBlob {
 		OwningPtr<ID3D11PixelShader, false, ReleaseCOM> pixelShader;
 	};
 	PixelShader createPixelShaderFromBytecode(RefPtr<u8> bytecode, size_t size);
+	PixelShader createPixelShaderFromFile(std::wstring file, std::string entrypoint);
 	void setPixelShader(RefPtr<PixelShader> ps);
 
 	struct InputLayout {

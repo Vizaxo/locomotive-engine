@@ -41,3 +41,31 @@ void Log::logStr(Level lvl, Channel& chan, int line, const char* file, const cha
 
 	va_end(args);
 }
+
+void Log::logBuffer(Level lvl, Channel* chan, int line, const char* file, const u8* bufptr, size_t bufsize) {
+	if (lvl < g_logLevel)
+		return;
+
+	static const int BUFSIZE = 2048;
+	char buf[BUFSIZE];
+
+	switch (lvl) {
+	case INFO: DEBUG_PRINT("INFO "); break;
+	case WARN: DEBUG_PRINT("WARN "); break;
+	case FATAL: DEBUG_PRINT("FATAL "); break;
+	default: return; //TODO: error
+	}
+	snprintf(buf, BUFSIZE, "%s: %s (%d): ", chan ? chan->name : "Log", file, line);
+	DEBUG_PRINT(buf);
+
+
+	char* bufNullTerminated = (char*)malloc(bufsize+1);
+	bufNullTerminated[bufsize] = 0;
+	memcpy(bufNullTerminated, bufptr, bufsize);
+	DEBUG_PRINT(bufNullTerminated);
+
+	if (lvl == FATAL) {
+		DEBUG_BREAK();
+		CRASH();
+	}
+}

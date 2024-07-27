@@ -73,10 +73,34 @@ OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h) {
 		});
 }
 
+RHI::ShaderBlob RHI::compileShaderFromFile(std::wstring file, std::string entrypoint, std::string target) {
+	ID3DBlob* bytecode;
+	ID3DBlob* errors;
+	D3D_SHADER_MACRO* defines = nullptr;
+	uint flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if _DEBUG
+	flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+	HRESULT hr = D3DCompileFromFile(file.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, entrypoint.c_str(), target.c_str(), flags, 0, &bytecode, &errors);
+	if (hr) {
+		if (errors)
+			LOG_BUFFER(Log::FATAL, nullptr, (u8*)errors->GetBufferPointer(), errors->GetBufferSize());
+		else
+			ASSERT(false, "Compile returned bad HRESULT, but no compile errors.");
+	}
+	// TODO: what if successful compile call, but shader has errors?
+	return { (u8*)bytecode->GetBufferPointer(), bytecode->GetBufferSize() };
+}
+
 RHI::VertexShader RHI::createVertexShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {
 	ID3D11VertexShader* vertexShader;
 	HRASSERT(device->CreateVertexShader(bytecode.getRaw(), size, nullptr, &vertexShader));
-	return { bytecode, size, nullptr, std::move(vertexShader) };
+	return { bytecode, size, std::move(vertexShader) };
+}
+
+RHI::VertexShader RHI::createVertexShaderFromFile(std::wstring file, std::string entrypoint) {
+	ShaderBlob blob = compileShaderFromFile(file, entrypoint, "vs_5_0");
+	return createVertexShaderFromBytecode(blob.bytecode, blob.size);
 }
 
 void RHI::setVertexShader(RefPtr<RHI::VertexShader> vs) {
@@ -90,7 +114,12 @@ void RHI::setPixelShader(RefPtr<RHI::PixelShader> ps) {
 RHI::PixelShader RHI::createPixelShaderFromBytecode(RefPtr<u8> bytecode, size_t size) {
 	ID3D11PixelShader* pixelShader;
 	HRASSERT(device->CreatePixelShader(bytecode.getRaw(), size, nullptr, &pixelShader));
-	return { bytecode, size, nullptr, std::move(pixelShader) };
+	return { bytecode, size, std::move(pixelShader) };
+}
+
+RHI::PixelShader RHI::createPixelShaderFromFile(std::wstring file, std::string entrypoint) {
+	ShaderBlob blob = compileShaderFromFile(file, entrypoint, "ps_5_0");
+	return createPixelShaderFromBytecode(blob.bytecode, blob.size);
 }
 
 RHI::InputLayout RHI::createInputLayout(RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count, RefPtr<VertexShader> vs) {
