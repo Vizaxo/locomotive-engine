@@ -13,6 +13,7 @@
 #include "core/Log.h"
 #include "events/EventQueue.h"
 #include "ecs/ECS.h"
+#include "vr/OpenVRModule.h"
 
 namespace Engine {
 
@@ -35,6 +36,7 @@ const float maxTimeStep = 1.0f / targetFramerate;
 
 Log::Channel g_engineLog = {"engine"};
 RefPtr<RenderDoc, true> renderdoc = nullptr;
+OwningPtr<VR::VRModule, true> vr = nullptr;
 
 int init(PAL::WindowHandle* h, bool vSync) {
 	bool traceFromStart = false;
@@ -44,6 +46,11 @@ int init(PAL::WindowHandle* h, bool vSync) {
 	}
 
 	renderdoc = RenderDoc::loadRenderDoc();
+	Either<OwningPtr<VR::VRModule>, VR::InitError> maybeVR = VR::loadVR();
+	if (maybeVR)
+		vr = (*maybeVR).getNullable();
+	else
+		LOG(Log::INFO, g_engineLog, "Failed to initialise VR module");
 
 	LOG(Log::INFO, g_engineLog, "Initialising engine");
 	engineState = ENGINE_INIT;

@@ -12,7 +12,8 @@ class Either {
 		Fst, Snd,
 	} tag;
 public:
-	Either(A inA) : a(inA), tag(Fst) {}
+	Either(const A& inA) : a(inA), tag(Fst) {}
+	Either(A&& inA) : a(std::move(inA)), tag(Fst) {}
 	Either(B inB) : b(inB), tag(Snd) {}
 	Tag getTag() { return tag; }
 	A& getFst() { ASSERT(tag == Fst, "Accessing first element of Either; second is stored."); return a; }
@@ -25,4 +26,8 @@ public:
 	}
 	A& operator*() { return getFst(); }
 	operator bool () { return tag == Fst; }
+
 };
+
+template <typename A, typename B> inline Either<A, B> left(A&& a) { return Either<A,B>(std::move(a)); }
+template <typename A, typename B> inline Either<A, B> right(B&& b) { return Either<A,B>(std::move(b)); }
