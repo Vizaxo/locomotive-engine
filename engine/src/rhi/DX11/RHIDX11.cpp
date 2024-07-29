@@ -75,7 +75,7 @@ OwningPtr<RHI> createRHI(RefPtr<PAL::WindowHandle> h) {
 
 RHI::ShaderBlob RHI::compileShaderFromFile(std::wstring file, std::string entrypoint, std::string target) {
 	ID3DBlob* bytecode;
-	ID3DBlob* errors;
+	ID3DBlob* errors = nullptr;
 	D3D_SHADER_MACRO* defines = nullptr;
 	uint flags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if _DEBUG
