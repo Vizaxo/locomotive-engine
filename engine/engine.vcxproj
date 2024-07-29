@@ -176,7 +176,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(ProjectDir)include\openvr\headers;%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -186,6 +186,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>$(ProjectDir)include\openvr\lib\win64\openvr_api.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ASan|x64'">
     <ClCompile>
@@ -193,7 +196,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(ProjectDir)include\openvr\headers;%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -203,6 +206,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>$(ProjectDir)include\openvr\lib\win64\openvr_api.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -212,7 +218,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(ProjectDir)include\openvr\headers;%(ProjectDir)src;%(ProjectDir)include;%(ProjectDir)include\imgui;%(ProjectDir)include\generated;%(AdditionalIncludes)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -223,6 +229,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>$(ProjectDir)include\openvr\lib\win64\openvr_api.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp">
@@ -347,6 +356,7 @@
     <ClCompile Include="src\types\Colour.cpp" />
     <ClCompile Include="src\types\StringId.cpp" />
     <ClCompile Include="src\utils\Hashing.cpp" />
+    <ClCompile Include="src\vr\OpenVRModule.cpp" />
     <ClCompile Include="src\world\Noise.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -405,6 +415,7 @@
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\types\Vector.h" />
     <ClInclude Include="src\utils\Hashing.h" />
+    <ClInclude Include="src\vr\OpenVRModule.h" />
     <ClInclude Include="src\world\Noise.h" />
   </ItemGroup>
   <ItemGroup>

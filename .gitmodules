@@ -4,3 +4,6 @@
 [submodule "engine/include/imgui"]
 	path = engine/include/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "engine/include/openvr"]
+	path = engine/include/openvr
+	url = https://github.com/ValveSoftware/openvr/
