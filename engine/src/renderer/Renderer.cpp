@@ -8,13 +8,24 @@
 #include "Texture.h"
 #include "ecs/ECS.h"
 #include "platform/windows/Windows.h"
+#include "types/Matrix.h"
 
 v2f Renderer::getWindowSize() {
 	Box2i clientRect = PAL::getClientRect(rhi->h);
 	return v2f{(float)clientRect.width(), (float)clientRect.height()};
 }
 
-void Renderer::renderMesh(RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
+void Renderer::renderMesh(RefPtr<Mesh> mesh, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
+
+	v3 t = { 0.3, 0.3, 0.0 };
+	// obj space -> world space
+	m44f model = translate(mkv4(t, 0.0f));
+	m44 view = translate(v4{0.0, 0.0, 0.0, 0.0}); // world space -> camera space
+	m44 projection = id44; // camera space -> clip space
+	m44 mvp = projection * view * model;
+	CB::ViewCB viewCB = { getWindowSize(), scene->eyePosition, mvp, scene->camZoom };
+	rhi->updateConstantBuffer<CB::ViewCB>(&material->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
+
 	for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
 		rhi->VSsetConstantBuffer(i, &material->constantBuffers[i]);
 		rhi->PSsetConstantBuffer(i, &material->constantBuffers[i]);
@@ -41,10 +52,11 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 
 	for (int i = 0; i < scene->objects.num(); i++) {
 		StaticMeshComponent& meshComponent = scene->objects[i];
-		renderMesh(meshComponent.mesh, meshComponent.material, &meshComponent.inputLayout, 1);
+		renderMesh(meshComponent.mesh, scene, meshComponent.material, &meshComponent.inputLayout, 1);
 	}
 
-	CB::ViewCB viewCB = { getWindowSize(), scene->eyePosition, scene->camZoom };
+	m44 mvp = id44;
+	CB::ViewCB viewCB = { getWindowSize(), scene->eyePosition, mvp, scene->camZoom };
 	{
 		// Render sprites
 		static RHI::BlendState alphaBlendState = rhi->createBlendState();
@@ -73,7 +85,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 			rhi->bindTextureSRV(0, spriteSheet->texture);
 			rhi->bindStructuredBufferSRV(1, &spriteBuffer);
 			rhi->bindSampler(0, spriteSheet->texture);
-			renderMesh(unitSquare, spriteMaterial, &spriteInputLayout, spriteData.count);
+			renderMesh(unitSquare, scene, spriteMaterial, &spriteInputLayout, spriteData.count);
 		}
 	}
 

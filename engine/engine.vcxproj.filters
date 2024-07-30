@@ -305,6 +305,9 @@
     <ClInclude Include="src\vr\OpenVRModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\types\Matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\BaseColourVertexShader.hlsl" />

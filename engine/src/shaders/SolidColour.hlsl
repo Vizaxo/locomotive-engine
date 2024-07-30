@@ -6,6 +6,7 @@ struct VSOut {
 cbuffer View : register(b0) {
 	float2 windowSize;
 	float2 camPos;
+	float4x4 mvp;
 	float camZoom;
 }
 
@@ -13,10 +14,11 @@ cbuffer SolidColour : register (b1) {
 	float4 colour;
 }
 
-VSOut vsMain(float4 pos : POSITION, float4 normal : NORMAL) {
+VSOut vsMain(float3 pos : POSITION, float3 normal : NORMAL) {
 	VSOut ret;
-	ret.pos = pos;
-	ret.normal = normal;
+	//ret.pos = float4(pos, 1.0); //mul(mvp, float4(pos, 1.0));
+	ret.pos = mul(mvp, float4(pos, 1.0)); //mul(mvp, float4(pos, 1.0));
+	ret.normal = float4(normal, 1.0); //TODO: transform normals
 
 	return ret;
 }

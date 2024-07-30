@@ -408,6 +408,7 @@
     <ClInclude Include="src\editor\ModelLoader.h" />
     <ClInclude Include="src\renderer\Scene.h" />
     <ClInclude Include="src\types\Map.h" />
+    <ClInclude Include="src\types\Matrix.h" />
     <ClInclude Include="src\types\Pointers.h" />
     <ClInclude Include="src\types\Product.h" />
     <ClInclude Include="src\types\StringId.h" />

@@ -149,7 +149,8 @@ void VRModule::render(RefPtr<Renderer> renderer) {
 		descs[2].InstanceDataStepRate = 0;
 
 		RHI::InputLayout inputLayout = renderer->rhi->createInputLayout(descs, VR_RENDER_MESH_ELEMENT_COUNT, &mat->vertexShader);
-		renderer->renderMesh(mesh.getNonNull(), mat, &inputLayout, 1);
+		Scene scene;
+		renderer->renderMesh(mesh.getNonNull(), &scene, mat, &inputLayout, 1);
 	}
 }
 

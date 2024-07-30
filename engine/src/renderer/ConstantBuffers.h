@@ -1,5 +1,6 @@
 #pragma once
 
+#include "types/Matrix.h"
 #include "types/Types.h"
 
 namespace CB {
@@ -12,6 +13,7 @@ enum ConstantBufferSlot : u8 {
 struct ViewCB {
 	v2f windowSize;
 	v2f camPos;
+	m44 mvp;
 	float zoomScale;
 };
 }

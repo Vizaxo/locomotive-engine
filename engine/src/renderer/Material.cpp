@@ -1,6 +1,8 @@
 #include "PCH.h"
 #include "Material.h"
 
+#include "ConstantBuffers.h"
+
 /*
 Material* Material::setTexture(D3DContext* d3dContext, Texture2D* texture) {
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -34,7 +36,9 @@ RefPtr<Material, true> Material::createMaterial(RefPtr<RHI> rhi, StringId name, 
 RefPtr<Material, true> Material::createMaterial(RefPtr<RHI> rhi, StringId name, std::wstring vsFile, std::string vsEntrypoint, std::wstring psFile, std::string psEntrypoint) {
 	RHI::VertexShader vs = rhi->createVertexShaderFromFile(vsFile, vsEntrypoint);
 	RHI::PixelShader ps = rhi->createPixelShaderFromFile(psFile, psEntrypoint);
+
 	Material* m = new Material{std::move(vs), std::move(ps)};
+	m->constantBuffers[CB::View] = rhi->createConstantBuffer(CB::ViewCB{});
 	return materialManager.registerResource(name, std::move(m));
 }
 
