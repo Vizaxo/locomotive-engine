@@ -23,6 +23,34 @@ struct Vector<2,T> {
 	IMPLEMENT_ARRAY_OPERATORS
 };
 
+template <typename T>
+struct Vector<3,T> {
+	union {
+		T v[3];
+		struct {
+			T x;
+			T y;
+			T z;
+		};
+	};
+	IMPLEMENT_ARRAY_OPERATORS
+};
+
+template <typename T>
+struct Vector<4,T> {
+	union {
+		T v[4];
+		struct {
+			T x;
+			T y;
+			T z;
+			T w;
+		};
+		Vector<3,T> v3;
+	};
+	IMPLEMENT_ARRAY_OPERATORS
+};
+
 template <int n, typename T>
 T dot(Vector<n, T> lhs, Vector<n, T> rhs) {
 	T sum = 0;
@@ -133,58 +161,5 @@ typedef Vector<2, i32> v2i;
 typedef Vector<3, i32> v3i;
 typedef Vector<4, i32> v4i;
 
-
-template <int m, int n, typename T>
-struct Matrix {
-	/* Matrix format as in Real-time Rendering book
-	 * vx.x vy.x vz.x t.x
-	 * vx.y vy.y vz.y t.y
-	 * vx.z vy.z vz.z t.z
-	 * 0    0    0    1
-	 *
-	 * v00  v01  v02  v03
-	 * v10  v11  v12  v13
-	 * v20  v21  v22  v23
-	 * v30  v31  v32  v33
-	 *
-	 * Column-major memory layout. I.e. t.x, t.y, t.z are in positions 12, 13, 14.
-	 */
-	T v[n][m];
-
-	// Column-major indexing. m[2] gets the third column as a vector. Transpose first to get rows.
-	const Vector<m, T>& operator[](const int x) const { return *reinterpret_cast<const Vector<m,T>*>(&v[x]); }
-	Vector<m, T>& operator[](const int x) { return *reinterpret_cast<Vector<m,T>*>(&v[x]); }
-};
-
-typedef Matrix<4,4,float> m44;
-typedef Matrix<3,4,float> m34;
-typedef Matrix<4,4,float> m44f;
-typedef Matrix<3,4,float> m34f;
-typedef Matrix<4,4,double> m44d;
-typedef Matrix<3,4,double> md4d;
-
-
-
-template <int m, int n, typename T>
-Matrix<n, m, T> transpose(Matrix<m, n, T> in) {
-	Matrix<n, m, T> ret;
-	for (int i = 0; i < m; ++i) {
-		for (int j = 0; j < n; ++j) {
-			ret[i][j] = in[j][i];
-		}
-	}
-	return ret;
-}
-
-template <int m, int n, int o, typename T>
-Matrix<m, o, T> operator*(const Matrix<m, n, T>& lhs, const Matrix<n, o, T>& rhs) {
-	Matrix<n, m, T> lhsT = transpose(lhs);
-	Matrix<o, n, T> rhsT = transpose(rhs);
-	Matrix<m, o, T> ret;
-	for (int i = 0; i < m; ++i) {
-		for (int j = 0; j < o; ++j) {
-			ret[j][i] = dot(lhsT[i], rhs[j]);
-		}
-	}
-	return ret;
-}
+static inline Vector<4,float> mkv4(const v3f& v, float w) { return {v.x, v.y, v.z, w}; }
+static inline Vector<4,float> mkv4f(const v3f& v, float w) { return {v.x, v.y, v.z, w}; }
