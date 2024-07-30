@@ -1,5 +1,6 @@
 struct VSOut {
 	float4 pos : SV_POSITION;
+	float4 normal : NORMAL;
 };
 
 cbuffer View : register(b0) {
@@ -12,13 +13,14 @@ cbuffer SolidColour : register (b1) {
 	float4 colour;
 }
 
-VSOut vsMain(float4 pos : POSITION) {
+VSOut vsMain(float4 pos : POSITION, float4 normal : NORMAL) {
 	VSOut ret;
 	ret.pos = pos;
+	ret.normal = normal;
 
 	return ret;
 }
 
 float4 psMain(in VSOut vsOut) : SV_TARGET0 {
-	return colour;
+	return vsOut.normal;
 }
