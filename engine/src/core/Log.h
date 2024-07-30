@@ -6,6 +6,7 @@ namespace Log {
 enum Level {
 	INFO,
 	WARN,
+	ERR,
 	FATAL,
 };
 

@@ -34,6 +34,10 @@ void Log::logStr(Level lvl, Channel& chan, int line, const char* file, const cha
 
 	DEBUG_PRINT("\n");
 
+	if (lvl == ERR) {
+		DEBUG_BREAK();
+	}
+
 	if (lvl == FATAL) {
 		DEBUG_BREAK();
 		CRASH();
@@ -52,8 +56,9 @@ void Log::logBuffer(Level lvl, Channel* chan, int line, const char* file, const 
 	switch (lvl) {
 	case INFO: DEBUG_PRINT("INFO "); break;
 	case WARN: DEBUG_PRINT("WARN "); break;
+	case ERR: DEBUG_PRINT("ERROR "); break;
 	case FATAL: DEBUG_PRINT("FATAL "); break;
-	default: return; //TODO: error
+	default: ASSERT(false, "Invalid error level");
 	}
 	snprintf(buf, BUFSIZE, "%s: %s (%d): ", chan ? chan->name : "Log", file, line);
 	DEBUG_PRINT(buf);
@@ -63,6 +68,10 @@ void Log::logBuffer(Level lvl, Channel* chan, int line, const char* file, const 
 	bufNullTerminated[bufsize] = 0;
 	memcpy(bufNullTerminated, bufptr, bufsize);
 	DEBUG_PRINT(bufNullTerminated);
+
+	if (lvl == ERR) {
+		DEBUG_BREAK();
+	}
 
 	if (lvl == FATAL) {
 		DEBUG_BREAK();

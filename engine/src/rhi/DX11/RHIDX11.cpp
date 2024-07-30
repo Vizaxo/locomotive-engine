@@ -81,10 +81,9 @@ RHI::ShaderBlob RHI::compileShaderFromFile(std::wstring file, std::string entryp
 #if _DEBUG
 	flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-	HRESULT hr = D3DCompileFromFile(file.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, entrypoint.c_str(), target.c_str(), flags, 0, &bytecode, &errors);
-	if (hr) {
+	while (HRESULT hr = D3DCompileFromFile(file.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, entrypoint.c_str(), target.c_str(), flags, 0, &bytecode, &errors)) {
 		if (errors)
-			LOG_BUFFER(Log::FATAL, nullptr, (u8*)errors->GetBufferPointer(), errors->GetBufferSize());
+			LOG_BUFFER(Log::ERR, nullptr, (u8*)errors->GetBufferPointer(), errors->GetBufferSize());
 		else
 			ASSERT(false, "Compile returned bad HRESULT, but no compile errors.");
 	}
