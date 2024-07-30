@@ -5,7 +5,7 @@
 
 template <typename T>
 struct Box2 {
-	Vector2<T> min, max;
+	Vector<2,T> min, max;
 	T width() { return max.x - min.x; }
 	T height() { return max.y - min.y; }
 };
