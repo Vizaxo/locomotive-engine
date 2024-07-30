@@ -9,7 +9,9 @@ RefPtr<RHI::Texture2D, true> Texture::loadTextureFromFile(RefPtr<RHI> rhi, std::
 
 	v2i size;
 	i32 stride;
-	OwningPtr<u8, false, StbiImageFree> data = stbi_load(path.c_str(), &size.x, &size.y, &stride, 0);
+	OwningPtr<u8, true, StbiImageFree> data = stbi_load(path.c_str(), &size.x, &size.y, &stride, 0);
+	if (!data)
+		return nullptr;
 
 	//TODO: find more reliable method to get pixel format
 	RHICommon::PixelFormat pf;
@@ -20,7 +22,7 @@ RefPtr<RHI::Texture2D, true> Texture::loadTextureFromFile(RefPtr<RHI> rhi, std::
 	default: ASSERT(false, "Unsupported texture stride %d", stride);
 	}
 
-	OwningPtr<RHI::Texture2D> texture = rhi->createTexture(pf, data, stride, size);
+	OwningPtr<RHI::Texture2D> texture = rhi->createTexture(pf, data.getNonNull(), stride, size);
 	texture->path = path;
 	return textureManager.registerResource(sID(path.c_str()), std::move(texture));
 }

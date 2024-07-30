@@ -3,6 +3,7 @@
 #include "platform/Platform.h"
 #include "input/Keyboard.h"
 #include "debug/renderdoc/RenderDocModule.h"
+#include "vr/OpenVRModule.h"
 
 namespace Engine {
 
@@ -29,6 +30,7 @@ enum EngineState {
 
 extern EngineState engineState;
 extern RefPtr<RenderDoc, true> renderdoc;
+extern OwningPtr<VR::VRModule, true> vr;
 
 };
 

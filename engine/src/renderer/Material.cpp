@@ -26,3 +26,19 @@ Material* Material::setTexture(D3DContext* d3dContext, Texture2D* texture) {
 */
 
 ResourceManager<Material> materialManager;
+
+RefPtr<Material, true> Material::createMaterial(RefPtr<RHI> rhi, StringId name, std::wstring file, std::string vsEntrypoint, std::string psEntrypoint) {
+	return createMaterial(rhi, name, file, vsEntrypoint, file, psEntrypoint);
+}
+
+RefPtr<Material, true> Material::createMaterial(RefPtr<RHI> rhi, StringId name, std::wstring vsFile, std::string vsEntrypoint, std::wstring psFile, std::string psEntrypoint) {
+	RHI::VertexShader vs = rhi->createVertexShaderFromFile(vsFile, vsEntrypoint);
+	RHI::PixelShader ps = rhi->createPixelShaderFromFile(psFile, psEntrypoint);
+	Material* m = new Material{std::move(vs), std::move(ps)};
+	return materialManager.registerResource(name, std::move(m));
+}
+
+void Material::createBasicMaterials(RefPtr<RHI> rhi) {
+	RefPtr<Material, true> solidColourMat = createMaterial(rhi, sID("SolidColourMat"), ENGINE_SHADER("SolidColour"), "vsMain", "psMain");
+	solidColourMat->constantBuffers[1] = rhi->createConstantBuffer<v4f>({1.0f, 0.0f, 0.0f, 1.0f});
+}

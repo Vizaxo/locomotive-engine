@@ -49,14 +49,6 @@ u16 screenPassMeshIndices[3] = {
 	0, 1, 2,
 };
 
-template <typename V, typename I>
-RefPtr<Mesh, true> Mesh::createMesh(RefPtr<RHI> rhi, StringId id, RefPtr<V> verts, size_t vert_count, RefPtr<I> indices, size_t index_count) {
-	RHI::VertexBuffer vertexBuffer(rhi->createVertexBuffer(verts, vert_count));
-	RHI::IndexBuffer indexBuffer(rhi->createIndexBuffer(indices, index_count, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	OwningPtr<Mesh> m = new Mesh({ std::move(vertexBuffer), std::move(indexBuffer) });
-	return meshManager.registerResource(id, std::move(m));
-}
-
 void Mesh::registerSimpleMeshes(RefPtr<RHI> rhi) {
 	createMesh<v3f, u16>(rhi, sID("unitCube"), unitCubeVerts, COUNT(unitCubeVerts), unitCubeIndices, COUNT(unitCubeIndices));
 	createMesh<vert2dPosUV, u16>(rhi, sID("unitSquare"), unitSquareVerts, COUNT(unitSquareVerts), unitSquareIndices, COUNT(unitSquareIndices));

@@ -35,6 +35,7 @@ protected:
 template<typename T, bool Nullable = false>
 struct RefPtr : Ptr<T, Nullable> {
 	//friend class OwningPtr<T>;
+	RefPtr() { this->obj = nullptr; CHECKNULL; }
 	RefPtr(T* ptr) { this->obj = ptr; CHECKNULL; } // Get reference to raw pointer
 	RefPtr(RefPtr<T, Nullable>&& other) = default;
 	RefPtr(const RefPtr<T, Nullable>& other) = default;

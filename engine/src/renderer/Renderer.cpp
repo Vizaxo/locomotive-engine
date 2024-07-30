@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "ConstantBuffers.h"
+#include "EngineMain.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "ecs/ECS.h"
@@ -50,30 +51,34 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		static RHI::InputLayout spriteInputLayout = SpriteComponent::createSpriteInputLayout(rhi);
 
 		// TODO: need to find a nice way of setting this in the game, and allowing for multiple atlases
-		RefPtr<RHI::Texture2D> terrainTexture = Texture::loadTextureFromFile(rhi, "resources/textures/terrain-isometric.png").getNonNull();
-		static SpriteSheet terrainSpriteSheet = { terrainTexture, {{17, 21 }, terrainTexture->size } };
+		if (auto terrainTextureNullable = Texture::loadTextureFromFile(rhi, "resources/textures/terrain-isometric.png")) {
+			// Dirty hack to only render sprites when application has right spritesheet.
+			RefPtr<RHI::Texture2D> terrainTexture = terrainTextureNullable.getNonNull();
+			static SpriteSheet terrainSpriteSheet = { terrainTexture, {{17, 21 }, terrainTexture->size } };
 
-		rhi->setBlendState(&alphaBlendState);
-		RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
-		RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
+			rhi->setBlendState(&alphaBlendState);
+			RefPtr<Mesh> unitSquare = Mesh::meshManager.get(sID("unitSquare")).getNonNull();
+			RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
 
-		ArrayView<ECS::Stored<SpriteComponent>> spriteData = ECS::ecsManager.getComponentManager<SpriteComponent>()->getRawBuffer();
-		RHI::Buffer spriteBuffer = rhi->createStructuredBuffer<ECS::Stored<SpriteComponent>>(spriteData.data, spriteData.count);
+			ArrayView<ECS::Stored<SpriteComponent>> spriteData = ECS::ecsManager.getComponentManager<SpriteComponent>()->getRawBuffer();
+			RHI::Buffer spriteBuffer = rhi->createStructuredBuffer<ECS::Stored<SpriteComponent>>(spriteData.data, spriteData.count);
 
-		//TODO: lift these out of individual components
-		RefPtr<SpriteSheet> spriteSheet = &terrainSpriteSheet;
-		SpriteComponent& spriteComponent = spriteData.data.getRaw()[0].comp;
+			//TODO: lift these out of individual components
+			RefPtr<SpriteSheet> spriteSheet = &terrainSpriteSheet;
+			SpriteComponent& spriteComponent = spriteData.data.getRaw()[0].comp;
 
-		rhi->updateConstantBuffer<CB::ViewCB>(&spriteMaterial->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
-		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::Sprite], spriteComponent.cbData); //TODO: ints being copied into floats. marshall or make them the same type
-		rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::SpriteSheet], spriteSheet->cbData);
-		rhi->bindTextureSRV(0, spriteSheet->texture);
-		rhi->bindStructuredBufferSRV(1, &spriteBuffer);
-		rhi->bindSampler(0, spriteSheet->texture);
-		renderMesh(unitSquare, spriteMaterial, &spriteInputLayout, spriteData.count);
+			rhi->updateConstantBuffer<CB::ViewCB>(&spriteMaterial->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
+			rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::Sprite], spriteComponent.cbData); //TODO: ints being copied into floats. marshall or make them the same type
+			rhi->updateConstantBuffer(&spriteMaterial->constantBuffers[CB::SpriteSheet], spriteSheet->cbData);
+			rhi->bindTextureSRV(0, spriteSheet->texture);
+			rhi->bindStructuredBufferSRV(1, &spriteBuffer);
+			rhi->bindSampler(0, spriteSheet->texture);
+			renderMesh(unitSquare, spriteMaterial, &spriteInputLayout, spriteData.count);
+		}
 	}
 
 	application->render(this, viewCB);
+	Engine::vr->render(this);
 
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);
 	ImGui::Render();
@@ -141,6 +146,7 @@ OwningPtr<Renderer> createRenderer(RefPtr<PAL::WindowHandle> h) {
 	fullScreenViewport.MaxDepth = 1.0f;
 
 	Mesh::registerSimpleMeshes(rhi.getRef());
+	Material::createBasicMaterials(rhi.getRef());
 
 	v2f windowSize = v2f{(float)clientRect.width(), (float)clientRect.height()};
 	RefPtr<Material, true> spriteMaterial = createSpriteMaterial(rhi, windowSize);

@@ -46,12 +46,6 @@ int init(PAL::WindowHandle* h, bool vSync) {
 	}
 
 	renderdoc = RenderDoc::loadRenderDoc();
-	Either<OwningPtr<VR::VRModule>, VR::InitError> maybeVR = VR::loadVR();
-	if (maybeVR)
-		vr = (*maybeVR).getNullable();
-	else
-		LOG(Log::INFO, g_engineLog, "Failed to initialise VR module");
-
 	LOG(Log::INFO, g_engineLog, "Initialising engine");
 	engineState = ENGINE_INIT;
 
@@ -68,6 +62,12 @@ int init(PAL::WindowHandle* h, bool vSync) {
 	engineState = ENGINE_INIT_POST_RENDERER;
 	imgui = new ImGuiWrapper(renderer->rhi, h);
 	engineState = ENGINE_INIT_POST_IMGUI;
+
+	Either<OwningPtr<VR::VRModule>, VR::InitError> maybeVR = VR::loadVR(renderer->rhi);
+	if (maybeVR)
+		vr = (*maybeVR).getNullable();
+	else
+		LOG(Log::INFO, g_engineLog, "Failed to initialise VR module");
 
 	previousTime = timeGetTime();
 
@@ -114,6 +114,7 @@ void tick() {
 	ECS::ecsManager.tick();
 
 	if (renderdoc) renderdoc->tick();
+	if (vr) vr->tick(renderer->rhi);
 
 	DWORD currentTime = timeGetTime();
 	float deltaTime = (currentTime - previousTime) / 1000.0f;

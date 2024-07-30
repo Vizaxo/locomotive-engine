@@ -318,4 +318,7 @@
     <FxCompile Include="src\shaders\SpriteVS.hlsl" />
     <FxCompile Include="src\shaders\SpritePS.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\shaders\SolidColour.hlsl" />
+  </ItemGroup>
 </Project>
