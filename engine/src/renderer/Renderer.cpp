@@ -24,7 +24,7 @@ CB::ViewCB Renderer::makeViewCB(RefPtr<Camera::Camera> cam, v3 pos) {
 	return { windowSize, {0,0}, mvp, 0.f };
 }
 
-void Renderer::renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayoutDELETE, size_t instances) {
+void Renderer::renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene> scene, RefPtr<Material> material, size_t instances) {
 	CB::ViewCB viewCB = makeViewCB(&scene->camera, pos);
 	rhi->updateConstantBuffer<CB::ViewCB>(&material->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
 
@@ -55,14 +55,13 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 
 	for (int i = 0; i < scene->objects.num(); i++) {
 		StaticMeshComponent& meshComponent = scene->objects[i];
-		renderMesh(meshComponent.mesh, meshComponent.pos, scene, meshComponent.material, &meshComponent.inputLayout, 1);
+		renderMesh(meshComponent.mesh, meshComponent.pos, scene, meshComponent.material, 1);
 	}
 
 	CB::ViewCB viewCB = makeViewCB(&scene->camera, v3{});
 	{
 		// Render sprites
 		static RHI::BlendState alphaBlendState = rhi->createBlendState();
-		static RHI::InputLayout spriteInputLayout = SpriteComponent::createSpriteInputLayout(rhi);
 
 		// TODO: need to find a nice way of setting this in the game, and allowing for multiple atlases
 		if (auto terrainTextureNullable = Texture::loadTextureFromFile(rhi, "resources/textures/terrain-isometric.png")) {
@@ -87,7 +86,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 			rhi->bindTextureSRV(0, spriteSheet->texture);
 			rhi->bindStructuredBufferSRV(1, &spriteBuffer);
 			rhi->bindSampler(0, spriteSheet->texture);
-			renderMesh(unitSquare, v3{}, scene, spriteMaterial, &spriteInputLayout, spriteData.count);
+			renderMesh(unitSquare, v3{}, scene, spriteMaterial, spriteData.count);
 		}
 	}
 

@@ -195,40 +195,11 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	windowHandle = h;
 
 	RefPtr<Material, true> solidColourMat = materialManager.get(sID("SolidColourMat"));
-
-	static const u32 ELEMENT_COUNT = 3;
-	D3D11_INPUT_ELEMENT_DESC descs[ELEMENT_COUNT];
-	descs[0].SemanticName = "POSITION";
-	descs[0].SemanticIndex = 0;
-	descs[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	descs[0].InputSlot = 0;
-	descs[0].AlignedByteOffset = 0;
-	descs[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	descs[0].InstanceDataStepRate = 0;
-
-	descs[1].SemanticName = "NORMAL";
-	descs[1].SemanticIndex = 0;
-	descs[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	descs[1].InputSlot = 0;
-	descs[1].AlignedByteOffset = sizeof(v3f);
-	descs[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	descs[1].InstanceDataStepRate = 0;
-
-	descs[2].SemanticName = "TEXCOORD";
-	descs[2].SemanticIndex = 0;
-	descs[2].Format = DXGI_FORMAT_R32G32_FLOAT;
-	descs[2].InputSlot = 0;
-	descs[2].AlignedByteOffset = sizeof(v3f) * 2;
-	descs[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	descs[2].InstanceDataStepRate = 0;
-
-	RHI::InputLayout inputLayout = renderer->rhi->createInputLayout(descs, ELEMENT_COUNT, &solidColourMat->vertexShader);
 	RefPtr<Mesh> cubeMesh = Mesh::meshManager.get(sID("unitCube")).getNonNull();
 
 	scene.objects.add(StaticMeshComponent({
 		cubeMesh,
 		solidColourMat.getNonNull(),
-		std::move(inputLayout),
 		{0.3f, 0.5f, 10.0f},
 	}));
 

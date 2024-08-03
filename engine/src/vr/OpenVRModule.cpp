@@ -144,35 +144,8 @@ void VRModule::render(RefPtr<Renderer> renderer) {
 
 		RefPtr<Material> mat = materialManager.get(sID("SolidColourMat")).getNonNull();
 
-		static const u32 VR_RENDER_MESH_ELEMENT_COUNT = 3;
-		D3D11_INPUT_ELEMENT_DESC descs[VR_RENDER_MESH_ELEMENT_COUNT];
-		descs[0].SemanticName = "POSITION";
-		descs[0].SemanticIndex = 0;
-		descs[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-		descs[0].InputSlot = 0;
-		descs[0].AlignedByteOffset = 0;
-		descs[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-		descs[0].InstanceDataStepRate = 0;
-
-		descs[1].SemanticName = "NORMAL";
-		descs[1].SemanticIndex = 0;
-		descs[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-		descs[1].InputSlot = 0;
-		descs[1].AlignedByteOffset = sizeof(v3f);
-		descs[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-		descs[1].InstanceDataStepRate = 0;
-
-		descs[2].SemanticName = "TEXCOORD";
-		descs[2].SemanticIndex = 0;
-		descs[2].Format = DXGI_FORMAT_R32G32_FLOAT;
-		descs[2].InputSlot = 0;
-		descs[2].AlignedByteOffset = sizeof(v3f)*2;
-		descs[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-		descs[2].InstanceDataStepRate = 0;
-
-		RHI::InputLayout inputLayout = renderer->rhi->createInputLayout(descs, VR_RENDER_MESH_ELEMENT_COUNT, &mat->vertexShader);
 		RefPtr<Scene> scene = application->getScene();
-		renderer->renderMesh(mesh.getNonNull(), v3{}, scene, mat, &inputLayout, 1);
+		renderer->renderMesh(mesh.getNonNull(), v3{}, scene, mat, 1);
 	}
 }
 

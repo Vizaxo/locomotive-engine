@@ -10,10 +10,10 @@
 #include "platform/Platform.h"
 
 struct Renderer {
-	StaticMeshComponent createStaticMeshComponent(RefPtr<Mesh> mesh, RefPtr<Material> material, RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count);
+	StaticMeshComponent createStaticMeshComponent(RefPtr<Mesh> mesh, RefPtr<Material> material, size_t count);
 	void RenderScene(float deltaTime, RefPtr<Scene> scene);
 	v2f getWindowSize();
-	void renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene>, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances);
+	void renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene>, RefPtr<Material> material, size_t instances);
 	CB::ViewCB makeViewCB(RefPtr<Camera::Camera> cam, v3 pos);
 
 	OwningPtr<RHI> rhi;

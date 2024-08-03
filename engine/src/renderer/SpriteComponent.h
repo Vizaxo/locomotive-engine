@@ -18,7 +18,6 @@ struct SpriteComponent {
 	bool enabled = false;
 
 	static SpriteComponent createSpriteComponent(RefPtr<RHI> rhi, SpriteComponentCB cbData);
-	static RHI::InputLayout createSpriteInputLayout(RefPtr<RHI> rhi);
 };
 
 RefPtr<Material, true> createSpriteMaterial(RefPtr<RHI> rhi, v2f windowSize);
