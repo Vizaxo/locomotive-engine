@@ -60,6 +60,15 @@ T dot(Vector<n, T> lhs, Vector<n, T> rhs) {
 	return sum;
 }
 
+template <typename T>
+Vector<3, T> cross(Vector<3, T> a, Vector<3, T> b) {
+	return {
+		a.y*b.z - a.z*b.y,
+		a.z*b.x - a.x*b.z,
+		a.x*b.y - a.y*b.x,
+	};
+}
+
 
 template <int n, typename T> inline T lenSquared(Vector<n, T> a) {
 	T sum = 0;
@@ -90,6 +99,14 @@ template <int n, typename T> inline Vector<n, T> normalize(Vector<n, T> v) {
 	Vector<n, T> ret;\
 	for (int i = 0; i < n; ++i) {\
 		ret[i] = f(in[i]);\
+	}\
+	return ret;\
+} while(0);
+
+#define COMPONENTWISE_UNARY_OP(op) do {\
+	Vector<n, T> ret;\
+	for (int i = 0; i < n; ++i) {\
+		ret[i] = op in[i];\
 	}\
 	return ret;\
 } while(0);
@@ -128,6 +145,8 @@ template <int n, typename T> inline Vector<n, T> normalize(Vector<n, T> v) {
 
 template <int n, typename T> Vector<n, T> floor(Vector<n, T> in) {COMPONENTWISE_UNARY(std::floor)}
 template <int n, typename T> Vector<n, T> ceil(Vector<n, T> in) {COMPONENTWISE_UNARY(std::ceil)}
+
+template <int n, typename T> Vector<n, T> operator-(Vector<n, T> in) {COMPONENTWISE_UNARY_OP(-)}
 
 template <int n, typename T> static Vector<n, T> operator+(Vector<n, T> a, Vector<n, T> b) {COMPONENTWISE_BINARY_OP(+)}
 template <int n, typename T> static Vector<n, T> operator-(Vector<n, T> a, Vector<n, T> b) {COMPONENTWISE_BINARY_OP(-)}

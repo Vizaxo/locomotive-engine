@@ -15,15 +15,17 @@ v2f Renderer::getWindowSize() {
 	return v2f{(float)clientRect.width(), (float)clientRect.height()};
 }
 
-void Renderer::renderMesh(RefPtr<Mesh> mesh, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
+CB::ViewCB Renderer::makeViewCB(RefPtr<Camera::Camera> cam) {
+	m44f model = translate(v4{0.3, 0.5, 0.0, 0.0f});
+	v2 windowSize = getWindowSize();
+	m44 viewProj = cam->cam3d.viewProj(windowSize.x/windowSize.y, 0.1, 100.);
+	m44 mvp = viewProj * model;
 
-	v3 t = { 0.3, 0.3, 0.0 };
-	// obj space -> world space
-	m44f model = translate(mkv4(t, 0.0f));
-	m44 view = translate(v4{0.0, 0.0, 0.0, 0.0}); // world space -> camera space
-	m44 projection = id44; // camera space -> clip space
-	m44 mvp = projection * view * model;
-	CB::ViewCB viewCB = { getWindowSize(), scene->eyePosition, mvp, scene->camZoom };
+	return { windowSize, {0,0}, mvp, 0.f };
+}
+
+void Renderer::renderMesh(RefPtr<Mesh> mesh, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
+	CB::ViewCB viewCB = makeViewCB(&scene->camera);
 	rhi->updateConstantBuffer<CB::ViewCB>(&material->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
 
 	for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
@@ -55,8 +57,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 		renderMesh(meshComponent.mesh, scene, meshComponent.material, &meshComponent.inputLayout, 1);
 	}
 
-	m44 mvp = id44;
-	CB::ViewCB viewCB = { getWindowSize(), scene->eyePosition, mvp, scene->camZoom };
+	CB::ViewCB viewCB = makeViewCB(&scene->camera);
 	{
 		// Render sprites
 		static RHI::BlendState alphaBlendState = rhi->createBlendState();
@@ -90,7 +91,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	}
 
 	application->render(this, viewCB);
-	Engine::vr->render(this);
+	if (Engine::vr) Engine::vr->render(this);
 
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), nullptr);
 	ImGui::Render();

@@ -29,6 +29,7 @@ struct VRModule {
 	void setupTrackedDevice(RefPtr<RHI> rhi, vr::TrackedDeviceIndex_t device);
 	void teardownTrackedDevice(RefPtr<RHI> rhi, vr::TrackedDeviceIndex_t device);
 	std::string getTrackedDeviceString(vr::TrackedDeviceIndex_t device, vr::TrackedDeviceProperty prop, vr::TrackedPropertyError* error = nullptr);
+	m44 getProjectionMatrix(vr::Hmd_Eye eye, float nearClip, float farClip);
 };
 
 Either<OwningPtr<VRModule>, InitError> loadVR(RefPtr<RHI> rhi);

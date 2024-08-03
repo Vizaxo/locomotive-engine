@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ConstantBuffers.h"
 #include "rhi/RHI.h"
 #include "types/Pointers.h"
 #include "Mesh.h"
@@ -13,6 +14,7 @@ struct Renderer {
 	void RenderScene(float deltaTime, RefPtr<Scene> scene);
 	v2f getWindowSize();
 	void renderMesh(RefPtr<Mesh> mesh, RefPtr<Scene>, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances);
+	CB::ViewCB makeViewCB(RefPtr<Camera::Camera> cam);
 
 	OwningPtr<RHI> rhi;
 	RHI::RenderTargetView backBufferRTV;

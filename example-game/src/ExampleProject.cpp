@@ -12,6 +12,7 @@
 #include "editor/ModelLoader.h"
 #include "types/Pointers.h"
 #include "Application.h"
+#include "EngineMain.h"
 #include "ecs/ECS.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
@@ -186,7 +187,8 @@ void ExampleApplication::setupLighting() {
 }
 
 void ExampleApplication::setupCamera() {
-	scene.lookDirection = XMVectorSet(0, -0.2, 1, 0);
+	scene.camera.cam3d.pos = v3{0.0, 0.0, -1.0};
+	scene.camera.cam3d.lookDirection = v3{0.0, 0.0, -1.0};
 }
 
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
@@ -252,7 +254,10 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 }
 
 void ExampleApplication::tick(float deltaTime) {
-
+	if (Engine::vr) {
+		scene.camera.cam3d.setCustomProj({Engine::vr->getProjectionMatrix(vr::Eye_Left, 0.1, 100.)});
+		// TODO: set pos
+	}
 	for (auto it = ECS::ecsManager.view<SpriteComponent>(); !it->atEnd(); it->next()) {
 		SpriteComponent& sp = **it;
 		sp.cbData.pos.x += 1;

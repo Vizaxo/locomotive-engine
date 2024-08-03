@@ -2,12 +2,16 @@
 
 #include "OpenVRModule.h"
 
+#include "Application.h"
+#include "EngineMain.h"
 #include "core/Log.h"
 #include "types/Either.h"
 #include "types/Pointers.h"
 #include "types/Types.h"
 
 namespace VR {
+
+const bool enableVR = false;
 
 Log::Channel vrChan = { "vr" };
 
@@ -24,8 +28,12 @@ std::string VRModule::getTrackedDeviceString(vr::TrackedDeviceIndex_t device, vr
 	return ret;
 }
 
-enum InitError : u8 {InitFailed, RenderModelInterfaceFalied, InitCompositorFailed};
+enum InitError : u8 {VRDisabled, InitFailed, RenderModelInterfaceFalied, InitCompositorFailed};
 Either<OwningPtr<VRModule>, InitError> loadVR(RefPtr<RHI> rhi) {
+	if (!enableVR) {
+		LOG(Log::INFO, vrChan, "VR not enabled. Aborting loadVR().");
+		return VRDisabled;
+	}
 	vr::EVRInitError error = vr::VRInitError_None;
 	OwningPtr<vr::IVRSystem, true, VRShutdown> vr = vr::VR_Init(&error, vr::VRApplication_Scene);
 
@@ -149,9 +157,19 @@ void VRModule::render(RefPtr<Renderer> renderer) {
 		descs[2].InstanceDataStepRate = 0;
 
 		RHI::InputLayout inputLayout = renderer->rhi->createInputLayout(descs, VR_RENDER_MESH_ELEMENT_COUNT, &mat->vertexShader);
-		Scene scene;
-		renderer->renderMesh(mesh.getNonNull(), &scene, mat, &inputLayout, 1);
+		RefPtr<Scene> scene = application->getScene();
+		renderer->renderMesh(mesh.getNonNull(), scene, mat, &inputLayout, 1);
 	}
+}
+
+m44 VRModule::getProjectionMatrix(vr::Hmd_Eye eye, float nearClip, float farClip) {
+	vr::HmdMatrix44_t mat = vr->GetProjectionMatrix(vr::Eye_Left, nearClip, farClip);
+	return {
+		mat.m[0][0], mat.m[1][0], mat.m[2][0], mat.m[3][0],
+		mat.m[0][1], mat.m[1][1], mat.m[2][1], mat.m[3][1],
+		mat.m[0][2], mat.m[1][2], mat.m[2][2], mat.m[3][2],
+		mat.m[0][3], mat.m[1][3], mat.m[2][3], mat.m[3][3],
+	};
 }
 
 }

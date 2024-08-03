@@ -69,6 +69,15 @@ Matrix<4,4,T> translate(Vector<4,T> t) {
 	         0.0, 0.0, 0.0, 1.0 });
 }
 
+template <typename T>
+Matrix<4,4,T> basis(Vector<3,T> x, Vector<3,T> y, Vector<3,T> z) {
+	return transpose<4,4,T>(
+		{ x.x, y.x, z.x, 0.0,
+	         x.y, y.y, z.y, 0.0,
+	         x.z, y.z, z.z, 0.0,
+	         0.0, 0.0, 0.0, 1.0 });
+}
+
 template <int n, typename T>
 constexpr Matrix<n,n,T> id() {
 	Matrix<n,n,T> ret;
