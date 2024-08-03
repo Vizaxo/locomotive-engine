@@ -158,7 +158,7 @@ void VRModule::render(RefPtr<Renderer> renderer) {
 
 		RHI::InputLayout inputLayout = renderer->rhi->createInputLayout(descs, VR_RENDER_MESH_ELEMENT_COUNT, &mat->vertexShader);
 		RefPtr<Scene> scene = application->getScene();
-		renderer->renderMesh(mesh.getNonNull(), scene, mat, &inputLayout, 1);
+		renderer->renderMesh(mesh.getNonNull(), v3{}, scene, mat, &inputLayout, 1);
 	}
 }
 

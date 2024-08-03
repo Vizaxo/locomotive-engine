@@ -61,7 +61,7 @@ Matrix<m, o, T> operator*(const Matrix<m, n, T>& lhs, const Matrix<n, o, T>& rhs
 }
 
 template <typename T>
-Matrix<4,4,T> translate(Vector<4,T> t) {
+Matrix<4,4,T> translate(Vector<3,T> t) {
 	return transpose<4,4,T>(
 		{ 1.0, 0.0, 0.0, t.x,
 	         0.0, 1.0, 0.0, t.y,

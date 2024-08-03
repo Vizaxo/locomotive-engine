@@ -15,17 +15,17 @@ v2f Renderer::getWindowSize() {
 	return v2f{(float)clientRect.width(), (float)clientRect.height()};
 }
 
-CB::ViewCB Renderer::makeViewCB(RefPtr<Camera::Camera> cam) {
-	m44f model = translate(v4{0.3, 0.5, 0.0, 0.0f});
+CB::ViewCB Renderer::makeViewCB(RefPtr<Camera::Camera> cam, v3 pos) {
+	m44f model = translate(pos);
 	v2 windowSize = getWindowSize();
 	m44 viewProj = cam->cam3d.viewProj(windowSize.x/windowSize.y, 0.1, 100.);
-	m44 mvp = viewProj * model;
+	m44 mvp = viewProj * model; //viewProj * model;
 
 	return { windowSize, {0,0}, mvp, 0.f };
 }
 
-void Renderer::renderMesh(RefPtr<Mesh> mesh, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
-	CB::ViewCB viewCB = makeViewCB(&scene->camera);
+void Renderer::renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
+	CB::ViewCB viewCB = makeViewCB(&scene->camera, pos);
 	rhi->updateConstantBuffer<CB::ViewCB>(&material->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
 
 	for (int i = 0; i < RHI::CONSTANT_BUFFER_COUNT; ++i) {
@@ -54,10 +54,10 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 
 	for (int i = 0; i < scene->objects.num(); i++) {
 		StaticMeshComponent& meshComponent = scene->objects[i];
-		renderMesh(meshComponent.mesh, scene, meshComponent.material, &meshComponent.inputLayout, 1);
+		renderMesh(meshComponent.mesh, meshComponent.pos, scene, meshComponent.material, &meshComponent.inputLayout, 1);
 	}
 
-	CB::ViewCB viewCB = makeViewCB(&scene->camera);
+	CB::ViewCB viewCB = makeViewCB(&scene->camera, v3{});
 	{
 		// Render sprites
 		static RHI::BlendState alphaBlendState = rhi->createBlendState();
@@ -86,7 +86,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 			rhi->bindTextureSRV(0, spriteSheet->texture);
 			rhi->bindStructuredBufferSRV(1, &spriteBuffer);
 			rhi->bindSampler(0, spriteSheet->texture);
-			renderMesh(unitSquare, scene, spriteMaterial, &spriteInputLayout, spriteData.count);
+			renderMesh(unitSquare, v3{}, scene, spriteMaterial, &spriteInputLayout, spriteData.count);
 		}
 	}
 

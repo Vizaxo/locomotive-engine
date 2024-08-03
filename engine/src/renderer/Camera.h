@@ -6,7 +6,7 @@ namespace Camera {
 
 struct Camera3D {
 	v3 pos;
-	v3 lookDirection;
+	v3 lookDirection = {0., 0., 1. };
 	v3 worldUp = {0., 1., 0. };
 	float fov = 45.;
 	bool customProj = false;
