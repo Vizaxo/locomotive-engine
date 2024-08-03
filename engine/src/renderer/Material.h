@@ -8,7 +8,6 @@
 struct Material {
 	RHI::VertexShader vertexShader;
 	RHI::PixelShader pixelShader;
-	//RHI::InputLayout inputLayout;
 
 	RHI::ConstantBuffer constantBuffers[RHI::CONSTANT_BUFFER_COUNT] = {};
 

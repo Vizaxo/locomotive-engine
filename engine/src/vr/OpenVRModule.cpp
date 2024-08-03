@@ -83,8 +83,22 @@ void VRModule::setupTrackedDevice(RefPtr<RHI> rhi, vr::TrackedDeviceIndex_t devi
 			if (error != vr::VRRenderModelError_Loading)
 				break;
 		}
-		RefPtr<Mesh, true> mesh = Mesh::createMesh<vr::RenderModel_Vertex_t, u16>(rhi, sID(renderModelName.c_str()),
-			renderModel->rVertexData, renderModel->unVertexCount,
+
+		struct VRVert {
+			v3f pos;
+			v3f normal;
+			v2f uv;
+			static VertSemantic getSemantic(u8 index) {
+				switch (index) {
+				case 0: return {VertType::POSITION, 0, RHICommon::R32G32B32};
+				case 1: return {VertType::NORMAL, 0, RHICommon::R32G32B32};
+				case 2: return {VertType::TEXCOORD, 0, RHICommon::R32G32};
+				default: return {VertType::NONE};
+				}
+			}
+		};
+		RefPtr<Mesh, true> mesh = Mesh::createMesh<VRVert, u16>(rhi, sID(renderModelName.c_str()),
+			(const VRVert*)renderModel->rVertexData, renderModel->unVertexCount,
 			renderModel->rIndexData, renderModel->unTriangleCount*3);
 		if (mesh)
 			deviceMeshes[device] = mesh;

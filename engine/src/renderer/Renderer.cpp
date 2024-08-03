@@ -24,7 +24,7 @@ CB::ViewCB Renderer::makeViewCB(RefPtr<Camera::Camera> cam, v3 pos) {
 	return { windowSize, {0,0}, mvp, 0.f };
 }
 
-void Renderer::renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayout, size_t instances) {
+void Renderer::renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene> scene, RefPtr<Material> material, RefPtr<RHI::InputLayout> inputLayoutDELETE, size_t instances) {
 	CB::ViewCB viewCB = makeViewCB(&scene->camera, pos);
 	rhi->updateConstantBuffer<CB::ViewCB>(&material->constantBuffers[CB::View], viewCB); //TODO: ints being copied into floats. marshall or make them the same type
 
@@ -36,7 +36,8 @@ void Renderer::renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene> scene, RefPtr
 	rhi->setIndexBuffer(&mesh->indexBuffer);
 	rhi->setVertexShader(&material->vertexShader);
 	rhi->setPixelShader(&material->pixelShader);
-	rhi->setInputLayout(inputLayout);
+	RHI::InputLayout inputLayout = mesh->generateInputLayout(rhi, material);
+	rhi->setInputLayout(&inputLayout);
 
 	//rhi->deviceContext->DrawIndexed(mesh->indexBuffer.indices, 0, 0);
 	rhi->deviceContext->DrawIndexedInstanced(mesh->indexBuffer.indices, instances, 0, 0, 0);

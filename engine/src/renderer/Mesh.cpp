@@ -5,15 +5,39 @@
 
 ResourceManager<Mesh> Mesh::meshManager;
 
-v3f unitCubeVerts[8] = {
-	{-1.0f, -1.0f, -1.0f},
-	{-1.0f, 1.0f, -1.0f },
-	{1.0f,  1.0f, -1.0f },
-	{1.0f,  -1.0f, -1.0f },
-	{-1.0f, -1.0f,  1.0f },
-	{-1.0f, 1.0f,  1.0f },
-	{1.0f,  1.0f,  1.0f },
-	{1.0f,  -1.0f,  1.0f },
+struct pos3 {
+	v3f p;
+	static VertSemantic getSemantic(u8 index) {
+		switch(index) {
+		case 0: return {VertType::POSITION, 0, RHICommon::R32G32B32};
+		default: return {VertType::NONE};
+		}
+	}
+};
+
+struct pos3norm3 {
+	v3f p;
+	v3f normal;
+	static VertSemantic getSemantic(u8 index) {
+		switch(index) {
+		case 0: return {VertType::POSITION, 0, RHICommon::R32G32B32};
+		case 1: return {VertType::NORMAL, 0, RHICommon::R32G32B32};
+		default: return {VertType::NONE};
+		}
+	}
+};
+
+
+//TODO: generate normals
+pos3norm3 unitCubeVerts[8] = {
+	{-1.0f, -1.0f, -1.0f, {}},
+	{-1.0f, 1.0f, -1.0f, {} },
+	{1.0f,  1.0f, -1.0f, {} },
+	{1.0f,  -1.0f, -1.0f, {} },
+	{-1.0f, -1.0f,  1.0f, {} },
+	{-1.0f, 1.0f,  1.0f, {} },
+	{1.0f,  1.0f,  1.0f, {} },
+	{1.0f,  -1.0f,  1.0f, {} },
 };
 
 u16 unitCubeIndices[36] = {
@@ -28,6 +52,13 @@ u16 unitCubeIndices[36] = {
 struct vert2dPosUV {
 	v2f pos;
 	v2f uv;
+	static VertSemantic getSemantic(u8 index) {
+		switch (index) {
+		case 0: return { VertType::POSITION, 0, RHICommon::R32G32 };
+		case 1: return { VertType::TEXCOORD, 0, RHICommon::R32G32 };
+		default: return { VertType::NONE, 0 };
+		}
+	}
 };
 
 vert2dPosUV unitSquareVerts[4] = {
@@ -50,7 +81,32 @@ u16 screenPassMeshIndices[3] = {
 };
 
 void Mesh::registerSimpleMeshes(RefPtr<RHI> rhi) {
-	createMesh<v3f, u16>(rhi, sID("unitCube"), unitCubeVerts, COUNT(unitCubeVerts), unitCubeIndices, COUNT(unitCubeIndices));
+	createMesh<pos3norm3, u16>(rhi, sID("unitCube"), unitCubeVerts, COUNT(unitCubeVerts), unitCubeIndices, COUNT(unitCubeIndices));
 	createMesh<vert2dPosUV, u16>(rhi, sID("unitSquare"), unitSquareVerts, COUNT(unitSquareVerts), unitSquareIndices, COUNT(unitSquareIndices));
 	createMesh<vert2dPosUV, u16>(rhi, sID("screenPassMesh"), screenPassMeshVerts, COUNT(screenPassMeshVerts), screenPassMeshIndices, COUNT(screenPassMeshIndices));
+}
+
+RHI::InputLayout Mesh::generateInputLayout(RefPtr<RHI> rhi, RefPtr<Material> material) {
+	u8 numElements = 0;
+
+	// TODO: make generic RHI layer for this
+	D3D11_INPUT_ELEMENT_DESC elementDescs[MAX_ELEMENTS];
+	u8 runningByteOffset = 0;
+	for (int i = 0; i < MAX_ELEMENTS; ++i) {
+		if (elements[i].semantic == VertType::NONE)
+			break;
+
+		elementDescs[i].SemanticName = elements[i].getSemanticName();
+		elementDescs[i].SemanticIndex = elements[i].index;
+		elementDescs[i].Format = RHID3D11::getRHIFormat(elements[i].format);
+		elementDescs[i].InputSlot = elements[i].slot;
+		elementDescs[i].AlignedByteOffset = runningByteOffset;
+		elementDescs[i].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		elementDescs[i].InstanceDataStepRate = 0;
+
+		runningByteOffset += RHICommon::stride(elements[i].format);
+		numElements++;
+	}
+
+	return rhi->createInputLayout(elementDescs, numElements, &material->vertexShader);
 }
