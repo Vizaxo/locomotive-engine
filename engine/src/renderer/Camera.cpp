@@ -7,11 +7,12 @@
 namespace Camera {
 
 v3 Camera3D::worldRight() {
-	return cross(lookDirection, worldUp);
+	return {};//cross(lookDirection, worldUp);
 }
 
 m44 Camera3D::view() {
-	return basis(worldRight(), worldUp, lookDirection);
+	//return basis(worldRight(), worldUp, lookDirection);
+	return translate(pos) * euler(rot);
 }
 
 void Camera3D::setCustomProj(m44 proj) {

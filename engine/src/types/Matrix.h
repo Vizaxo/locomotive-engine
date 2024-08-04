@@ -104,6 +104,11 @@ Matrix<4,4,T> rotZ(T a) {
 }
 
 template <typename T>
+Matrix<4,4,T> euler(Vector<3,T> rot) {
+	return rotZ(rot.z) * rotX(rot.x) * rotY(rot.y);
+}
+
+template <typename T>
 Matrix<4,4,T> scale(Vector<3,T> s) {
 	return transpose<4,4,T>(
 		{ s.x, 0.0, 0.0, 0.0,

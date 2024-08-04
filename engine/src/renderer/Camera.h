@@ -6,8 +6,9 @@ namespace Camera {
 
 struct Camera3D {
 	v3 pos;
-	v3 lookDirection = {0., 0., 1. };
-	v3 worldUp = {0., 1., 0. };
+	//v3 lookDirection = {0., 0., 1. };
+	//v3 worldUp = {0., 1., 0. };
+	v3 rot;
 	float fov = 45.;
 	bool customProj = false;
 	m44 projection;

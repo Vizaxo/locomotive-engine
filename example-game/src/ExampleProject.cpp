@@ -49,7 +49,7 @@ void ExampleApplication::setupLighting() {
 
 void ExampleApplication::setupCamera() {
 	scene.camera.cam3d.pos = v3{0.0, 0.0, -1.0};
-	scene.camera.cam3d.lookDirection = v3{0.0, 0.0, -1.0};
+	scene.camera.cam3d.rot = v3{0.0, 0.0, 0.0};
 }
 
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
@@ -123,10 +123,11 @@ void ExampleApplication::tick(float dt) {
 	}
 
 	if (mouseMode == MoveCamera) {
-		float mouseSensitivity = 0.001;
-		float yaw = (float)Mouse::dx * mouseSensitivity;
-		float pitch = (float)Mouse::dy * mouseSensitivity;
-		scene.camera.cam3d.lookDirection = (rotY(yaw) * mkv4(scene.camera.cam3d.lookDirection, 0.0)).xyz();
+		float mouseSensitivity = 0.002;
+		float yaw = -(float)Mouse::dx * mouseSensitivity;
+		float pitch = -(float)Mouse::dy * mouseSensitivity;
+		scene.camera.cam3d.rot.y += yaw;
+		scene.camera.cam3d.rot.x += pitch;
 
 	//	XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldUp, yaw));
 	//	scene.camera.cam3d.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldRight(), -pitch));
@@ -157,15 +158,15 @@ RefPtr<Scene> ExampleApplication::getScene() {
 void ExampleApplication::mouseButtonDown(Mouse::Button b) {
 	if (b == Mouse::Button::M2) {
 		Mouse::lockCursorToWindow(windowHandle);
+		mouseMode = MoveCamera;
 	}
-	mouseMode = MoveCamera;
 }
 
 void ExampleApplication::mouseButtonUp(Mouse::Button b) {
 	if (b == Mouse::Button::M2) {
 		Mouse::unlockCursorFromWindow(windowHandle);
+		mouseMode = Nop;
 	}
-	mouseMode = Nop;
 }
 
 void ExampleApplication::cleanup() {
