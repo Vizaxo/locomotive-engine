@@ -96,6 +96,7 @@ void ExampleApplication::tick(float dt) {
 
 	static float t = 0;
 	t += dt;
+	/*
 	for (auto it = ECS::ecsManager.view<TransformComponent>(); !it->atEnd(); it->next()) {
 		TransformComponent& transform = **it;
 		transform.pos.x = sin(t/2) / 2;
@@ -104,19 +105,21 @@ void ExampleApplication::tick(float dt) {
 		transform.rot.y = t;
 		transform.scale.x = sin(t/4);
 	}
-	/*
+	*/
+
 	{
-		ImGui::Begin("Objects");
-		if (scene.objects.size() >= 1)
-			MkSliderV3("Plane", scene.objects[0].GetPos(), -10.0f, 10.0f);
-		if (scene.objects.size() >= 2)
-			MkSliderV3("Hex 1", scene.objects[1].GetPos(), -2.0f, 2.0f);
-		if (scene.objects.size() >= 3)
-			MkSliderV3("Textured cube", scene.objects[2].GetPos(), -2.0f, 2.0f);
-		if (scene.objects.size() >= 4)
-			MkSliderV3("Dragon", scene.objects[3].GetPos(), -5.0f, 5.0f);
+		static ECS::Entity entity = 0;
+		RefPtr<TransformComponent, true> t = ECS::ecsManager.getComponent<TransformComponent>(entity);
+		ImGui::Begin("Transform");
+			ImGui::SliderInt("Entity", (i32*)&entity, 0, 10, "%d");
+			if (t) {
+				ImGui::SliderFloat3("Position", t->pos.v, -5, 5);
+				ImGui::SliderFloat3("Rotation", t->rot.v, -3.14, 3.14);
+				ImGui::SliderFloat3("Scale", t->scale.v, 0, 5);
+			}
 		ImGui::End();
 	}
+/*
 
 	if (mouseMode == MoveCamera) {
 		float mouseSensitivity = 0.001;
