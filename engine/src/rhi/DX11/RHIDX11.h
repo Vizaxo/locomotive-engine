@@ -36,10 +36,20 @@ struct RHI {
 	InputLayout createInputLayout(RefPtr<D3D11_INPUT_ELEMENT_DESC> descs, size_t count, RefPtr<VertexShader> vs);
 	void setInputLayout(RefPtr<InputLayout> inputLayout);
 
-	struct VertexBuffer {
-		OwningPtr<ID3D11Buffer, false, ReleaseCOM> gpu_vertexBuffer;
+	struct Buffer {
+		OwningPtr<ID3D11Buffer, false, ReleaseCOM> gpu_buffer;
 		uint stride;
+		size_t count;
+
+		void* mapWrite(RefPtr<RHI> rhi);
+		void* mapRead(RefPtr<RHI> rhi);
+		void unmap(RefPtr<RHI> rhi);
+		Buffer createStagingBuffer(RefPtr<RHI> rhi);
 	};
+
+	struct VertexBuffer : Buffer {
+	};
+
 	template <typename T>
 	VertexBuffer createVertexBuffer(RefPtr<T> verts, size_t count) {
 		uint stride = sizeof(T);
@@ -47,8 +57,8 @@ struct RHI {
 
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		vertexBufferDesc.ByteWidth = count * stride;
-		vertexBufferDesc.CPUAccessFlags = 0;
-		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 
 		D3D11_SUBRESOURCE_DATA resourceData = {};
 		resourceData.pSysMem = verts.getRaw();
@@ -56,13 +66,11 @@ struct RHI {
 		ID3D11Buffer* vertexBuffer;
 		HRASSERT(device->CreateBuffer(&vertexBufferDesc, &resourceData, &vertexBuffer));
 
-		return { std::move(vertexBuffer), stride };
+		return { std::move(vertexBuffer), stride, count };
 	}
 	void setVertexBuffer(RefPtr<VertexBuffer> vertexBuffer, uint slot);
 
-	struct IndexBuffer {
-		OwningPtr<ID3D11Buffer, false, ReleaseCOM> gpu_indexBuffer;
-		size_t indices;
+	struct IndexBuffer : Buffer {
 		DXGI_FORMAT format;
 		D3D11_PRIMITIVE_TOPOLOGY primitiveTopology;
 	};
@@ -89,17 +97,16 @@ struct RHI {
 		ID3D11Buffer* indexBuffer;
 		HRASSERT(device->CreateBuffer(&indexBufferDesc, &resourceData, &indexBuffer));
 
-		return {std::move(indexBuffer), count, format, primitiveTopology};
+		return {std::move(indexBuffer), sizeof(T), count, format, primitiveTopology};
 	}
 
-	struct Buffer {
-		OwningPtr<ID3D11Buffer, false, ReleaseCOM> gpu_buffer;
+	struct StructuredBuffer : Buffer {
 		OwningPtr<ID3D11ShaderResourceView, false, ReleaseCOM> srv;
-		size_t count;
 		DXGI_FORMAT format;
 	};
+
 	template <typename T>
-	Buffer createStructuredBuffer(RefPtr<T> data, size_t count) {
+	StructuredBuffer createStructuredBuffer(RefPtr<T> data, size_t count) {
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 		bufferDesc.ByteWidth = count * sizeof(T);
@@ -129,10 +136,10 @@ struct RHI {
 			HRASSERT(device->CreateShaderResourceView(buffer, &desc, &srv.getRaw()));
 		}
 
-		return {std::move(buffer), std::move(srv.getNonNull()), count, format };
+		return {std::move(buffer), sizeof(T), count, std::move(srv.getNonNull()), format };
 	}
 
-	void bindStructuredBufferSRV(u32 slot, RefPtr<Buffer> sb) {
+	void bindStructuredBufferSRV(u32 slot, RefPtr<StructuredBuffer> sb) {
 		deviceContext->VSSetShaderResources(slot, 1, &sb->srv.getRaw());
 		deviceContext->PSSetShaderResources(slot, 1, &sb->srv.getRaw());
 	}

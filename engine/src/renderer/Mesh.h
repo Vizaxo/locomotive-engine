@@ -38,6 +38,7 @@ struct Mesh {
 	template <typename V, typename I>
 	static RefPtr<Mesh, true> createMesh(RefPtr<RHI> rhi, StringId id, RefPtr<const V> verts, size_t vert_count, RefPtr<const I> indices, size_t index_count);
 	RHI::InputLayout generateInputLayout(RefPtr<RHI> rhi, RefPtr<Material> material);
+	void generateNormals(RefPtr<RHI> rhi);
 
 	static void registerSimpleMeshes(RefPtr<RHI> rhi);
 

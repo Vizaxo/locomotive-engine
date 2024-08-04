@@ -135,11 +135,11 @@ void RHI::setInputLayout(RefPtr<RHI::InputLayout> inputLayout) {
 
 void RHI::setVertexBuffer(RefPtr<RHI::VertexBuffer> vertexBuffer, uint slot) {
 	uint offset = 0;
-	deviceContext->IASetVertexBuffers(slot, 1, &vertexBuffer->gpu_vertexBuffer.getRaw(), &vertexBuffer->stride, &offset);
+	deviceContext->IASetVertexBuffers(slot, 1, &vertexBuffer->gpu_buffer.getRaw(), &vertexBuffer->stride, &offset);
 }
 
 void RHI::setIndexBuffer(RefPtr<IndexBuffer> indexBuffer) {
-	deviceContext->IASetIndexBuffer(indexBuffer->gpu_indexBuffer.getRaw(), indexBuffer->format, 0);
+	deviceContext->IASetIndexBuffer(indexBuffer->gpu_buffer.getRaw(), indexBuffer->format, 0);
 	deviceContext->IASetPrimitiveTopology(indexBuffer->primitiveTopology);
 }
 
@@ -265,4 +265,32 @@ RHID3D11::RHIFormat RHID3D11::getRHIFormat(PixelFormat pf) {
 	case R32G32B32: return DXGI_FORMAT_R32G32B32_FLOAT;
 	case R32G32B32A32: return DXGI_FORMAT_R32G32B32A32_FLOAT;
 	}
+}
+
+void* RHI::Buffer::mapWrite(RefPtr<RHI> rhi) {
+	D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+	HRASSERT(rhi->deviceContext->Map(gpu_buffer.getRaw(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
+	return mappedResource.pData;
+}
+
+void* RHI::Buffer::mapRead(RefPtr<RHI> rhi) {
+	D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+	HRASSERT(rhi->deviceContext->Map(gpu_buffer.getRaw(), 0, D3D11_MAP_READ, 0, &mappedResource));
+	return mappedResource.pData;
+}
+
+void RHI::Buffer::unmap(RefPtr<RHI> rhi) {
+	rhi->deviceContext->Unmap(gpu_buffer.getRaw(), 0);
+}
+
+RHI::Buffer RHI::Buffer::createStagingBuffer(RefPtr<RHI> rhi) {
+	D3D11_BUFFER_DESC desc;
+	gpu_buffer->GetDesc(&desc);
+	desc.Usage = D3D11_USAGE_STAGING;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	desc.BindFlags = 0;
+	ID3D11Buffer* stagingBuffer;
+	HRASSERT(rhi->device->CreateBuffer(&desc, nullptr, &stagingBuffer));
+	rhi->deviceContext->CopyResource(stagingBuffer, gpu_buffer.getRaw());
+	return {std::move(stagingBuffer), stride, count};
 }

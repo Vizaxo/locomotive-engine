@@ -40,7 +40,7 @@ void Renderer::renderMesh(RefPtr<Mesh> mesh, v3 pos, RefPtr<Scene> scene, RefPtr
 	rhi->setInputLayout(&inputLayout);
 
 	//rhi->deviceContext->DrawIndexed(mesh->indexBuffer.indices, 0, 0);
-	rhi->deviceContext->DrawIndexedInstanced(mesh->indexBuffer.indices, instances, 0, 0, 0);
+	rhi->deviceContext->DrawIndexedInstanced(mesh->indexBuffer.count, instances, 0, 0, 0);
 }
 
 void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
@@ -74,7 +74,7 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 			RefPtr<Material> spriteMaterial = materialManager.get(sID("spriteMaterial")).getNonNull();
 
 			ArrayView<ECS::Stored<SpriteComponent>> spriteData = ECS::ecsManager.getComponentManager<SpriteComponent>()->getRawBuffer();
-			RHI::Buffer spriteBuffer = rhi->createStructuredBuffer<ECS::Stored<SpriteComponent>>(spriteData.data, spriteData.count);
+			RHI::StructuredBuffer spriteBuffer = rhi->createStructuredBuffer<ECS::Stored<SpriteComponent>>(spriteData.data, spriteData.count);
 
 			//TODO: lift these out of individual components
 			RefPtr<SpriteSheet> spriteSheet = &terrainSpriteSheet;

@@ -90,7 +90,7 @@ template <int n, typename T> inline Vector<n, T> normalize(Vector<n, T> v) {
 	float lenSq = lenSquared(v);
 	float len = std::sqrt(lenSq);
 	for (int i = 0; i < n; ++i) {
-		ret[i] /= len;
+		ret[i] = v[i]/len;
 	}
 	return ret;
 }
