@@ -60,6 +60,13 @@ Matrix<m, o, T> operator*(const Matrix<m, n, T>& lhs, const Matrix<n, o, T>& rhs
 	return ret;
 }
 
+template <int m, int n, typename T>
+Vector<m, T> operator*(const Matrix<m, n, T>& lhs, const Vector<n, T>& rhs) {
+	Matrix<4,1,T> mat;
+	mat[0] = rhs;
+	return (lhs * mat)[0];
+}
+
 template <typename T>
 Matrix<4,4,T> translate(Vector<3,T> t) {
 	return transpose<4,4,T>(

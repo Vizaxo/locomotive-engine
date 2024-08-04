@@ -53,6 +53,8 @@ void ExampleApplication::setupCamera() {
 }
 
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
+	windowHandle = h;
+
 	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<SpriteComponent>());
 	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<StaticMeshComponent>());
 	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<TransformComponent>());
@@ -119,17 +121,18 @@ void ExampleApplication::tick(float dt) {
 			}
 		ImGui::End();
 	}
-/*
 
 	if (mouseMode == MoveCamera) {
 		float mouseSensitivity = 0.001;
-		float yaw = Mouse::dx * mouseSensitivity;
-		float pitch = Mouse::dy * mouseSensitivity;
-		scene.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldUp, yaw));
-		scene.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldRight(), -pitch));
+		float yaw = (float)Mouse::dx * mouseSensitivity;
+		float pitch = (float)Mouse::dy * mouseSensitivity;
+		scene.camera.cam3d.lookDirection = (rotY(yaw) * mkv4(scene.camera.cam3d.lookDirection, 0.0)).xyz();
+
+	//	XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldUp, yaw));
+	//	scene.camera.cam3d.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldRight(), -pitch));
 	}
 
-
+/*
 	DirectX::XMVECTOR localDirection = XMVectorSet(0,0,0,0);
 	if (Keyboard::keysDown.find(Keyboard::Key::W) != Keyboard::keysDown.end())
 		localDirection += XMVectorSet(0,0,1,0);

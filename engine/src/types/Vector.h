@@ -5,6 +5,17 @@
 #define IMPLEMENT_ARRAY_OPERATORS const T& operator[](int x) const { return v[x]; }\
 	T& operator[](int x) { return v[x]; }
 
+#define IMPLEMENT_3D_TO_2D_SWIZZLES \
+	const Vector<2,T> xy() { return {x, y}; } \
+	const Vector<2,T> yx() { return {y, x}; } \
+	const Vector<2,T> xz() { return {x, z}; } \
+	const Vector<2,T> zx() { return {z, x}; } \
+	const Vector<2,T> yz() { return {y, z}; } \
+	const Vector<2,T> zy() { return {z, y}; }
+
+#define IMPLEMENT_4D_TO_3D_SWIZZLES \
+	const Vector<3,T> xyz() { return {x, y, z}; } \
+
 template <int n, typename T>
 struct Vector {
 	T v[n];
@@ -33,6 +44,7 @@ struct Vector<3,T> {
 			T z;
 		};
 	};
+	IMPLEMENT_3D_TO_2D_SWIZZLES;
 	IMPLEMENT_ARRAY_OPERATORS
 };
 
@@ -48,6 +60,8 @@ struct Vector<4,T> {
 		};
 		Vector<3,T> v3;
 	};
+	IMPLEMENT_3D_TO_2D_SWIZZLES;
+	IMPLEMENT_4D_TO_3D_SWIZZLES;
 	IMPLEMENT_ARRAY_OPERATORS
 };
 
