@@ -31,7 +31,6 @@ void buttonDown(Button b) { application->mouseButtonDown(b); }
 void buttonUp(Button b)   { application->mouseButtonUp(b);   }
 
 void lockCursorToWindow(PAL::WindowHandle* h) {
-	assert(mouseState == Free);
 	savedCursorPos = PAL::getCursorPos();
 	PAL::mouseSetCapture(h);
 	PAL::showCursor(false);
@@ -40,7 +39,6 @@ void lockCursorToWindow(PAL::WindowHandle* h) {
 }
 
 void unlockCursorFromWindow(PAL::WindowHandle* h) {
-	assert(mouseState == LockedToWindow);
 	PAL::mouseReleaseCapture(h);
 	PAL::showCursor(true);
 	PAL::setCursorPosition(savedCursorPos);

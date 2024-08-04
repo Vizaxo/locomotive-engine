@@ -176,6 +176,17 @@ template <int n, typename T> static Vector<n, T> operator+(Vector<n, T> a, T b) 
 template <int n, typename T> static Vector<n, T> operator-(Vector<n, T> a, T b) {VEC_SCALAR_BINARY_OP(-)}
 template <int n, typename T> static Vector<n, T> operator*(Vector<n, T> a, T b) {VEC_SCALAR_BINARY_OP(*)}
 template <int n, typename T> static Vector<n, T> operator/(Vector<n, T> a, T b) {VEC_SCALAR_BINARY_OP(/)}
+template <int n, typename T> static Vector<n, T> operator+(T b, Vector<n, T> a) {VEC_SCALAR_BINARY_OP(+)}
+template <int n, typename T> static Vector<n, T> operator-(T b, Vector<n, T> a) {VEC_SCALAR_BINARY_OP(-)}
+template <int n, typename T> static Vector<n, T> operator*(T b, Vector<n, T> a) {VEC_SCALAR_BINARY_OP(*)}
+template <int n, typename T> static Vector<n, T> operator/(T b, Vector<n, T> a) {VEC_SCALAR_BINARY_OP(/)}
+
+template <int n, typename T> static Vector<n, T>& operator+=(Vector<n,T>& lhs, const Vector<n, T>& rhs) {
+	for (int i = 0; i < n; ++i) {
+		lhs[i] += rhs[i];
+	}
+	return lhs;
+}
 
 template <int n, typename T> bool operator==(Vector<n, T> lhs, Vector<n, T> rhs) {
 	bool ret = true;

@@ -124,32 +124,29 @@ void ExampleApplication::tick(float dt) {
 
 	if (mouseMode == MoveCamera) {
 		float mouseSensitivity = 0.002;
-		float yaw = -(float)Mouse::dx * mouseSensitivity;
-		float pitch = -(float)Mouse::dy * mouseSensitivity;
+		float yaw = (float)Mouse::dx * mouseSensitivity;
+		float pitch = (float)Mouse::dy * mouseSensitivity;
 		scene.camera.cam3d.rot.yaw += yaw;
 		scene.camera.cam3d.rot.pitch += pitch;
 		scene.camera.cam3d.rot.pitch = min(pi, max(-pi, scene.camera.cam3d.rot.pitch));
-
-	//	XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldUp, yaw));
-	//	scene.camera.cam3d.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldRight(), -pitch));
 	}
 
-/*
-	DirectX::XMVECTOR localDirection = XMVectorSet(0,0,0,0);
-	if (Keyboard::keysDown.find(Keyboard::Key::W) != Keyboard::keysDown.end())
-		localDirection += XMVectorSet(0,0,1,0);
-	if (Keyboard::keysDown.find(Keyboard::Key::A) != Keyboard::keysDown.end())
-		localDirection += XMVectorSet(1,0,0,0);
-	if (Keyboard::keysDown.find(Keyboard::Key::S) != Keyboard::keysDown.end())
-		localDirection += XMVectorSet(-1,0,0,0);
-	if (Keyboard::keysDown.find(Keyboard::Key::D) != Keyboard::keysDown.end())
-		localDirection += XMVectorSet(0,0,-1,0);
+	v4 localDirection = {};
+	if (Keyboard::keysDown.find(Keyboard::Key::Period) != Keyboard::keysDown.end())
+		localDirection += v4{0,0,-1,0};
+	if (Keyboard::keysDown.find(Keyboard::Key::O) != Keyboard::keysDown.end())
+		localDirection += v4{-1,0,0,0};
+	if (Keyboard::keysDown.find(Keyboard::Key::E) != Keyboard::keysDown.end())
+		localDirection += v4{0,0,1,0};
+	if (Keyboard::keysDown.find(Keyboard::Key::U) != Keyboard::keysDown.end())
+		localDirection += v4{1,0,0,0};
 
-	DirectX::XMVECTOR worldDirection = DirectX::XMVector3Transform(localDirection, scene.localToWorld());
+	if (localDirection != v4{0, 0, 0, 0}) {
+		v3 worldDirection = (invEuler(scene.camera.cam3d.rot) * normalize(localDirection)).xyz();
 
-	const float movementSpeed = 5.0f;
-	scene.eyePosition += movementSpeed * deltaTime * worldDirection;
-	*/
+		const float movementSpeed = 5.0f;
+		scene.camera.cam3d.pos += movementSpeed * dt * worldDirection;
+	}
 }
 
 RefPtr<Scene> ExampleApplication::getScene() {

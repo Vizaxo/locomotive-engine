@@ -105,7 +105,12 @@ Matrix<4,4,T> rotZ(T a) {
 
 template <typename T>
 Matrix<4,4,T> euler(Vector<3,T> rot) {
-	return rotZ(rot.z) * rotX(rot.x) * rotY(rot.y);
+	return rotZ(rot.roll) * rotX(rot.pitch) * rotY(rot.yaw);
+}
+
+template <typename T>
+Matrix<4,4,T> invEuler(Vector<3,T> rot) {
+	return rotY(-rot.yaw) * rotX(-rot.pitch) * rotZ(-rot.roll);
 }
 
 template <typename T>
