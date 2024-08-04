@@ -51,3 +51,4 @@ struct TypeID {
 TYPEID_IMPL_STRUCT_NS(ECS, TestComponent);
 TYPEID_IMPL_STRUCT_NS(ECS, AnotherComponent);
 TYPEID_IMPL_STRUCT(SpriteComponent);
+TYPEID_IMPL_STRUCT(StaticMeshComponent);

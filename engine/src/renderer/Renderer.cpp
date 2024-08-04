@@ -53,8 +53,9 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	rhi->deviceContext->OMSetRenderTargets(1, &backBufferRTV.rtv.getRaw(), backBufferDepthStencilView.depthStencilView.getRaw());
 	rhi->deviceContext->OMSetDepthStencilState(backBufferDepthStencilState.getRaw(), 0);
 
-	for (int i = 0; i < scene->objects.num(); i++) {
-		StaticMeshComponent& meshComponent = scene->objects[i];
+	//for (int i = 0; i < scene->objects.num(); i++) {
+	for (auto it = ECS::ecsManager.view<StaticMeshComponent>(); !it->atEnd(); it->next()) {
+		StaticMeshComponent& meshComponent = **it;
 		renderMesh(meshComponent.mesh, meshComponent.pos, scene, meshComponent.material, 1);
 	}
 

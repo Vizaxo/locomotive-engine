@@ -52,10 +52,13 @@ void ExampleApplication::setupCamera() {
 }
 
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
+	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<SpriteComponent>());
+	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<StaticMeshComponent>());
+
 	RefPtr<Material, true> solidColourMat = materialManager.get(sID("SolidColourMat"));
 	RefPtr<Mesh> cubeMesh = Mesh::meshManager.get(sID("unitCube")).getNonNull();
 
-	scene.objects.add(StaticMeshComponent({
+	ECS::ecsManager.addComponent(ECS::generateEntity(), StaticMeshComponent({
 		cubeMesh,
 		solidColourMat.getNonNull(),
 		{0.3f, 0.5f, 10.0f},
@@ -64,7 +67,8 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/stanford_dragon_res3.ply");
 	if (res.index() == 0) {
 		RefPtr<Mesh> dragonMesh = std::get<RefPtr<Mesh, true>>(res).getNonNull();
-		scene.objects.add(StaticMeshComponent({
+
+		ECS::ecsManager.addComponent(ECS::generateEntity(), StaticMeshComponent({
 			dragonMesh,
 			solidColourMat.getNonNull(),
 			{0.0f, -.5f, 1.0f},
@@ -77,19 +81,21 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	SpriteSheetCB cb = {{40, 40}, texture->size};
 	static SpriteSheet spriteSheet = SpriteSheet{texture, cb};
 
-	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<SpriteComponent>());
 	ECS::ecsManager.addComponent(ECS::generateEntity(), SpriteComponent::createSpriteComponent(renderer->rhi, {{100, 100}, {30, 40}}));
 }
 
-void ExampleApplication::tick(float deltaTime) {
+void ExampleApplication::tick(float dt) {
 	if (Engine::vr) {
 		scene.camera.cam3d.setCustomProj({Engine::vr->getProjectionMatrix(vr::Eye_Left, 0.1, 100.)});
 		// TODO: set pos
 	}
-	for (auto it = ECS::ecsManager.view<SpriteComponent>(); !it->atEnd(); it->next()) {
-		SpriteComponent& sp = **it;
-		sp.cbData.pos.x += 1;
-		sp.cbData.pos.x = fmod(sp.cbData.pos.x, 1000);
+
+	static float t = 0;
+	t += dt;
+	for (auto it = ECS::ecsManager.view<StaticMeshComponent>(); !it->atEnd(); it->next()) {
+		StaticMeshComponent& sp = **it;
+		sp.pos.x = sin(t/2) / 2;
+		sp.pos.y = cos(t/2) / 2;
 	}
 	/*
 	{
