@@ -11,8 +11,6 @@
 #include "Camera.h"
 
 struct Scene {
-	Array<StaticMeshComponent> objects;
-
 	LightData lightData;
 	Camera::Camera camera;
 };
