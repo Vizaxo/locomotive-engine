@@ -70,6 +70,33 @@ Matrix<4,4,T> translate(Vector<3,T> t) {
 }
 
 template <typename T>
+Matrix<4,4,T> rotX(T a) {
+	return transpose<4,4,T>(
+		{ 1.0, 0.0, 0.0, 0.0,
+	         0.0, cos(a), -sin(a), 0.0,
+	         0.0, sin(a), cos(a), 0.0,
+	         0.0, 0.0, 0.0, 1.0 });
+}
+
+template <typename T>
+Matrix<4,4,T> rotY(T a) {
+	return transpose<4,4,T>(
+		{ cos(a), 0.0, sin(a), 0.0,
+	         0.0, 1.0, 0.0, 0.0,
+	         -sin(a), 0.0, cos(a), 0.0,
+	         0.0, 0.0, 0.0, 1.0 });
+}
+
+template <typename T>
+Matrix<4,4,T> rotZ(T a) {
+	return transpose<4,4,T>(
+		{ cos(a), -sin(a), 0.0, 0.0,
+	         sin(a), cos(a), 0.0, 0.0,
+	         0.0, 0.0, 1.0, 0.0,
+	         0.0, 0.0, 0.0, 1.0 });
+}
+
+template <typename T>
 Matrix<4,4,T> basis(Vector<3,T> x, Vector<3,T> y, Vector<3,T> z) {
 	return transpose<4,4,T>(
 		{ x.x, y.x, z.x, 0.0,

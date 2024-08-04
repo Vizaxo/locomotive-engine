@@ -100,6 +100,8 @@ void ExampleApplication::tick(float dt) {
 		TransformComponent& transform = **it;
 		transform.pos.x = sin(t/2) / 2;
 		transform.pos.y = cos(t/2) / 2;
+		transform.rot.z = t;
+		transform.rot.y = t;
 	}
 	/*
 	{

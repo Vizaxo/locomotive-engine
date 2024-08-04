@@ -145,7 +145,7 @@ void VRModule::render(RefPtr<Renderer> renderer) {
 		RefPtr<Material> mat = materialManager.get(sID("SolidColourMat")).getNonNull();
 
 		RefPtr<Scene> scene = application->getScene();
-		renderer->renderMesh(mesh.getNonNull(), v3{}, scene, mat, 1);
+		renderer->renderMesh(mesh.getNonNull(), {}, scene, mat, 1);
 	}
 }
 
