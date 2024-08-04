@@ -27,6 +27,7 @@
 
 enum MouseMode {
 	Nop,
+	LookCamera,
 	MoveCamera,
 };
 MouseMode mouseMode = Nop;
@@ -67,7 +68,7 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 		cubeMesh,
 		solidColourMat.getNonNull(),
 	}));
-	ECS::ecsManager.addComponent(cube, TransformComponent{0.3f, 0.5f, 10.0f});
+	ECS::ecsManager.addComponent(cube, TransformComponent{0.3f, 0.5f, -10.0f});
 
 	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/stanford_dragon_res3.ply");
 	if (res.index() == 0) {
@@ -78,7 +79,10 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 			dragonMesh,
 			solidColourMat.getNonNull(),
 			}));
-		ECS::ecsManager.addComponent(dragon, TransformComponent{0.0f, -.5f, 1.0f});
+		ECS::ecsManager.addComponent(dragon, TransformComponent{
+			{0.0f, -.5f, -8.0f},
+			{},
+			{8.f, 8.f, 8.f}});
 	} else {
 		LOG(Log::ERR, exampleGameChan, "Could not load dragon model. Error: %s", std::get<std::string>(res));
 	}
@@ -122,7 +126,7 @@ void ExampleApplication::tick(float dt) {
 		ImGui::End();
 	}
 
-	if (mouseMode == MoveCamera) {
+	if (mouseMode == LookCamera) {
 		float mouseSensitivity = 0.002;
 		float yaw = (float)Mouse::dx * mouseSensitivity;
 		float pitch = (float)Mouse::dy * mouseSensitivity;
@@ -161,7 +165,7 @@ RefPtr<Scene> ExampleApplication::getScene() {
 void ExampleApplication::mouseButtonDown(Mouse::Button b) {
 	if (b == Mouse::Button::M2) {
 		Mouse::lockCursorToWindow(windowHandle);
-		mouseMode = MoveCamera;
+		mouseMode = LookCamera;
 	}
 }
 
