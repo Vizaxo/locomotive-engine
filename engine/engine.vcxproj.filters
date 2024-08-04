@@ -329,6 +329,9 @@
     <ClInclude Include="src\editor\importer\OBJ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\types\Str.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\BaseColourVertexShader.hlsl" />

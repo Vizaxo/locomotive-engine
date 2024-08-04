@@ -418,6 +418,7 @@
     <ClInclude Include="src\types\Matrix.h" />
     <ClInclude Include="src\types\Pointers.h" />
     <ClInclude Include="src\types\Product.h" />
+    <ClInclude Include="src\types\Str.h" />
     <ClInclude Include="src\types\StringId.h" />
     <ClInclude Include="src\types\Types.h" />
     <ClInclude Include="src\Utils.h" />
