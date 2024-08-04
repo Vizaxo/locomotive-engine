@@ -43,6 +43,11 @@ struct Vector<3,T> {
 			T y;
 			T z;
 		};
+		struct {
+			T pitch;
+			T yaw;
+			T roll;
+		};
 	};
 	IMPLEMENT_3D_TO_2D_SWIZZLES;
 	IMPLEMENT_ARRAY_OPERATORS

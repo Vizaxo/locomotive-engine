@@ -126,8 +126,9 @@ void ExampleApplication::tick(float dt) {
 		float mouseSensitivity = 0.002;
 		float yaw = -(float)Mouse::dx * mouseSensitivity;
 		float pitch = -(float)Mouse::dy * mouseSensitivity;
-		scene.camera.cam3d.rot.y += yaw;
-		scene.camera.cam3d.rot.x += pitch;
+		scene.camera.cam3d.rot.yaw += yaw;
+		scene.camera.cam3d.rot.pitch += pitch;
+		scene.camera.cam3d.rot.pitch = min(pi, max(-pi, scene.camera.cam3d.rot.pitch));
 
 	//	XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldUp, yaw));
 	//	scene.camera.cam3d.lookDirection = XMVector3Transform(scene.lookDirection, DirectX::XMMatrixRotationAxis(scene.worldRight(), -pitch));
