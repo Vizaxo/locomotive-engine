@@ -70,15 +70,20 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	}));
 	ECS::ecsManager.addComponent(cube, TransformComponent{0.3f, 0.5f, -10.0f});
 
+	RefPtr<Material, true> texturedMat = materialManager.get(sID("TexturedMat"));
+	RefPtr<RHI::Texture2D, true> t = Texture::loadTextureFromFile(renderer->rhi, "resources/models/Textures/colormap.png");
+	ASSERT(t, "Failed to load texture");
+	texturedMat->textures[0] = t;
+
 	//auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/stanford_dragon_res3.ply");
-	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/train-carriage-box.obj");
+	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/train-carriage-container-green.obj");
 	if (res.index() == 0) {
 		RefPtr<Mesh> dragonMesh = std::get<RefPtr<Mesh, true>>(res).getNonNull();
 
 		ECS::Entity dragon = ECS::generateEntity();
 		ECS::ecsManager.addComponent(dragon, StaticMeshComponent({
 			dragonMesh,
-			solidColourMat.getNonNull(),
+			texturedMat.getNonNull(),
 			}));
 		ECS::ecsManager.addComponent(dragon, TransformComponent{
 			{0.0f, -.5f, -8.0f},

@@ -40,6 +40,13 @@ void Renderer::renderMesh(RefPtr<Mesh> mesh, RefPtr<TransformComponent> transfor
 	RHI::InputLayout inputLayout = mesh->generateInputLayout(rhi, material);
 	rhi->setInputLayout(&inputLayout);
 
+	for (int i = 0; i < Material::MAX_TEXTURES; ++i) {
+		if (RefPtr<RHI::Texture2D, true> t = material->textures[i]) {
+			rhi->bindTextureSRV(i, t.getNonNull());
+			rhi->bindSampler(i, t.getNonNull());
+		}
+	}
+
 	//rhi->deviceContext->DrawIndexed(mesh->indexBuffer.indices, 0, 0);
 	rhi->deviceContext->DrawIndexedInstanced(mesh->indexBuffer.count, instances, 0, 0, 0);
 }

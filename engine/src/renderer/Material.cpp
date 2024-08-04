@@ -45,4 +45,6 @@ RefPtr<Material, true> Material::createMaterial(RefPtr<RHI> rhi, StringId name, 
 void Material::createBasicMaterials(RefPtr<RHI> rhi) {
 	RefPtr<Material, true> solidColourMat = createMaterial(rhi, sID("SolidColourMat"), ENGINE_SHADER("SolidColour"), "vsMain", "psMain");
 	solidColourMat->constantBuffers[1] = rhi->createConstantBuffer<v4f>({1.0f, 0.0f, 0.0f, 1.0f});
+	RefPtr<Material, true> texturedMat = createMaterial(rhi, sID("TexturedMat"), ENGINE_SHADER("Textured"), "vsMain", "psMain");
+	solidColourMat->constantBuffers[1] = rhi->createConstantBuffer<v4f>({1.0f, 0.0f, 0.0f, 1.0f});
 }

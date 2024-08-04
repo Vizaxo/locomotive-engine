@@ -214,14 +214,19 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importOBJ(RefPtr<RHI>
 	Array<v3f> normals;
 	Array<v2f> uvs;
 	Array<v3i> splitIndices;
+
+	str mtlLib;
+	str usemtl;
 	for (int i = 0; i < parsed.num(); ++i) {
 		Parsed& p = parsed[i];
 		if (p.type == Parsed::Blank || p.type == Parsed::Comment)
 			continue;
 		else if (p.type == Parsed::Group)
 			continue; // ignoring groups for now
-		else if (p.type == Parsed::UseMtl || p.type == Parsed::MtlLib)
-			continue; // ignoring mtl for now
+		else if (p.type == Parsed::MtlLib)
+			mtlLib = p.str;
+		else if (p.type == Parsed::UseMtl)
+			usemtl = p.str;
 		else if (p.type == Parsed::Vertex)
 			positions.add(p.elements);
 		else if (p.type == Parsed::Normal)
@@ -246,6 +251,8 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importOBJ(RefPtr<RHI>
 		u32 index = verts.add({pos, norm, tc});
 		indices.add(index);
 	}
+
+	// TODO: import and use textures from mtl definition
 
 	RefPtr<Mesh, true> mesh = Mesh::createMesh<pos3norm3uv2, u32>(rhi, name, verts.data, verts.num(), indices.data, indices.num());
 	return mesh;

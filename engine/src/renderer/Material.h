@@ -6,8 +6,10 @@
 #include "resource-manager/ResourceManager.h"
 
 struct Material {
+	static constexpr u32 MAX_TEXTURES = 8;
 	RHI::VertexShader vertexShader;
 	RHI::PixelShader pixelShader;
+	RefPtr<RHI::Texture2D, true> textures[MAX_TEXTURES] = {};
 
 	RHI::ConstantBuffer constantBuffers[RHI::CONSTANT_BUFFER_COUNT] = {};
 

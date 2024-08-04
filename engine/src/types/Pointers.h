@@ -111,6 +111,10 @@ struct ReleaseCOM {
 	void operator()(void** obj) { if (*obj) (*(IUnknown**)obj)->Release(); obj=nullptr; }
 };
 
+struct FreeMalloc {
+	void operator()(void** obj) { free(*obj); }
+};
+
 struct Break {
 	void operator()(void** obj) {
 		//if (*obj) { (*(IUnknown**)obj)->Release(); }
