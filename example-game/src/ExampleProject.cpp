@@ -9,7 +9,7 @@
 #include "renderer/Material.h"
 #include "renderer/Mesh.h"
 #include "renderer/Texture.h"
-#include "editor/ModelLoader.h"
+#include "editor/importer/ModelLoader.h"
 #include "types/Pointers.h"
 #include "Application.h"
 #include "EngineMain.h"

@@ -1,10 +1,10 @@
 #include "PCH.h"
 
-#include "ModelLoader.h"
+#include "PLY.h"
 
 #define ERR(t) {DebugBreak(); return std::variant<RefPtr<Mesh, true>, std::string>(std::string(t));}
 
-bool ModelLoader::Consume(std::string& a, const char* b) {
+bool Consume(std::string& a, const char* b) {
 	int i = 0;
 	while (b[i] != '\0') {
 		if (a.c_str()[i] != b[i]) return false;
@@ -14,7 +14,7 @@ bool ModelLoader::Consume(std::string& a, const char* b) {
 	return true;
 }
 
-std::string ModelLoader::ParseWord(std::string& a) {
+std::string ParseWord(std::string& a) {
 	int i = a.find_first_of(' ');
 	std::string ret = a.substr(0, i);
 	a.erase(0, i);
@@ -24,7 +24,7 @@ std::string ModelLoader::ParseWord(std::string& a) {
 	} else return ret;
 }
 
-std::variant<std::tuple<std::string, long>, std::string> ModelLoader::ParseElement(std::string& line) {
+std::variant<std::tuple<std::string, long>, std::string> ParseElement(std::string& line) {
 	std::variant<std::tuple<std::string, long>, std::string> res;
 
 	if (!Consume(line, "element ")) { res = "Expected string 'element '"; return res; }
@@ -40,14 +40,14 @@ std::variant<std::tuple<std::string, long>, std::string> ModelLoader::ParseEleme
 
 void ParseLine(std::ifstream& file, std::string& line) {
 	while (std::getline(file, line)) {
-		if (ModelLoader::Consume(line, "comment"))
+		if (Consume(line, "comment"))
 			continue;
 		else
 			break;
 	}
 }
 
-std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::LoadModel(RefPtr<RHI> rhi, StringId name, LPCWSTR filepath) {
+std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importPLY(RefPtr<RHI> rhi, StringId name, LPCWSTR filepath) {
 	std::ifstream file(filepath, std::ios_base::in);
 	std::string line;
 	std::vector<std::string> properties;

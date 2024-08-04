@@ -45,7 +45,7 @@
     <ClCompile Include="src\renderer\ImGuiUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\ModelLoader.cpp">
+    <ClCompile Include="src\editor\importer\PLY.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\debug\ttd.cpp">
@@ -135,6 +135,9 @@
     <ClCompile Include="src\renderer\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\editor\importer\ModelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\PCH.h">
@@ -173,7 +176,7 @@
     <ClInclude Include="src\renderer\ImGuiUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\ModelLoader.h">
+    <ClInclude Include="src\editor\importer\ModelLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils.h">
@@ -315,6 +318,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ecs\components\TransformComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\importer\PLY.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

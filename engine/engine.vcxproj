@@ -321,6 +321,7 @@
     <ClCompile Include="src\core\Assert.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
     <ClCompile Include="src\debug\renderdoc\RenderDocModule.cpp" />
+    <ClCompile Include="src\editor\importer\ModelLoader.cpp" />
     <ClCompile Include="src\events\EventQueue.cpp" />
     <ClCompile Include="src\memory\Hooks.cpp" />
     <ClCompile Include="src\renderer2d\Physics2D.cpp" />
@@ -352,7 +353,7 @@
     </ClCompile>
     <ClCompile Include="src\renderer\ImGuiUtils.cpp" />
     <ClCompile Include="src\renderer\Material.cpp" />
-    <ClCompile Include="src\editor\ModelLoader.cpp" />
+    <ClCompile Include="src\editor\importer\PLY.cpp" />
     <ClCompile Include="src\stbi_impl.cpp" />
     <ClCompile Include="src\types\Colour.cpp" />
     <ClCompile Include="src\types\StringId.cpp" />
@@ -367,6 +368,7 @@
     <ClInclude Include="src\debug\renderdoc\RenderDocModule.h" />
     <ClInclude Include="src\ecs\components\TransformComponent.h" />
     <ClInclude Include="src\ecs\ECS.h" />
+    <ClInclude Include="src\editor\importer\PLY.h" />
     <ClInclude Include="src\events\EventQueue.h" />
     <ClInclude Include="src\memory\Hooks.h" />
     <ClInclude Include="src\renderer2d\Renderer2D.h" />
@@ -408,7 +410,7 @@
     <ClInclude Include="src\renderer\ImGuiUtils.h" />
     <ClInclude Include="src\renderer\Light.h" />
     <ClInclude Include="src\renderer\Material.h" />
-    <ClInclude Include="src\editor\ModelLoader.h" />
+    <ClInclude Include="src\editor\importer\ModelLoader.h" />
     <ClInclude Include="src\renderer\Scene.h" />
     <ClInclude Include="src\types\Map.h" />
     <ClInclude Include="src\types\Matrix.h" />
