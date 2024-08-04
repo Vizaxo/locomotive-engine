@@ -23,8 +23,9 @@ void Log::logStr(Level lvl, Channel& chan, int line, const char* file, const cha
 	switch (lvl) {
 	case INFO: DEBUG_PRINT("INFO "); break;
 	case WARN: DEBUG_PRINT("WARN "); break;
+	case ERR: DEBUG_PRINT("ERROR "); break;
 	case FATAL: DEBUG_PRINT("FATAL "); break;
-	default: return; //TODO: error
+	default: DEBUG_BREAK();
 	}
 	snprintf(buf, BUFSIZE, "%s: %s (%d): ", chan.name, file, line);
 	DEBUG_PRINT(buf);

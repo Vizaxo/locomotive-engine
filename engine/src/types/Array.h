@@ -28,7 +28,7 @@ struct DoublingAllocator : public Allocator {
 			}
 		}
 
-		void* newData = malloc(prevSize * stride);
+		void* newData = calloc(stride, prevSize);
 		cur = newData;
 		Allocator::AllocResult r = { newData, prevSize };
 		return r;

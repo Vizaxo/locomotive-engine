@@ -70,7 +70,8 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	}));
 	ECS::ecsManager.addComponent(cube, TransformComponent{0.3f, 0.5f, -10.0f});
 
-	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/stanford_dragon_res3.ply");
+	//auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/stanford_dragon_res3.ply");
+	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/train-carriage-box.obj");
 	if (res.index() == 0) {
 		RefPtr<Mesh> dragonMesh = std::get<RefPtr<Mesh, true>>(res).getNonNull();
 

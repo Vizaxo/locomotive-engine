@@ -322,6 +322,7 @@
     <ClCompile Include="src\core\Log.cpp" />
     <ClCompile Include="src\debug\renderdoc\RenderDocModule.cpp" />
     <ClCompile Include="src\editor\importer\ModelLoader.cpp" />
+    <ClCompile Include="src\editor\importer\OBJ.cpp" />
     <ClCompile Include="src\events\EventQueue.cpp" />
     <ClCompile Include="src\memory\Hooks.cpp" />
     <ClCompile Include="src\renderer2d\Physics2D.cpp" />
@@ -368,6 +369,7 @@
     <ClInclude Include="src\debug\renderdoc\RenderDocModule.h" />
     <ClInclude Include="src\ecs\components\TransformComponent.h" />
     <ClInclude Include="src\ecs\ECS.h" />
+    <ClInclude Include="src\editor\importer\OBJ.h" />
     <ClInclude Include="src\editor\importer\PLY.h" />
     <ClInclude Include="src\events\EventQueue.h" />
     <ClInclude Include="src\memory\Hooks.h" />
