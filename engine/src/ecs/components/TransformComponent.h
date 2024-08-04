@@ -10,5 +10,5 @@ struct TransformComponent {
 };
 
 inline m44 TransformComponent::getMatrix() {
-	return translate(pos) * ::scale(scale) * rotZ(rot.z) * rotY(rot.y) * rotX(rot.x);
+	return translate(pos) * rotZ(rot.z) * rotY(rot.y) * rotX(rot.x) * ::scale(scale);
 }
