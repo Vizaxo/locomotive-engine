@@ -9,6 +9,7 @@
 #include "ecs/ECS.h"
 #include "platform/windows/Windows.h"
 #include "types/Matrix.h"
+#include "ecs/components/TransformComponent.h"
 
 v2f Renderer::getWindowSize() {
 	Box2i clientRect = PAL::getClientRect(rhi->h);
@@ -56,7 +57,8 @@ void Renderer::RenderScene(float deltaTime, RefPtr<Scene> scene) {
 	//for (int i = 0; i < scene->objects.num(); i++) {
 	for (auto it = ECS::ecsManager.view<StaticMeshComponent>(); !it->atEnd(); it->next()) {
 		StaticMeshComponent& meshComponent = **it;
-		renderMesh(meshComponent.mesh, meshComponent.pos, scene, meshComponent.material, 1);
+		RefPtr<TransformComponent> transformComponent = ECS::ecsManager.getComponent<TransformComponent>(it->getIndex()).getNonNull(); //TODO: multi-component views
+		renderMesh(meshComponent.mesh, transformComponent->pos, scene, meshComponent.material, 1);
 	}
 
 	CB::ViewCB viewCB = makeViewCB(&scene->camera, v3{});

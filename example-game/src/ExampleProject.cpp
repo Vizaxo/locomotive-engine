@@ -14,6 +14,7 @@
 #include "Application.h"
 #include "EngineMain.h"
 #include "ecs/ECS.h"
+#include "ecs/components/TransformComponent.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 
@@ -54,25 +55,28 @@ void ExampleApplication::setupCamera() {
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<SpriteComponent>());
 	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<StaticMeshComponent>());
+	ECS::ecsManager.addComponentManager(new ECS::SparseSetComponentManager<TransformComponent>());
 
 	RefPtr<Material, true> solidColourMat = materialManager.get(sID("SolidColourMat"));
 	RefPtr<Mesh> cubeMesh = Mesh::meshManager.get(sID("unitCube")).getNonNull();
 
-	ECS::ecsManager.addComponent(ECS::generateEntity(), StaticMeshComponent({
+	ECS::Entity cube = ECS::generateEntity();
+	ECS::ecsManager.addComponent(cube, StaticMeshComponent({
 		cubeMesh,
 		solidColourMat.getNonNull(),
-		{0.3f, 0.5f, 10.0f},
 	}));
+	ECS::ecsManager.addComponent(cube, TransformComponent{0.3f, 0.5f, 10.0f});
 
 	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/stanford_dragon_res3.ply");
 	if (res.index() == 0) {
 		RefPtr<Mesh> dragonMesh = std::get<RefPtr<Mesh, true>>(res).getNonNull();
 
-		ECS::ecsManager.addComponent(ECS::generateEntity(), StaticMeshComponent({
+		ECS::Entity dragon = ECS::generateEntity();
+		ECS::ecsManager.addComponent(dragon, StaticMeshComponent({
 			dragonMesh,
 			solidColourMat.getNonNull(),
-			{0.0f, -.5f, 1.0f},
 			}));
+		ECS::ecsManager.addComponent(dragon, TransformComponent{0.0f, -.5f, 1.0f});
 	} else {
 		LOG(Log::ERR, exampleGameChan, "Could not load dragon model. Error: %s", std::get<std::string>(res));
 	}
@@ -92,10 +96,10 @@ void ExampleApplication::tick(float dt) {
 
 	static float t = 0;
 	t += dt;
-	for (auto it = ECS::ecsManager.view<StaticMeshComponent>(); !it->atEnd(); it->next()) {
-		StaticMeshComponent& sp = **it;
-		sp.pos.x = sin(t/2) / 2;
-		sp.pos.y = cos(t/2) / 2;
+	for (auto it = ECS::ecsManager.view<TransformComponent>(); !it->atEnd(); it->next()) {
+		TransformComponent& transform = **it;
+		transform.pos.x = sin(t/2) / 2;
+		transform.pos.y = cos(t/2) / 2;
 	}
 	/*
 	{

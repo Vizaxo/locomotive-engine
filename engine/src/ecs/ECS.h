@@ -61,7 +61,7 @@ struct ComponentManager : ComponentManagerBase {
 	virtual ArrayView<Stored<C>> getRawBuffer() = 0;
 	virtual ~ComponentManager() {}
 	virtual C& addComponent(Entity e, C&& comp) = 0;
-	virtual C& getComponent(Entity e) = 0;
+	virtual RefPtr<C, true> getComponent(Entity e) = 0;
 };
 
 template <typename C>
@@ -89,8 +89,10 @@ struct SparseSetComponentManager : ComponentManager<C> {
 		return dense[index].comp;
 	}
 
-	C& getComponent(const Entity e) override {
-		return dense[sparse[e]].comp;
+	RefPtr<C, true> getComponent(const Entity e) override {
+		if (e >= sparse.num()) return nullptr;
+		if (sparse[e] == NULL_ID) return nullptr;
+		return &dense[sparse[e]].comp;
 	}
 
 	void removeComponent(const Entity e) {
@@ -155,7 +157,7 @@ struct ECSManager {
 		return m;
 	}
 
-	template <typename C> C& getComponent(Entity e) {
+	template <typename C> RefPtr<C, true> getComponent(Entity e) {
 		return getComponentManager<C>()->getComponent(e);
 	}
 

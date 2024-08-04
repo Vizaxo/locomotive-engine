@@ -8,7 +8,4 @@
 struct StaticMeshComponent {
 	RefPtr<Mesh> mesh;
 	RefPtr<Material> material;
-
-	//TODO: move this into separate transform component
-	v3f pos;
 };
