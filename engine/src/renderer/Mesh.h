@@ -45,6 +45,28 @@ struct Mesh {
 	static ResourceManager<Mesh> meshManager;
 };
 
+struct pos3 {
+	v3f p;
+	static VertSemantic getSemantic(u8 index) {
+		switch(index) {
+		case 0: return {VertType::POSITION, 0, RHICommon::R32G32B32};
+		default: return {VertType::NONE};
+		}
+	}
+};
+
+struct pos3norm3 {
+	v3f p;
+	v3f normal;
+	static VertSemantic getSemantic(u8 index) {
+		switch(index) {
+		case 0: return {VertType::POSITION, 0, RHICommon::R32G32B32};
+		case 1: return {VertType::NORMAL, 0, RHICommon::R32G32B32};
+		default: return {VertType::NONE};
+		}
+	}
+};
+
 template <typename V, typename I>
 RefPtr<Mesh, true> Mesh::createMesh(RefPtr<RHI> rhi, StringId id, RefPtr<const V> verts, size_t vert_count, RefPtr<const I> indices, size_t index_count) {
 

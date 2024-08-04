@@ -34,6 +34,8 @@ Application* const application = new ExampleApplication();
 
 PAL::WindowHandle* windowHandle = nullptr;
 
+Log::Channel exampleGameChan = {"ExampleGame"};
+
 void ExampleApplication::setupLighting() {
 	scene.lightData.pointLights[scene.lightData.numPointLights].pos = DirectX::XMFLOAT3(0.0f, 3.0f, 0.0f);
 	scene.lightData.pointLights[scene.lightData.numPointLights].colour = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
@@ -50,8 +52,6 @@ void ExampleApplication::setupCamera() {
 }
 
 void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
-	windowHandle = h;
-
 	RefPtr<Material, true> solidColourMat = materialManager.get(sID("SolidColourMat"));
 	RefPtr<Mesh> cubeMesh = Mesh::meshManager.get(sID("unitCube")).getNonNull();
 
@@ -60,6 +60,18 @@ void ExampleApplication::init(RefPtr<Renderer> renderer, PAL::WindowHandle* h) {
 		solidColourMat.getNonNull(),
 		{0.3f, 0.5f, 10.0f},
 	}));
+
+	auto res = ModelLoader::LoadModel(renderer->rhi, sID("DragonMesh"), L"resources/models/stanford_dragon_res3.ply");
+	if (res.index() == 0) {
+		RefPtr<Mesh> dragonMesh = std::get<RefPtr<Mesh, true>>(res).getNonNull();
+		scene.objects.add(StaticMeshComponent({
+			dragonMesh,
+			solidColourMat.getNonNull(),
+			{0.0f, -.5f, 1.0f},
+			}));
+	} else {
+		LOG(Log::ERR, exampleGameChan, "Could not load dragon model. Error: %s", std::get<std::string>(res));
+	}
 
 	RefPtr<RHI::Texture2D> texture = Texture::loadTextureFromFile(renderer->rhi, "resources/textures/cube01.png").getNonNull();
 	SpriteSheetCB cb = {{40, 40}, texture->size};

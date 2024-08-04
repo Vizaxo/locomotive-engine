@@ -5,28 +5,6 @@
 
 ResourceManager<Mesh> Mesh::meshManager;
 
-struct pos3 {
-	v3f p;
-	static VertSemantic getSemantic(u8 index) {
-		switch(index) {
-		case 0: return {VertType::POSITION, 0, RHICommon::R32G32B32};
-		default: return {VertType::NONE};
-		}
-	}
-};
-
-struct pos3norm3 {
-	v3f p;
-	v3f normal;
-	static VertSemantic getSemantic(u8 index) {
-		switch(index) {
-		case 0: return {VertType::POSITION, 0, RHICommon::R32G32B32};
-		case 1: return {VertType::NORMAL, 0, RHICommon::R32G32B32};
-		default: return {VertType::NONE};
-		}
-	}
-};
-
 
 //TODO: generate normals
 pos3norm3 unitCubeVerts[8] = {

@@ -2,11 +2,11 @@
 
 #include "ModelLoader.h"
 
-#define ERR(t) {DebugBreak(); return std::variant<OwningPtr<Mesh>, std::string>(std::string(t));}
+#define ERR(t) {DebugBreak(); return std::variant<RefPtr<Mesh, true>, std::string>(std::string(t));}
 
 bool ModelLoader::Consume(std::string& a, const char* b) {
 	int i = 0;
-	while (b[i] != '\0') { 
+	while (b[i] != '\0') {
 		if (a.c_str()[i] != b[i]) return false;
 		i++;
 	}
@@ -47,7 +47,7 @@ void ParseLine(std::ifstream& file, std::string& line) {
 	}
 }
 
-std::variant<OwningPtr<Mesh>, std::string> ModelLoader::LoadModel(RefPtr<RHI> rhi, LPCWSTR filepath) {
+std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::LoadModel(RefPtr<RHI> rhi, StringId name, LPCWSTR filepath) {
 	std::ifstream file(filepath, std::ios_base::in);
 	std::string line;
 	std::vector<std::string> properties;
@@ -102,16 +102,18 @@ std::variant<OwningPtr<Mesh>, std::string> ModelLoader::LoadModel(RefPtr<RHI> rh
 	if (line != "end_header")
 		ERR("Expected end_header");
 
-	std::vector<DirectX::XMFLOAT3> verts;
+	std::vector<pos3norm3> verts;
 	for (long i = 0; i < numVerts; i++) {
 		ParseLine(file, line);
 		std::string x = ParseWord(line);
 		std::string y = ParseWord(line);
 		std::string z = ParseWord(line);
-		verts.push_back(DirectX::XMFLOAT3(atof(x.c_str()), atof(y.c_str()), atof(z.c_str())));
+		verts.push_back(
+			{v3{(float)atof(x.c_str()), (float)atof(y.c_str()), (float)atof(z.c_str())},
+			{}});
 	}
 
-	std::vector<int> indices;
+	std::vector<u32> indices;
 	for (long i = 0; i < numFaces; i++) {
 		ParseLine(file, line);
 		std::string n = ParseWord(line);
@@ -125,13 +127,7 @@ std::variant<OwningPtr<Mesh>, std::string> ModelLoader::LoadModel(RefPtr<RHI> rh
 		indices.push_back(atoi(c.c_str()));
 	}
 
-	//TODO: probably should put this in the model...
-	//std::vector<D3D11_INPUT_ELEMENT_DESC> layoutDesc = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
-
-	RHI::VertexBuffer vertexBuffer = rhi->createVertexBuffer<DirectX::XMFLOAT3>(verts.data(), verts.size());
-	RHI::IndexBuffer indexBuffer = rhi->createIndexBuffer<int>(indices.data(), indices.size(), D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	OwningPtr<Mesh> mesh = new Mesh({std::move(vertexBuffer), std::move(indexBuffer)});
-
-	return std::move(mesh);
+	RefPtr<Mesh, true> mesh = Mesh::createMesh<pos3norm3, u32>(rhi, name, verts.data(), verts.size(), indices.data(), indices.size());
+	mesh->generateNormals(rhi);
+	return mesh;
 }
