@@ -4,7 +4,7 @@
 
 #define ERR(t) {DebugBreak(); return std::variant<RefPtr<Mesh, true>, std::string>(std::string(t));}
 
-bool Consume(std::string& a, const char* b) {
+bool consume(std::string& a, const char* b) {
 	int i = 0;
 	while (b[i] != '\0') {
 		if (a.c_str()[i] != b[i]) return false;
@@ -14,21 +14,21 @@ bool Consume(std::string& a, const char* b) {
 	return true;
 }
 
-std::string ParseWord(std::string& a) {
+std::string parseWord(std::string& a) {
 	int i = a.find_first_of(' ');
 	std::string ret = a.substr(0, i);
 	a.erase(0, i);
 	if (i == 0) {
 		a.erase(0, 1);
-		return ParseWord(a);
+		return parseWord(a);
 	} else return ret;
 }
 
 std::variant<std::tuple<std::string, long>, std::string> ParseElement(std::string& line) {
 	std::variant<std::tuple<std::string, long>, std::string> res;
 
-	if (!Consume(line, "element ")) { res = "Expected string 'element '"; return res; }
-	std::string elType = ParseWord(line);
+	if (!consume(line, "element ")) { res = "Expected string 'element '"; return res; }
+	std::string elType = parseWord(line);
 
 	char* end;
 	long numVerts = strtol(line.c_str(), &end, 10);
@@ -40,7 +40,7 @@ std::variant<std::tuple<std::string, long>, std::string> ParseElement(std::strin
 
 void ParseLine(std::ifstream& file, std::string& line) {
 	while (std::getline(file, line)) {
-		if (Consume(line, "comment"))
+		if (consume(line, "comment"))
 			continue;
 		else
 			break;
@@ -74,7 +74,7 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importPLY(RefPtr<RHI>
 			ERR("Expected 'vertex'");
 	}
 
-	while(ParseLine(file, line), Consume(line, "property float ")) {
+	while(ParseLine(file, line), consume(line, "property float ")) {
 		properties.push_back(line);
 	}
 
@@ -94,7 +94,7 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importPLY(RefPtr<RHI>
 			ERR("Expected 'face'");
 	}
 	ParseLine(file, line);
-	if (!Consume(line, "property list uchar int vertex_indices")) {
+	if (!consume(line, "property list uchar int vertex_indices")) {
 		ERR("Invalid face properties");
 	}
 
@@ -105,9 +105,9 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importPLY(RefPtr<RHI>
 	std::vector<pos3norm3> verts;
 	for (long i = 0; i < numVerts; i++) {
 		ParseLine(file, line);
-		std::string x = ParseWord(line);
-		std::string y = ParseWord(line);
-		std::string z = ParseWord(line);
+		std::string x = parseWord(line);
+		std::string y = parseWord(line);
+		std::string z = parseWord(line);
 		verts.push_back(
 			{v3{(float)atof(x.c_str()), (float)atof(y.c_str()), (float)atof(z.c_str())},
 			{}});
@@ -116,10 +116,10 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importPLY(RefPtr<RHI>
 	std::vector<u32> indices;
 	for (long i = 0; i < numFaces; i++) {
 		ParseLine(file, line);
-		std::string n = ParseWord(line);
-		std::string a = ParseWord(line);
-		std::string b = ParseWord(line);
-		std::string c = ParseWord(line);
+		std::string n = parseWord(line);
+		std::string a = parseWord(line);
+		std::string b = parseWord(line);
+		std::string c = parseWord(line);
 		if (n != "3")
 			ERR("Expected 3 vertices for each face");
 		indices.push_back(atoi(a.c_str()));

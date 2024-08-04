@@ -8,9 +8,7 @@
 #include "renderer/Mesh.h"
 #include "types/Array.h"
 
-#define ERR(t) {DebugBreak(); return std::variant<RefPtr<Mesh, true>, std::string>(std::string(t));}
-
-bool Consume(std::string& a, const char* b) {
+bool consume(std::string& a, const char* b) {
 	int i = 0;
 	while (b[i] != '\0') {
 		if (a.c_str()[i] != b[i]) return false;
@@ -20,34 +18,14 @@ bool Consume(std::string& a, const char* b) {
 	return true;
 }
 
-std::string ParseWord(std::string& a) {
+std::string parseWord(std::string& a) {
 	int i = a.find_first_of(' ');
 	std::string ret = a.substr(0, i);
 	a.erase(0, i);
 	if (i == 0) {
 		a.erase(0, 1);
-		return ParseWord(a);
+		return parseWord(a);
 	} else return ret;
-}
-
-std::variant<std::tuple<std::string, long>, std::string> ParseElement(std::string& line) {
-	std::variant<std::tuple<std::string, long>, std::string> res;
-
-	if (!Consume(line, "element ")) { res = "Expected string 'element '"; return res; }
-	std::string elType = ParseWord(line);
-
-	char* end;
-	long numVerts = strtol(line.c_str(), &end, 10);
-	if (numVerts > 0 && numVerts < LONG_MAX) {
-		return std::variant<std::tuple<std::string, long>, std::string>(std::make_tuple(elType, numVerts));
-	}
-	return std::variant<std::tuple<std::string, long>, std::string>("Error parsing integer");
-}
-
-void GetLine(std::ifstream& file, std::string& line) {
-	while (std::getline(file, line)) {
-		break;
-	}
 }
 
 struct str {
@@ -80,19 +58,6 @@ struct str {
 
 		return *this;
 	}
-	/*
-	str& operator=(const std::string& other) {
-		if (needsFree) {
-			free((char*)s);
-		}
-
-		size_t size = sizeof(char) * (other.length() + 1);
-		s = (char*)malloc(size);
-		strcpy_s((char*)s, size, other.c_str());
-		needsFree = true;
-		return *this;
-	}
-	*/
 
 	str(str&& other) {
 		s = other.s;
@@ -107,10 +72,6 @@ struct str {
 	}
 };
 
-struct Face {
-	v3i indices;
-};
-
 struct Parsed {
 	enum Type {
 		MtlLib, UseMtl, Object, Group, SmoothShading, Line, FaceIndices, Comment, Vertex, ParameterSpace, Normal, Texcoord, Error, Blank
@@ -122,9 +83,9 @@ struct Parsed {
 			v3f elements;
 		};
 		struct {
-			Face f1;
-			Face f2;
-			Face f3;
+			v3i f1;
+			v3i f2;
+			v3i f3;
 		};
 	};
 	str str;
@@ -135,7 +96,7 @@ enum Error {
 };
 
 Either<float, Error> tryParseFloat(std::string& s) {
-	std::string word = ParseWord(s);
+	std::string word = parseWord(s);
 	const char* start = word.c_str();
 	char* end;
 	float ret = strtof(start, &end);
@@ -176,24 +137,24 @@ bool parseFloats(int num, std::string& line, Parsed& ret) {
 	return true;
 }
 
-Either<Face, Error> parseFace(std::string& line) {
-	Face ret = {-1, -1, -1};
+Either<v3i, Error> parseFace(std::string& line) {
+	v3i ret = {-1, -1, -1};
 	Either<int, Error> res = FaceParseError;
 	if (!(res = parseInt(line)))
 		return FaceParseError;
 
-	ret.indices.x = *res;
-	if (!Consume(line, "/"))
+	ret.x = *res;
+	if (!consume(line, "/"))
 		return ret;
 
 	if (res = parseInt(line))
-		ret.indices.y = *res;
+		ret.y = *res;
 
-	if (!Consume(line, "/"))
+	if (!consume(line, "/"))
 		return ret;
 
 	if (res = parseInt(line))
-		ret.indices.z = *res;
+		ret.z = *res;
 
 	return ret;
 }
@@ -201,40 +162,40 @@ Either<Face, Error> parseFace(std::string& line) {
 Parsed parseLine(std::string line) {
 	Parsed ret = {};
 	ret.type = Parsed::Error;
-	if (Consume(line, "#")) {
+	if (consume(line, "#")) {
 		ret.type = Parsed::Comment;
 		ret.str = line;
-	} else if (Consume(line, "v ")) {
+	} else if (consume(line, "v ")) {
 		if (parseFloats(3, line, ret)) {
 			ret.type = Parsed::Vertex;
 		} else {
 			ret.str = "Could not parse vertex: " + line;
 			return ret;
 		}
-	} else if (Consume(line, "vn")) {
+	} else if (consume(line, "vn")) {
 		if (parseFloats(3, line, ret)) {
 			ret.type = Parsed::Normal;
 		} else {
 			ret.str = "Could not parse normal: " + line;
 			return ret;
 		}
-	} else if (Consume(line, "vt")) {
+	} else if (consume(line, "vt")) {
 		if (parseFloats(3, line, ret)) {
 			ret.type = Parsed::Texcoord;
 		} else {
 			ret.str = "Could not parse texcoord: " + line;
 			return ret;
 		}
-	} else if (Consume(line, "vp")) {
+	} else if (consume(line, "vp")) {
 		if (parseFloats(3, line, ret)) {
 			ret.type = Parsed::ParameterSpace;
 		} else {
 			ret.str = "Could not parse parameter space: " + line;
 			return ret;
 		}
-	} else if (Consume(line, "f")) {
+	} else if (consume(line, "f")) {
 		// Currently just supports triangles
-		Either<Face, Error> res = FaceParseError;
+		Either<v3i, Error> res = FaceParseError;
 
 		if (!(res = parseFace(line))) {
 			ret.type = Parsed::Error;
@@ -259,16 +220,16 @@ Parsed parseLine(std::string line) {
 		ret.type = Parsed::FaceIndices;
 	} else if (line == "") {
 		ret.type = Parsed::Blank;
-	} else if (Consume(line, "mtllib")) {
-		std::string path = ParseWord(line);
+	} else if (consume(line, "mtllib")) {
+		std::string path = parseWord(line);
 		ret.type = Parsed::MtlLib;
 		ret.str = path;
-	} else if (Consume(line, "usemtl")) {
-		std::string mtl = ParseWord(line);
+	} else if (consume(line, "usemtl")) {
+		std::string mtl = parseWord(line);
 		ret.type = Parsed::UseMtl;
 		ret.str = mtl;
-	} else if (Consume(line, "g")) {
-		std::string groupName = ParseWord(line);
+	} else if (consume(line, "g")) {
+		std::string groupName = parseWord(line);
 		ret.type = Parsed::Group;
 		ret.str = groupName;
 	}
@@ -283,10 +244,7 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importOBJ(RefPtr<RHI>
 	std::ifstream file(filepath, std::ios_base::in);
 	std::string line;
 
-	GetLine(file, line);
-
 	Array<Parsed> parsed;
-
 	while (std::getline(file, line)) {
 		Parsed res = parseLine(line);
 		if (res.type == Parsed::Error) {
@@ -298,7 +256,7 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importOBJ(RefPtr<RHI>
 	Array<v3f> positions;
 	Array<v3f> normals;
 	Array<v2f> uvs;
-	Array<Face> splitIndices;
+	Array<v3i> splitIndices;
 	for (int i = 0; i < parsed.num(); ++i) {
 		Parsed& p = parsed[i];
 		if (p.type == Parsed::Blank || p.type == Parsed::Comment)
@@ -325,39 +283,12 @@ std::variant<RefPtr<Mesh, true>, std::string> ModelLoader::importOBJ(RefPtr<RHI>
 	Array<pos3norm3uv2> verts;
 	Array<u32> indices;
 	for (int i = 0; i < splitIndices.num(); i += 1) {
-		v3f pos = positions[splitIndices[i].indices.x - 1];
-		v2f tc = uvs[splitIndices[i].indices.y - 1];
-		v3f norm = normals[splitIndices[i].indices.z - 1];
+		v3f pos = positions[splitIndices[i].x - 1];
+		v2f tc = uvs[splitIndices[i].y - 1];
+		v3f norm = normals[splitIndices[i].z - 1];
 		u32 index = verts.add({pos, norm, tc});
 		indices.add(index);
 	}
-
-
-	//std::vector<u32> indices;
-	/*
-	for (long i = 0; i < numVerts; i++) {
-		ParseLine(file, line);
-		std::string x = ParseWord(line);
-		std::string y = ParseWord(line);
-		std::string z = ParseWord(line);
-		verts.push_back(
-			{v3{(float)atof(x.c_str()), (float)atof(y.c_str()), (float)atof(z.c_str())},
-			{}});
-	}
-
-	for (long i = 0; i < numFaces; i++) {
-		ParseLine(file, line);
-		std::string n = ParseWord(line);
-		std::string a = ParseWord(line);
-		std::string b = ParseWord(line);
-		std::string c = ParseWord(line);
-		if (n != "3")
-			ERR("Expected 3 vertices for each face");
-		indices.push_back(atoi(a.c_str()));
-		indices.push_back(atoi(b.c_str()));
-		indices.push_back(atoi(c.c_str()));
-	}
-	*/
 
 	RefPtr<Mesh, true> mesh = Mesh::createMesh<pos3norm3uv2, u32>(rhi, name, verts.data, verts.num(), indices.data, indices.num());
 	return mesh;
