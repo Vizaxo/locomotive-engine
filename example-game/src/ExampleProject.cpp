@@ -141,12 +141,17 @@ void ExampleApplication::tick(float dt) {
 	if (Keyboard::keysDown.find(Keyboard::Key::U) != Keyboard::keysDown.end())
 		localDirection += v4{1,0,0,0};
 
-	if (localDirection != v4{0, 0, 0, 0}) {
-		v3 worldDirection = (invEuler(scene.camera.cam3d.rot) * normalize(localDirection)).xyz();
+	v3 worldDirection = {};
+	if (localDirection != v4{0, 0, 0, 0})
+		worldDirection = (invEuler(scene.camera.cam3d.rot) * normalize(localDirection)).xyz();
 
-		const float movementSpeed = 5.0f;
-		scene.camera.cam3d.pos += movementSpeed * dt * worldDirection;
-	}
+	if (Keyboard::isKeyDown(Keyboard::Key::Control) || Keyboard::isKeyDown(Keyboard::Key::Semicolon))
+		worldDirection += v3{0,-1,0};
+	if (Keyboard::keysDown.find(Keyboard::Key::Shift) != Keyboard::keysDown.end())
+		worldDirection += v3{0,1,0};
+
+	const float movementSpeed = 5.0f;
+	scene.camera.cam3d.pos += movementSpeed * dt * worldDirection;
 }
 
 RefPtr<Scene> ExampleApplication::getScene() {
