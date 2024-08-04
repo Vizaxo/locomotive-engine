@@ -97,6 +97,15 @@ Matrix<4,4,T> rotZ(T a) {
 }
 
 template <typename T>
+Matrix<4,4,T> scale(Vector<3,T> s) {
+	return transpose<4,4,T>(
+		{ s.x, 0.0, 0.0, 0.0,
+	         0.0, s.y, 0.0, 0.0,
+	         0.0, 0.0, s.z, 0.0,
+	         0.0, 0.0, 0.0, 1.0 });
+}
+
+template <typename T>
 Matrix<4,4,T> basis(Vector<3,T> x, Vector<3,T> y, Vector<3,T> z) {
 	return transpose<4,4,T>(
 		{ x.x, y.x, z.x, 0.0,

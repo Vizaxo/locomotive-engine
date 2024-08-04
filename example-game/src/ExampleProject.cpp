@@ -102,6 +102,7 @@ void ExampleApplication::tick(float dt) {
 		transform.pos.y = cos(t/2) / 2;
 		transform.rot.z = t;
 		transform.rot.y = t;
+		transform.scale.x = sin(t/4);
 	}
 	/*
 	{
