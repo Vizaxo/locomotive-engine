@@ -120,7 +120,7 @@ void Mesh::generateNormals(RefPtr<RHI> rhi) {
 	u8* vertsRead = (u8*)vertReadBuffer.mapRead(rhi);
 	u8* indices = (u8*)indexReadBuffer.mapRead(rhi);
 
-	// Copy the entire vertex buffer again because D3D!!_MAP_WRITE_DISCARD is used
+	// Copy the entire vertex buffer again because D3D11_MAP_WRITE_DISCARD is used
 	memcpy(vertsWrite, vertsRead, vertexBuffer.stride * vertexBuffer.count);
 
 	for (int i = 0; i < indexBuffer.count; i += 3) {
